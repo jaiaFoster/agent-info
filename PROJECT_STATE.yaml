@@ -9,22 +9,27 @@
 
 schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
-last_updated_by: "SPRINT-002 (Pinellas parcel adapter + jurisdiction framework)"
+last_updated_by: "SPRINT-003 (Pinellas production validation)"
 
 active_expansion_work:
-  ticket: "SPRINT-002"
-  status: "source-side complete, production ingestion not yet approved"
+  ticket: "SPRINT-003"
+  status: "real-data validated in an isolated database; production ingestion still not approved"
   summary: >
-    Reusable jurisdiction/source-registry framework plus a full Pinellas
-    County parcel/assessor adapter (PCPAO bulk database files). Zero
-    core/ changes. Recorder (Clerk) adapter deferred. database_write_allowed
-    and ingest_supported both false pending Jaia's approval.
+    Verified the entire Pinellas jurisdiction-expansion framework against
+    real, checksummed live PCPAO data: corrected SPRINT-002's schema
+    assumptions (real 3-table join replaces the assumed 6-table join; real
+    field names, ZIP-wrapped responses, trailing-comma JSON, and header
+    requirements all discovered and handled). A bounded 200-parcel real
+    ingestion succeeded end-to-end in an isolated local database with zero
+    critical integrity failures and verified idempotency. Added a Merge
+    Authority section to AGENTS.md (Jaia is sole merge authority, no
+    exceptions). Zero core/ changes. database_write_allowed and
+    ingest_supported remain false pending Jaia's explicit production
+    approval — none was requested or granted this sprint.
   known_issue: >
-    Unresolved ownership overlap with INGEST-002 (Kyle) — a pre-existing
-    Pinellas adapter stub was found and replaced without confirming Kyle's
-    own progress. See AGENTS.md registry reconciliation note and
-    OPEN_DECISIONS.yaml.
-  full_detail: "docs/research/SPRINT-002-SUMMARY.md, docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md"
+    Ownership overlap with INGEST-002 (Kyle) from SPRINT-002 remains
+    unresolved — not addressed this sprint. See OPEN_DECISIONS.yaml.
+  full_detail: "docs/research/SPRINT-003-SUMMARY.md, docs/research/PINELLAS_SOURCE_VALIDATION.md, docs/audits/PINELLAS_DATA_QUALITY_REPORT.md, docs/audits/PINELLAS_PERFORMANCE_BASELINE.md"
 
 project:
   name: "LUX"

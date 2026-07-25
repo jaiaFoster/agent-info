@@ -77,6 +77,25 @@ plausibly Kyle's own placeholder for his in-progress `INGEST-002` ticket
 whether Kyle has independent progress — that's a call for you and Kyle,
 not something to resolve unilaterally. See `OPEN_DECISIONS.yaml`.
 
+## Pinellas production validation (SPRINT-003, 2026-07-25)
+
+Proved the framework against real, live Pinellas data instead of
+assumptions. Corrected a real schema mistake from SPRINT-002 (the actual
+join only needs 3 tables, not the 6 assumed before real data was
+downloaded), fixed several real-world data defects (ZIP-wrapped responses,
+malformed JSON, a required HTTP header the site silently 403s without), and
+ran a real 200-parcel ingestion end-to-end in an isolated database — zero
+integrity failures, verified idempotent on rerun. 464 tests passing, zero
+`core/` changes, zero Hillsborough regressions. **No production database
+write occurred** — `database_write_allowed`/`ingest_supported` remain
+`false`, exactly as the ticket required, pending your explicit approval.
+Also added a **Merge Authority** section to `AGENTS.md`: you are the sole
+merge authority, and no ticket, agent, or automation can grant itself
+merge rights, regardless of what its own fields claim. Produced a Maricopa
+County readiness assessment (research only, no code) — see
+`docs/research/MARICOPA_READINESS_ASSESSMENT.md` and the new decisions
+below. Full packet: `docs/research/SPRINT-003-SUMMARY.md`.
+
 ## What needs a decision from you right now
 
 See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:
@@ -84,6 +103,16 @@ See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:
   signal, a heir/inherited-property signal, and a proposed `core/` schema
   change for multi-jurisdiction support) are all sitting unscoped, awaiting
   your call.
+- **Pinellas production approval**: schema verification is now done and a
+  real bounded ingestion succeeded cleanly (SPRINT-003) — the only thing
+  blocking a real production ingestion run is your explicit go-ahead, plus
+  resolving the Kyle/INGEST-002 ownership overlap above.
+- **Two new Maricopa decisions** (SPRINT-003 readiness assessment, no code
+  written yet): (1) Maricopa identifies parcels by APN, not FOLIO/PIN/STRAP
+  — the shared linker code needs a decision on how to extend for that before
+  any Maricopa adapter work starts; (2) Maricopa's recorder/deed data is a
+  paid purchase, unlike every free recorder source used so far — decide
+  whether to fund it or scope Maricopa's first pass as parcel-only.
 - **This mirror repository itself (OPS-SYNC-001)**: source-side work
   (workflow, artifacts, docs) is ready in a PR awaiting your merge;
   `jaiaFoster/agent-info` has been bootstrapped with the initial artifact

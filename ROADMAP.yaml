@@ -57,11 +57,14 @@ expansion_strategy:
       - rank: 1
         county: "Pinellas County, FL"
         note: >
-          Parcel/assessor adapter (PCPAO bulk files) implemented and unit-
-          tested under SPRINT-002, source-side only — production ingestion
-          not yet approved. Recorder (Clerk) adapter deferred. Unresolved
-          overlap with Kyle's INGEST-002 ticket needs reconciliation before
-          further Pinellas work — see OPEN_DECISIONS.yaml.
+          Parcel/assessor adapter (PCPAO bulk files) implemented under
+          SPRINT-002 and validated against real, checksummed live data
+          under SPRINT-003 (schemas verified, bounded ingestion succeeded
+          in an isolated database, zero critical integrity failures).
+          Production ingestion still not yet approved. Recorder (Clerk)
+          adapter deferred. Unresolved overlap with Kyle's INGEST-002
+          ticket still needs reconciliation before further Pinellas work —
+          see OPEN_DECISIONS.yaml.
       - rank: 2
         county: "Orange County, FL"
       - rank: 3
@@ -74,6 +77,15 @@ expansion_strategy:
     purpose: "first out-of-state architecture-validation target"
     status: "planned, no ingestion/adapter work started"
     confirmed_by: "SPRINT-001 market ranking — keep unmodified"
+    readiness_assessment: >
+      SPRINT-003 produced a readiness assessment (not onboarding work):
+      primary assessor source is expected to be a proven ArcGIS FeatureServer
+      pattern (lower-risk than Pinellas's novel access mechanism), but two
+      decisions need Jaia's sign-off before adapter code starts — extending
+      the shared asset_linker.py identifier vocabulary for APN (Maricopa has
+      no FOLIO/PIN/STRAP equivalent), and whether to fund the Maricopa
+      Recorder's paid bulk deed data or scope the first pass as
+      parcel/assessor-only. See docs/research/MARICOPA_READINESS_ASSESSMENT.md.
   troy_new_york:
     county: "Rensselaer County, NY"
     purpose: "second out-of-state architecture-validation target"

@@ -90,20 +90,60 @@ decisions:
       Property Value, Land, Legal, Sales tables) against real PCPAO sample
       exports before enabling production ingestion.
     evidence: >
-      Only RP_ALL_SITE_ADDRESSES's columns were confirmed against the live
-      PCPAO page this sprint; the other five tables' field names are
-      placeholders modeled on Hillsborough's equivalent HCPA fields. See
-      docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md.
-    decision_needed: "Assign as a bounded Sprint-003 follow-up, or decline."
-    status: "awaiting decision"
+      Resolved by SPRINT-003: downloaded and checksummed real samples of
+      RP_PROPERTY_INFO, RP_LEGAL, RP_SALES_HISTORY, RP_ALL_OWNERS, and
+      RP_ALL_SITE_ADDRESSES; rewrote the parser against real field names and
+      real join behavior (3-table join, not the assumed 6-table one). See
+      docs/research/PINELLAS_SOURCE_VALIDATION.md.
+    decision_needed: "None — resolved."
+    status: "resolved"
 
   - id: "SPRINT-002-pinellas-production-approval"
     proposed_by: "SPRINT-002"
     question: >
       Approve flipping database_write_allowed and ingest_supported to true
-      for pinellas_parcels_public once schema verification (above) is done,
+      for pinellas_parcels_public now that schema verification is complete,
       per the standing Pre-Ingestion Source Rule.
+    evidence: >
+      Schema verification is done (see resolved item above) and a bounded
+      200-parcel real ingestion succeeded end-to-end in an isolated local
+      database with zero critical integrity failures and verified
+      idempotency (docs/audits/PINELLAS_DATA_QUALITY_REPORT.md,
+      docs/audits/PINELLAS_PERFORMANCE_BASELINE.md). No production write was
+      requested or performed this sprint.
     decision_needed: "Explicit approval before any real production ingestion run."
-    status: "awaiting decision — blocked on schema verification and the ownership-overlap decision above"
+    status: "awaiting decision — blocked only on the ownership-overlap decision above and Jaia's explicit go-ahead"
+
+  - id: "SPRINT-003-maricopa-asset-linker-vocabulary"
+    proposed_by: "SPRINT-003 / WP7 Maricopa readiness assessment"
+    question: >
+      Maricopa County, AZ identifies parcels by APN, not FOLIO/PIN/STRAP.
+      adapters/real_estate/linking/asset_linker.py's shared field vocabulary
+      (folio/pin/strap/legal_description/address) has no APN slot. Should
+      this shared module gain an apn field, or should a jurisdiction-
+      identifier protocol be introduced (per expansion-review.md
+      Recommendation 1.1) before any Maricopa adapter code is written?
+    evidence: >
+      Flagged architecturally in docs/architecture/expansion-review.md
+      (Recommendation 1.1) and reaffirmed in
+      docs/research/MARICOPA_READINESS_ASSESSMENT.md. This module is shared
+      across all jurisdictions, not per-county code, so it is core-adjacent
+      shared machinery and should not be decided unilaterally by whichever
+      agent starts Maricopa work.
+    decision_needed: "Choose an approach before Maricopa adapter work starts."
+    status: "awaiting decision"
+
+  - id: "SPRINT-003-maricopa-recorder-paid-data"
+    proposed_by: "SPRINT-003 / WP7 Maricopa readiness assessment"
+    question: >
+      Maricopa County Recorder's bulk deed/document index and images are a
+      paid purchase per the county's recording-fee schedule, unlike every
+      recorder source LUX has used so far (all free). Should LUX budget for
+      this, or scope Maricopa's first onboarding pass as parcel/assessor-
+      only and defer recorder evidence, the way Pinellas's recorder adapter
+      was deferred?
+    evidence: "docs/research/data-source-inventory.md; docs/research/MARICOPA_READINESS_ASSESSMENT.md."
+    decision_needed: "Approve a purchase, or scope Maricopa parcel-only for its first pass."
+    status: "awaiting decision"
 
 full_detail: "See AGENTS.md 'Discovered / Unscoped' table in the source repository for the complete, authoritative list, including items not yet promoted to this structured file."
