@@ -56,7 +56,12 @@ expansion_strategy:
       # Per SPRINT-001 / docs/research/market-ranking.md
       - rank: 1
         county: "Pinellas County, FL"
-        note: "already in progress under INGEST-002"
+        note: >
+          Parcel/assessor adapter (PCPAO bulk files) implemented and unit-
+          tested under SPRINT-002, source-side only — production ingestion
+          not yet approved. Recorder (Clerk) adapter deferred. Unresolved
+          overlap with Kyle's INGEST-002 ticket needs reconciliation before
+          further Pinellas work — see OPEN_DECISIONS.yaml.
       - rank: 2
         county: "Orange County, FL"
       - rank: 3

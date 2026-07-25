@@ -65,6 +65,18 @@ execution detail:
   non-disclosure states, which breaks LUX's evidence-based model
   regardless of their macro appeal.
 
+## Pinellas expansion progress (SPRINT-002, 2026-07-25)
+
+Built the first repeatable jurisdiction-onboarding framework and a full
+Pinellas County parcel/assessor adapter (source-side only — production
+ingestion not yet approved, zero `core/` changes, 450 tests passing with
+zero Hillsborough regressions). **One thing needs your attention before
+this goes further**: a Pinellas adapter stub already existed in the repo,
+plausibly Kyle's own placeholder for his in-progress `INGEST-002` ticket
+(same goal). This patch built a working implementation without knowing
+whether Kyle has independent progress — that's a call for you and Kyle,
+not something to resolve unilaterally. See `OPEN_DECISIONS.yaml`.
+
 ## What needs a decision from you right now
 
 See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:

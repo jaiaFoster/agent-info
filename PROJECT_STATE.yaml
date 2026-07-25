@@ -9,7 +9,22 @@
 
 schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
-last_updated_by: "OPS-SYNC-001 initial population"
+last_updated_by: "SPRINT-002 (Pinellas parcel adapter + jurisdiction framework)"
+
+active_expansion_work:
+  ticket: "SPRINT-002"
+  status: "source-side complete, production ingestion not yet approved"
+  summary: >
+    Reusable jurisdiction/source-registry framework plus a full Pinellas
+    County parcel/assessor adapter (PCPAO bulk database files). Zero
+    core/ changes. Recorder (Clerk) adapter deferred. database_write_allowed
+    and ingest_supported both false pending Jaia's approval.
+  known_issue: >
+    Unresolved ownership overlap with INGEST-002 (Kyle) — a pre-existing
+    Pinellas adapter stub was found and replaced without confirming Kyle's
+    own progress. See AGENTS.md registry reconciliation note and
+    OPEN_DECISIONS.yaml.
+  full_detail: "docs/research/SPRINT-002-SUMMARY.md, docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md"
 
 project:
   name: "LUX"

@@ -51,15 +51,59 @@ decisions:
   - id: "OPS-SYNC-001-pr-merge"
     proposed_by: "OPS-SYNC-001 ticket"
     question: >
-      Merge the OPS-SYNC-001 source-side PR into fsassaman-commits/lux-core
+      Merge the OPS-SYNC-001 source-side PRs into fsassaman-commits/lux-core
       main so the publish-ai-state workflow becomes active on real pushes.
     evidence: >
-      Destination was redirected from an old abandoned repo
-      (jaiaFoster/lux-core) to a fresh empty repo Jaia created
-      (jaiaFoster/agent-info), removing the need for any destructive reset.
-      jaiaFoster/agent-info's main branch has been bootstrapped with the
-      initial artifact set so the workflow's ongoing checkout succeeds.
-    decision_needed: "Jaia's merge — no agent self-merges, per AGENTS.md Rule #10."
-    status: "awaiting merge"
+      Done: PRs #50, #51 (destination retarget fix), and #52 (idempotency
+      fix) all merged 2026-07-25. jaiaFoster/agent-info is live and
+      auto-syncing on every push to main. jaiaFoster/lux-core (the
+      originally-proposed destination) was reset by the workflow before the
+      retarget fix landed; Jaia reviewed and explicitly chose to leave it
+      as-is rather than revert.
+    decision_needed: "None — resolved."
+    status: "resolved"
+
+  - id: "SPRINT-002-ingest-002-ownership-overlap"
+    proposed_by: "SPRINT-002"
+    question: >
+      Reconcile SPRINT-002's new Pinellas parcel/assessor adapter against
+      Kyle's in-progress INGEST-002 ticket (same stated goal, "Pinellas
+      County pipeline"). A stub already existed at
+      adapters/real_estate/sources/pinellas.py before SPRINT-002 started,
+      plausibly Kyle's own placeholder — SPRINT-002 replaced it with a
+      working implementation without knowing Kyle's actual progress or
+      intended approach.
+    evidence: >
+      See AGENTS.md's SPRINT-002 and INGEST-002 registry rows (both now
+      cross-reference this) and docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md.
+    decision_needed: >
+      Jaia + Kyle decide: keep SPRINT-002's implementation, keep Kyle's
+      approach if it differs, or merge the two. Not a decision an agent
+      should make unilaterally.
+    status: "awaiting decision"
+
+  - id: "SPRINT-002-pinellas-schema-verification"
+    proposed_by: "SPRINT-002"
+    question: >
+      Verify the unconfirmed column-name placeholders in
+      adapters/real_estate/parsing/pinellas_parcel_parser.py (Owner,
+      Property Value, Land, Legal, Sales tables) against real PCPAO sample
+      exports before enabling production ingestion.
+    evidence: >
+      Only RP_ALL_SITE_ADDRESSES's columns were confirmed against the live
+      PCPAO page this sprint; the other five tables' field names are
+      placeholders modeled on Hillsborough's equivalent HCPA fields. See
+      docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md.
+    decision_needed: "Assign as a bounded Sprint-003 follow-up, or decline."
+    status: "awaiting decision"
+
+  - id: "SPRINT-002-pinellas-production-approval"
+    proposed_by: "SPRINT-002"
+    question: >
+      Approve flipping database_write_allowed and ingest_supported to true
+      for pinellas_parcels_public once schema verification (above) is done,
+      per the standing Pre-Ingestion Source Rule.
+    decision_needed: "Explicit approval before any real production ingestion run."
+    status: "awaiting decision — blocked on schema verification and the ownership-overlap decision above"
 
 full_detail: "See AGENTS.md 'Discovered / Unscoped' table in the source repository for the complete, authoritative list, including items not yet promoted to this structured file."
