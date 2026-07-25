@@ -9,27 +9,33 @@
 
 schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
-last_updated_by: "SPRINT-003 (Pinellas production validation)"
+last_updated_by: "SPRINT-004 (Continuous Intelligence Automation)"
 
 active_expansion_work:
-  ticket: "SPRINT-003"
-  status: "real-data validated in an isolated database; production ingestion still not approved"
+  ticket: "SPRINT-004"
+  status: "PR open, real bounded validation complete, awaiting Jaia's governance-flip confirmation before auto-merge"
   summary: >
-    Verified the entire Pinellas jurisdiction-expansion framework against
-    real, checksummed live PCPAO data: corrected SPRINT-002's schema
-    assumptions (real 3-table join replaces the assumed 6-table join; real
-    field names, ZIP-wrapped responses, trailing-comma JSON, and header
-    requirements all discovered and handled). A bounded 200-parcel real
-    ingestion succeeded end-to-end in an isolated local database with zero
-    critical integrity failures and verified idempotency. Added a Merge
-    Authority section to AGENTS.md (Jaia is sole merge authority, no
-    exceptions). Zero core/ changes. database_write_allowed and
-    ingest_supported remain false pending Jaia's explicit production
-    approval — none was requested or granted this sprint.
+    Built LUX's continuous-intelligence automation layer: a generic
+    connector scheduling/lifecycle contract, checkpoint-based incremental
+    and full-export ingestion, deterministic evidence events, targeted
+    (not full-batch) intelligence rescoring, a versioned confidence
+    foundation separate from opportunity strength, continuous
+    prioritization with preserved rank history, read-only paid-action
+    simulation, and per-connector health/failure isolation. Proven against
+    real, live Hillsborough and Pinellas sources through the full new
+    pipeline into an isolated local database (see
+    sprint_004_validation_results.yaml) -- no production write occurred.
+    Governance: replaced "Jaia is sole merge authority, no exceptions"
+    with an explicit, quality-gated, per-sprint auto-merge policy (this
+    sprint's ticket is the first to invoke it). Zero core/ behavioral
+    forks by county; zero Hillsborough/Pinellas regressions.
   known_issue: >
-    Ownership overlap with INGEST-002 (Kyle) from SPRINT-002 remains
-    unresolved — not addressed this sprint. See OPEN_DECISIONS.yaml.
-  full_detail: "docs/research/SPRINT-003-SUMMARY.md, docs/research/PINELLAS_SOURCE_VALIDATION.md, docs/audits/PINELLAS_DATA_QUALITY_REPORT.md, docs/audits/PINELLAS_PERFORMANCE_BASELINE.md"
+    Actually flipping GitHub's branch-protection/auto-merge repository
+    settings and merging this sprint's own PR is paused pending one
+    explicit confirmation from Jaia (main currently has zero branch
+    protection today) -- see OPEN_DECISIONS.yaml's
+    SPRINT-004-governance-flip-confirmation entry and the final report.
+  full_detail: "docs/research/SPRINT-004-SUMMARY.md, sprint_004_validation_results.yaml, docs/architecture/CONNECTOR_AUTOMATION_CONTRACT.md, docs/architecture/EVIDENCE_EVENT_MODEL.md, docs/architecture/CONFIDENCE_FOUNDATION.md"
 
 project:
   name: "LUX"
@@ -114,7 +120,8 @@ current_priority_ticket: "OUTREACH-001"
 current_priority_status: "IN PROGRESS / v1 SHIPPED 2026-07-22"
 
 known_constraints:
-  - "Jaia merges all PRs — no self-merge, by any agent, ever."
+  - "Merge authority is quality-gated and per-sprint (SPRINT-004, 2026-07-25): a worker may auto-merge only when its sprint ticket explicitly grants it AND every required gate passes. Absent that explicit grant, the default remains Jaia's manual merge decision — see AGENTS.md's Merge Authority section."
+  - "Paid actions, outreach/contact, destructive production operations, and canonical-identity changes always require Jaia's explicit approval regardless of any sprint's merge grant."
   - "Codex/coding agents may run bounded dry-runs and evidence audits without additional approval; linker write mode, scoring/matching writes, outreach/contact actions, and destructive DB operations all require Jaia's explicit approval."
   - "Core never imports from adapters/; adapters import Core schemas only."
   - "Unresolved is preferable to false resolution — no fuzzy matching, no guessed Asset links."

@@ -10,6 +10,13 @@ schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
 
 north_star: "Build a durable, reusable data engine before implementing intelligence."
+operating_philosophy_update: >
+  SPRINT-004 (2026-07-25) added an explicit second-phase principle:
+  "spend computation before spending dollars." Before scaling paid skip
+  tracing/outreach, expand the breadth, freshness, and confidence of
+  public evidence LUX already has -- continuous connector scheduling,
+  targeted rescoring, and a versioned confidence layer all serve this,
+  and all remain strictly upstream of any paid action.
 
 strategic_objective:
   id: "MVP-001"
@@ -37,14 +44,24 @@ path_to_first_dollar:
     status: "live"
     shipped: "2026-07-22"
   - step: 7
+    name: "Continuous evidence + confidence-gated prioritization (SPRINT-004)"
+    status: "PR open, real bounded validation complete, awaiting Jaia's governance-flip confirmation"
+    note: >
+      Generic connector scheduling, incremental/full-export ingestion,
+      evidence events, targeted rescoring, a confidence foundation,
+      continuous prioritization, and read-only paid-action simulation.
+      Deliberately upstream of skip tracing/outreach -- expands and
+      qualifies evidence before spending money identifying contacts.
+  - step: 8
     name: "Skip trace highest-confidence matches (OUTREACH-003)"
     status: "not yet live"
     blocked_by: ["LEADGEN-002", "LEADGEN-003", "LEADGEN-004", "LEADGEN-005"]
-  - step: 8
+    note: "SPRINT-004's simulation layer can now estimate qualifying volume/cost at various confidence thresholds before this step is funded -- see core/simulation/policy.py."
+  - step: 9
     name: "Contact both parties"
     status: "not started"
-    depends_on: "step 7"
-  - step: 9
+    depends_on: "step 8"
+  - step: 10
     name: "Complete the first wholesale transaction (MVP-001)"
     status: "not started"
 
@@ -62,9 +79,11 @@ expansion_strategy:
           under SPRINT-003 (schemas verified, bounded ingestion succeeded
           in an isolated database, zero critical integrity failures).
           Production ingestion still not yet approved. Recorder (Clerk)
-          adapter deferred. Unresolved overlap with Kyle's INGEST-002
-          ticket still needs reconciliation before further Pinellas work —
-          see OPEN_DECISIONS.yaml.
+          adapter deferred. Shared ownership context with Kyle's
+          INGEST-002 ticket noted but no longer treated as blocking (see
+          AGENTS.md registry reconciliation, SPRINT-004) — the underlying
+          question of which implementation Kyle intended is still
+          genuinely open whenever Jaia/Kyle want to look at it.
       - rank: 2
         county: "Orange County, FL"
       - rank: 3
@@ -115,4 +134,8 @@ recently_proposed_not_yet_approved:
   # Discovered/Unscoped items from SPRINT-001, pending Jaia's decision
   - "VACANCY-001 — HUD USPS vacancy data ingestion"
   - "HEIR-001 — heir/inherited property signal (pair with DATA-006P)"
-  - "jurisdiction_code core/ schema change — needs formal ADR + sign-off before Maricopa/Rensselaer adapter work"
+  - "SPRINT-003-maricopa-asset-linker-vocabulary — extend shared linker for APN identity before Maricopa adapter work"
+  - "SPRINT-003-maricopa-recorder-paid-data — fund Maricopa Recorder's paid bulk data, or scope parcel-only"
+
+resolved_since_last_roadmap:
+  - "jurisdiction_code core/ schema change — SPRINT-004 added jurisdiction_code/connector_id columns to pipeline_runs and events (migration f2a8c913d5b6), additive and backward-compatible, within the sprint's own explicitly-authorized scope (see AGENTS.md SPRINT-004 row). No further ADR needed for this specific change."

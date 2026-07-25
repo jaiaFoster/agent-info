@@ -96,33 +96,65 @@ County readiness assessment (research only, no code) — see
 `docs/research/MARICOPA_READINESS_ASSESSMENT.md` and the new decisions
 below. Full packet: `docs/research/SPRINT-003-SUMMARY.md`.
 
+## Continuous intelligence automation (SPRINT-004, 2026-07-25)
+
+Built the automation layer that lets LUX keep itself current instead of
+being manually re-run: a generic scheduler that decides when each source
+should run (no per-county special-casing), safe incremental/full-export
+ingestion with checkpoints, deterministic evidence events, targeted
+rescoring (only affected sellers/buyers/matches recompute, not everything),
+a versioned confidence layer kept explicitly separate from opportunity
+strength, continuous re-ranking with preserved history, and a read-only
+simulator that estimates how many opportunities would qualify for skip
+tracing — and what it would cost — at different confidence thresholds,
+**without ever calling a paid provider**. Proven against real, live
+Hillsborough and Pinellas data end-to-end into an isolated database (no
+production write). **This sprint also changed governance**: the prior
+"only Jaia merges, ever" rule is now a quality-gated, per-sprint auto-merge
+policy — this ticket is the first to invoke it — with paid/destructive/
+external actions still hard-gated on your explicit approval regardless.
+**One thing is paused for your input before this merges itself**: `main`
+currently has zero branch-protection rules today, so making auto-merge
+real means creating that enforcement for the first time, not just
+updating policy text. See "what needs a decision" below and the final
+report for the exact PR/settings.
+
 ## What needs a decision from you right now
 
 See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:
+- **SPRINT-004's governance flip**: confirm whether to proceed with
+  configuring branch protection + required checks + auto-merge on `main`
+  and letting this sprint's PR merge itself, or review it manually first.
 - Three new proposals from SPRINT-001's research (a cheap new vacancy
-  signal, a heir/inherited-property signal, and a proposed `core/` schema
-  change for multi-jurisdiction support) are all sitting unscoped, awaiting
-  your call.
-- **Pinellas production approval**: schema verification is now done and a
+  signal, a heir/inherited-property signal) are still sitting unscoped.
+- **Pinellas production approval**: schema verification is done and a
   real bounded ingestion succeeded cleanly (SPRINT-003) — the only thing
   blocking a real production ingestion run is your explicit go-ahead, plus
-  resolving the Kyle/INGEST-002 ownership overlap above.
-- **Two new Maricopa decisions** (SPRINT-003 readiness assessment, no code
+  the still-open (no longer blocking, but still undecided) Kyle/INGEST-002
+  question below.
+- **Kyle/INGEST-002**: the ownership-overlap question is no longer treated
+  as a blocker on Pinellas work (SPRINT-004), but which implementation Kyle
+  actually intended is still genuinely undecided whenever you two want to
+  look at it.
+- **Two Maricopa decisions** (SPRINT-003 readiness assessment, no code
   written yet): (1) Maricopa identifies parcels by APN, not FOLIO/PIN/STRAP
   — the shared linker code needs a decision on how to extend for that before
   any Maricopa adapter work starts; (2) Maricopa's recorder/deed data is a
   paid purchase, unlike every free recorder source used so far — decide
   whether to fund it or scope Maricopa's first pass as parcel-only.
-- **This mirror repository itself (OPS-SYNC-001)**: source-side work
-  (workflow, artifacts, docs) is ready in a PR awaiting your merge;
-  `jaiaFoster/agent-info` has been bootstrapped with the initial artifact
-  set so the first automated sync has a `main` branch to update.
+- **This mirror repository itself (OPS-SYNC-001)**: live and auto-syncing;
+  no action needed.
 
-## Standing rules that don't change
+## Standing rules that changed, and what didn't
 
-Jaia merges every PR to the canonical repository. No agent — human-directed
-AI or otherwise — self-merges, ever. This mirror repository
-(`jaiaFoster/agent-info`) is a read-only, automatically generated snapshot for
-AI/executive inspection; it is not a place for direct development, and
+Merge authority is now quality-gated and per-sprint, not an unconditional
+"Jaia only" rule (SPRINT-004) — see AGENTS.md's Merge Authority section for
+the exact conditions. What did **not** change: paid actions (skip tracing,
+contact purchases, any provider spend), outreach/contact, destructive
+production database operations, and canonical-identity changes still
+always require your explicit approval in chat, no matter what a sprint
+ticket's merge policy claims. This mirror repository
+(`jaiaFoster/agent-info`) is a read-only, automatically generated snapshot
+for AI/executive inspection; it is not a place for direct development, and
 nothing here is a substitute for reading `AGENTS.md` in the canonical
 repository when precision matters.

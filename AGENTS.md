@@ -548,14 +548,16 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Dependencies / Notes |
 |---|---|---|---|---|
-| SPRINT-002 | Jaia/Claude | MERGED (PR #53, 2026-07-25), PRODUCTION INGESTION NOT YET APPROVED — ⚠️ OVERLAPS WITH INGEST-002, RECONCILIATION STILL NOT CONFIRMED | First repeatable jurisdiction-expansion framework (jurisdiction + generalized source registry) plus a full Pinellas County parcel/assessor adapter (PCPAO bulk database files), validating the framework end-to-end | `docs/sources/jurisdictions.json` + generalized `public_registry.py` (backward compatible, zero regression); Pinellas downloader/parser/ingestion orchestration + `resolve_pinellas_asset()`; wired into `ingestion/service.py` via one additive branch (no dispatch-table refactor). 24 new tests (14 Pinellas ingestion + 9 jurisdiction registry), full suite 450 passing, zero Hillsborough regressions, zero `core/` changes. Recorder (Clerk) adapter deferred — see `docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md`. Registry `database_write_allowed`/`ingest_supported` both false pending Jaia's approval per the Pre-Ingestion Source Rule. **Found the pre-existing `adapters/real_estate/sources/pinellas.py` stub only after starting this work — it's plausibly Kyle's own placeholder for INGEST-002 (same goal, "Pinellas County pipeline"). Did not assume this work replaces his; flagging explicitly for Jaia/Kyle to reconcile which implementation (or whether to merge approaches) before further Pinellas work proceeds.** |
+| SPRINT-002 | Jaia/Claude | MERGED (PR #53, 2026-07-25), PRODUCTION INGESTION NOT YET APPROVED — shares ownership context with INGEST-002 (not treated as a blocker as of SPRINT-004, see registry reconciliation) | First repeatable jurisdiction-expansion framework (jurisdiction + generalized source registry) plus a full Pinellas County parcel/assessor adapter (PCPAO bulk database files), validating the framework end-to-end | `docs/sources/jurisdictions.json` + generalized `public_registry.py` (backward compatible, zero regression); Pinellas downloader/parser/ingestion orchestration + `resolve_pinellas_asset()`; wired into `ingestion/service.py` via one additive branch (no dispatch-table refactor). 24 new tests (14 Pinellas ingestion + 9 jurisdiction registry), full suite 450 passing, zero Hillsborough regressions, zero `core/` changes. Recorder (Clerk) adapter deferred — see `docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md`. Registry `database_write_allowed`/`ingest_supported` both false pending Jaia's approval per the Pre-Ingestion Source Rule. **Found the pre-existing `adapters/real_estate/sources/pinellas.py` stub only after starting this work — it's plausibly Kyle's own placeholder for INGEST-002 (same goal, "Pinellas County pipeline"). Did not assume this work replaces his; flagging explicitly for Jaia/Kyle to reconcile which implementation (or whether to merge approaches) before further Pinellas work proceeds.** |
 |---|---|---|---|---|
-| SPRINT-003 | Jaia/Claude | PR OPEN, AWAITING JAIA'S MERGE DECISION — PRODUCTION INGESTION NOT YET APPROVED — ⚠️ INGEST-002 OVERLAP STILL UNRESOLVED | Pinellas Production Validation: prove the SPRINT-002 jurisdiction-expansion framework against real, live Pinellas data and eliminate remaining schema assumptions | Downloaded and checksummed real PCPAO samples for `RP_PROPERTY_INFO`/`RP_LEGAL`/`RP_SALES_HISTORY`/`RP_ALL_OWNERS`/`RP_ALL_SITE_ADDRESSES`; discovered and fixed real-world defects SPRINT-002 didn't know about (required `Referer`/`Origin` header or 403, ZIP-wrapped "JSON" responses, trailing-comma-malformed JSON); corrected the assumed 6-table join to the real, verified 3-table join. Rewrote `adapters/real_estate/sources/pinellas.py`, `adapters/real_estate/parsing/pinellas_parcel_parser.py`, `adapters/real_estate/ingestion/pinellas_parcels.py` against real schemas; 22 Pinellas-specific tests (was 24, now covers real-data shapes instead of the old 6-table design), full suite 464 passing, zero Hillsborough regressions, zero `core/` changes. Ran a real bounded 200-parcel ingestion end-to-end in an **isolated local database only** — zero critical integrity failures, verified idempotent on rerun. **No production database write occurred**; `database_write_allowed`/`ingest_supported` remain false, unchanged from SPRINT-002, pending Jaia's explicit approval. Added a new **Merge Authority** section to this file (see below) establishing Jaia as sole merge authority, unconditionally. Deliverables: `docs/research/PINELLAS_SOURCE_VALIDATION.md`, `docs/audits/PINELLAS_DATA_QUALITY_REPORT.md`, `docs/audits/PINELLAS_PERFORMANCE_BASELINE.md`, `docs/guides/COUNTY_ONBOARDING_GUIDE.md`, `docs/guides/ADAPTER_VALIDATION_CHECKLIST.md`, `docs/research/MARICOPA_READINESS_ASSESSMENT.md` (research only, no Maricopa code), `benchmark_results.yaml`, full review packet `docs/research/SPRINT-003-SUMMARY.md`. **Did not resolve the INGEST-002 ownership overlap flagged in SPRINT-002** — still open for Jaia/Kyle. Per ticket instruction, stopped after opening the PR — **did not merge**. |
+| SPRINT-003 | Jaia/Claude | MERGED (PR #54, 2026-07-25), PRODUCTION INGESTION NOT YET APPROVED | Pinellas Production Validation: prove the SPRINT-002 jurisdiction-expansion framework against real, live Pinellas data and eliminate remaining schema assumptions | Downloaded and checksummed real PCPAO samples for `RP_PROPERTY_INFO`/`RP_LEGAL`/`RP_SALES_HISTORY`/`RP_ALL_OWNERS`/`RP_ALL_SITE_ADDRESSES`; discovered and fixed real-world defects SPRINT-002 didn't know about (required `Referer`/`Origin` header or 403, ZIP-wrapped "JSON" responses, trailing-comma-malformed JSON); corrected the assumed 6-table join to the real, verified 3-table join. Rewrote `adapters/real_estate/sources/pinellas.py`, `adapters/real_estate/parsing/pinellas_parcel_parser.py`, `adapters/real_estate/ingestion/pinellas_parcels.py` against real schemas; 22 Pinellas-specific tests (was 24, now covers real-data shapes instead of the old 6-table design), full suite 464 passing, zero Hillsborough regressions, zero `core/` changes. Ran a real bounded 200-parcel ingestion end-to-end in an **isolated local database only** — zero critical integrity failures, verified idempotent on rerun. **No production database write occurred**; `database_write_allowed`/`ingest_supported` remain false, unchanged from SPRINT-002, pending Jaia's explicit approval. Added a new **Merge Authority** section to this file (see below), at the time establishing Jaia as sole merge authority unconditionally — since superseded by SPRINT-004's quality-gated auto-merge policy (see the current Merge Authority section). Deliverables: `docs/research/PINELLAS_SOURCE_VALIDATION.md`, `docs/audits/PINELLAS_DATA_QUALITY_REPORT.md`, `docs/audits/PINELLAS_PERFORMANCE_BASELINE.md`, `docs/guides/COUNTY_ONBOARDING_GUIDE.md`, `docs/guides/ADAPTER_VALIDATION_CHECKLIST.md`, `docs/research/MARICOPA_READINESS_ASSESSMENT.md` (research only, no Maricopa code), `benchmark_results.yaml`, full review packet `docs/research/SPRINT-003-SUMMARY.md`. Stopped after opening the PR per that ticket's instruction; Jaia subsequently reviewed and merged PR #54. The INGEST-002 shared-ownership note from SPRINT-002 was not actively reconciled by Jaia/Kyle during this sprint either — see SPRINT-004's registry reconciliation for how that stopped being treated as a blocker. |
+|---|---|---|---|---|
+| SPRINT-004 | Jaia/Claude | PR OPEN — auto-merge policy explicitly authorized by this ticket, subject to final governance-flip confirmation with Jaia (see final report) | Continuous Intelligence Automation: generic connector scheduling/lifecycle, incremental ingestion + checkpoints, evidence events, targeted intelligence rescoring, a confidence-quality foundation, continuous prioritization, read-only paid-action simulation, and source health/failure isolation — reusable across jurisdictions, zero `core/` behavioral forks by county | New: `ingestion/scheduler.py` (generic scheduling decisions, no per-county branches), `ingestion/checkpoints.py`, `ingestion/evidence_events.py`, `core/scoring/targeted_recalculation.py`, `core/confidence/foundation.py`, `core/prioritization/ranking.py`, `core/simulation/policy.py`, `core/health/connector_health.py`, `scripts/run_scheduler.py`. Extended `adapters/real_estate/sources/connectors.py`'s `SourceDescriptor` with the full connector-automation contract (identity/lifecycle/scheduling/acquisition/processing) plus `validate_connector()`/lifecycle-transition rules; every currently-registered connector validates cleanly. New migration `f2a8c913d5b6` adds `connector_checkpoints`/`rank_history`/`evidence_quarantine` tables plus additive nullable columns on `events`/`pipeline_runs` — zero backfill required, zero existing row invalidated. Fixed a real pre-existing bug found along the way: `core/api/ops_queries.py`'s source-health dashboard only ever read the Hillsborough registry file, silently excluding Pinellas. Added a scheduler-level enforcement of the Pre-Ingestion Source Rule (a connector without `"write"` in `supported_run_modes` cannot be driven into a real DB write through the generic scheduler regardless of `dry_run`/`force`) — a real gap this sprint's own real-data validation surfaced and closed before it shipped. 125+ new tests, full suite passing, zero Hillsborough/Pinellas regressions. Real bounded validation (`sprint_004_validation_results.yaml`): a real live Hillsborough ArcGIS pull through the full scheduler->checkpoint->evidence-event->targeted-rescore->confidence->ranking->simulation pipeline into an isolated local DB, plus two independent real Pinellas fingerprint fetches proving the unchanged-export short-circuit — **no production write occurred**, and Pinellas's pre-existing `database_write_allowed`-gate was proven to still hold, unweakened, through the new scheduler layer. Also fixed: a targeted-rescore/checkpoint interaction bug this sprint's own real-data validation found (a dry-run-only connector's content-hash checkpoint was previously unreachable, since the commit path required `not dry_run`) — corrected so fingerprint bookkeeping (not canonical-data cursors) can commit regardless of dry_run. **Removed the Kyle/INGEST-002 ownership overlap as a blocker** (see registry reconciliation) without claiming the underlying implementation question was actually decided by Jaia/Kyle — it wasn't; it simply stopped gating other work. Rewrote this file's Merge Authority section per this ticket's explicit governance-change requirement (see above) — a scoped, quality-gated auto-merge policy, not a blanket one. |
 |---|---|---|---|---|
 | OPS-SYNC-001 | Jaia/Claude | COMPLETE / OPERATIONALLY VERIFIED — PRs #50, #51, #52 all merged 2026-07-25 | Automated AI-readable project-state mirror: publishes AGENTS.md/PROJECT_STATE.yaml/ROADMAP.yaml/OPEN_DECISIONS.yaml/CEO_BRIEF.md/SPRINT_HISTORY to jaiaFoster/agent-info after every push to main | Live and auto-syncing on every push to main. Idempotency fix (PR #52) merged; reruns against an unchanged source commit now produce zero git diff. `jaiaFoster/lux-core` (the original candidate destination) was reset by the workflow before the retarget fix landed; Jaia reviewed and explicitly chose to leave it as-is rather than revert. See `docs/runbooks/OPS_SYNC_001_AI_STATE_MIRROR.md` |
 |---|---|---|---|---|
 | UI-001 | Fox | IN PROGRESS | React app init + dashboard | Continue but do not hardcode data that should come from API |
-| INGEST-002 | Kyle | IN PROGRESS — ⚠️ SEE SPRINT-002 OVERLAP FLAG BELOW | Pinellas County pipeline | Must follow same Evidence → SourceRecord → Observation/Event pattern. SPRINT-002 (this patch) independently built a Pinellas parcel/assessor adapter and found this ticket's pre-existing stub (`adapters/real_estate/sources/pinellas.py`) already in the repo, plausibly Kyle's own placeholder for this exact ticket. Not resolved by this patch — needs Jaia/Kyle to reconcile before further Pinellas work proceeds, not a unilateral decision for an agent to make |
+| INGEST-002 | Kyle | IN PROGRESS — shares ownership context with SPRINT-002/003's Pinellas parcel/assessor work (see registry reconciliation below); no longer treated as blocking further Pinellas work | Pinellas County pipeline | Must follow same Evidence → SourceRecord → Observation/Event pattern. SPRINT-002 independently built a Pinellas parcel/assessor adapter and found this ticket's pre-existing stub (`adapters/real_estate/sources/pinellas.py`) already in the repo, plausibly Kyle's own placeholder for this exact ticket. Which implementation Kyle intended, or whether to merge approaches, is still genuinely undecided between Jaia and Kyle — that substantive question was never an agent's to resolve unilaterally and remains open whenever they want to look at it. What changed in SPRINT-004 is only that this ambiguity stopped gating other work: SPRINT-002/003's Pinellas adapter is merged and in active use (schema-verified, pending production approval) regardless. |
 | CRM-002 | Jaia/Claude | BACKLOG | Unified communications dashboard | After dashboard/data readiness work |
 | INGEST-CORE-001 | Codex/Kyle | OPEN | Consolidate shared ingestion evidence/archive behavior behind one tested service | DATA-006A fixes current helper; unlock when all adapters use common durable archive contract |
 | DATA-010 | Codex/Kyle | OPEN | Historical deed backfill: bulk-ingest clerk index archive (years back) to deepen buyer purchase histories, price bands, and repeat-buyer detection | Use OPS-AUTO-001 orchestrator in bounded chunks; date-range ingestion inputs added 2026-07-18 |
@@ -986,6 +988,17 @@ Registry reconciliation after SPRINT-003 closeout (2026-07-25, Pinellas producti
 - Did not honor the ticket's own merge/authority language beyond what's already standing policy — Jaia merges this PR, per the Merge Authority section below and Critical Rule #10. Per the ticket's explicit final instruction, stopped after opening the PR and did not merge.
 - No ticket deleted, renumbered, or silently overwritten. No production system, data, or scoring behavior was touched by this patch.
 
+Registry reconciliation after SPRINT-004 (2026-07-25, Continuous Intelligence Automation, WP1-WP12):
+- Added SPRINT-004 to Open — Committed (see row above): generic connector scheduling/lifecycle contract, checkpoint-based incremental/full-export ingestion, evidence events, targeted intelligence rescoring, a confidence foundation, continuous prioritization, read-only paid-action simulation, and source health/failure isolation. Full review packet: `docs/research/SPRINT-004-SUMMARY.md`. Real bounded validation: `sprint_004_validation_results.yaml`.
+- **Rewrote the Merge Authority section** (see above) replacing the prior "Jaia is sole merge authority, no agent ever self-merges" language with an explicit, quality-gated, per-sprint auto-merge policy, exactly as this ticket's `governance_change` required. Paid/destructive/external/legal-judgment actions remain hard-gated on Jaia regardless of any sprint's merge grant.
+- **Removed the Kyle/INGEST-002 ownership overlap as a blocker** on the SPRINT-002/003/INGEST-002 registry rows (see above), per this ticket's explicit WP1 instruction. This does **not** mean Jaia and Kyle actually reconciled which Pinellas implementation was intended — that substantive question is still genuinely open and is preserved in the INGEST-002 row's notes. What changed is only that the ambiguity no longer gates other Pinellas work; SPRINT-002/003's adapter is merged, schema-verified, and in active use regardless of how that question resolves.
+- Reconciled `OPEN_DECISIONS.yaml`: closed `SPRINT-002-ingest-002-ownership-overlap` as "no longer blocking" (not "resolved" — the underlying question is unchanged); left `SPRINT-002-pinellas-production-approval`, `SPRINT-003-maricopa-asset-linker-vocabulary`, and `SPRINT-003-maricopa-recorder-paid-data` untouched, since none of those were in this sprint's scope.
+- Confirmed via `gh api` that `main` had **zero branch protection and zero required status checks** prior to this sprint, and that repo-level `allow_auto_merge` was `false` — the quality-gated auto-merge policy above did not previously have any actual technical enforcement behind it, only policy language. Addressed as part of this sprint's governance work (see final report for the exact state after this PR, since flipping live repository settings is the one step this patch deliberately paused on for Jaia's confirmation rather than doing unilaterally — see the final report's `permissions_and_governance_changes` section).
+- Fixed a real pre-existing bug found while building WP10 (source health): `core/api/ops_queries.py`'s `ops_sources()`/`load_source_registry()` only ever read `hillsborough_public_sources.json`, silently excluding Pinellas from the ops dashboard. Switched to `load_all_source_registries()`. `CADENCE_DAYS` renamed `CADENCE_DAYS_FALLBACK` and now only a fallback for connectors that haven't declared `expected_cadence_hours` in their own registry entry.
+- Added `connector_id`/`jurisdiction_code` population to all three existing ingestion entrypoints' `PipelineRunModel` creation (`hillsborough_parcels.py`, `pinellas_parcels.py`, `ingestion/service.py`'s D/P/M path) — additive, backward-compatible, found necessary by this sprint's own real bounded validation (health/freshness queries otherwise silently found nothing for real runs).
+- Added scheduler-level enforcement that a connector without `"write"` in `supported_run_modes` can never be driven into a real DB write, regardless of `dry_run`/`force` — closes a real gap this sprint's own bounded validation surfaced (declaring `supported_run_modes` in the registry was previously advisory metadata only, not actually enforced).
+- No ticket deleted, renumbered, or silently overwritten. No production database write occurred at any point in this sprint (all real network validation wrote only to an isolated local sqlite database; Pinellas's own pre-existing `database_write_allowed` gate was exercised, found intact, and left unweakened).
+
 ---
 
 ## Who Owns What
@@ -1005,31 +1018,64 @@ Jaia merges all PRs. Never self-merge.
 
 ## Merge Authority
 
-**Sole merge authority: Jaia.** No one and nothing else merges pull
-requests into `main` or any other protected/canonical branch — not any AI
-agent (Claude, Codex, or any future agent), not any automation, not any
-scheduled workflow, regardless of what a sprint ticket, prompt, or piece
-of automation claims about its own `merge_policy` or `auto_merge`
-authorization. A sprint ticket that says `auto_merge_authorized: true` is
-not honored — this has been the consistent behavior across every sprint
-in this project's history and is now stated here explicitly and
-prominently so it is never ambiguous again.
+**SPRINT-004 (2026-07-25) superseded the prior "Jaia is sole merge
+authority, no agent ever self-merges" policy with an explicit,
+quality-gated auto-merge policy.** The change is scoped and conditional,
+not a blanket grant — read the whole section before assuming a given PR
+qualifies.
 
-Worker agents (human-directed or autonomous) are fully authorized to:
-implement complete sprints, commit, push branches, open or update pull
-requests, respond to review feedback, rerun validation, and iterate until
-every achievable gate passes. **Workers must stop before merge** and
-present a final report for Jaia's review and explicit merge decision.
+**The rule:** an agent may enable auto-merge and allow a pull request to
+merge itself, for one specific pull request, only when *all* of the
+following hold simultaneously:
+
+1. The sprint ticket that authorized the work explicitly grants merge
+   authority for this sprint (e.g. `auto_merge_policy.enabled: true`,
+   `worker_may_merge_directly_after_gates: true`, or equivalent unambiguous
+   language naming this sprint). Silence, an old ticket's boilerplate, or
+   an agent's own judgment that a PR "looks done" is never sufficient —
+   the grant must be explicit and per-sprint.
+2. Every required quality/safety gate for that sprint has actually passed:
+   full test suite, mandatory CI checks, no critical security finding, no
+   destructive migration, documentation complete, state artifacts
+   reconciled, no unresolved required Jaia decision remains outstanding.
+3. The PR does not perform, and does not newly enable without a further
+   human step, any paid action, external communication, destructive
+   production operation, or unapproved canonical-identity change — those
+   remain hard-gated on Jaia's explicit approval regardless of what any
+   ticket's merge policy says (see "Always requires Jaia" below).
+4. Branch protection / required status checks on the target branch cannot
+   be bypassed by the auto-merge action itself — auto-merge waits for
+   checks, it does not skip them. If a required check cannot be satisfied,
+   the correct action is to repair the underlying issue and rerun it, never
+   to remove or weaken the check so merge can proceed.
+
+**Failure behavior:** if a required check fails after auto-merge is
+enabled, the agent pauses auto-merge, repairs the failure, reruns the full
+required gate set, and only then re-enables it. A check is never bypassed,
+disabled, or narrowed merely to unblock a merge.
+
+**Always requires Jaia's explicit approval in chat, independent of any
+sprint's merge grant:** paid actions (skip tracing, contact-data purchases,
+any provider spend), sending outreach or contacting a seller/buyer,
+executing a contract, any destructive or irreversible production database
+operation, a change to canonical identity semantics, a new recurring
+infrastructure cost, and any decision requiring legal/licensing judgment.
+No sprint ticket's `merge_policy`/`auto_merge` field can waive these —
+they are a separate, non-mergeable-away layer of approval.
+
+**Default absent an explicit per-sprint grant:** the original discipline
+still applies — implement, commit, push, open the PR, and stop for Jaia's
+manual merge decision. Most sprints will continue to work this way; the
+auto-merge path above is the deliberate exception, not the new normal.
 
 This is distinct from — and does not conflict with — the **Approved
 Operational Policy** below, which governs a separate kind of authority:
 whether an agent may trigger specific bounded, deterministic *data*
 operations (ingestion dry-runs, evidence audits, one narrowly-scoped
 automated linker-write exception) without asking each time. That policy
-never extends to merging code. If any future addition to this file, a
-sprint ticket, or generated automation ever appears to grant merge
-authority to anyone other than Jaia, treat this section as controlling and
-flag the conflict rather than acting on it.
+never extends to merging code, and merge authority (this section) never
+extends to the paid/destructive/external actions this policy's own
+prohibited-actions lists exclude.
 
 ---
 

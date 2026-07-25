@@ -11,6 +11,27 @@ schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
 
 decisions:
+  - id: "SPRINT-004-governance-flip-confirmation"
+    proposed_by: "SPRINT-004"
+    question: >
+      SPRINT-004 explicitly authorizes a quality-gated auto-merge policy
+      and grants the worker authority to enable it and merge the sprint's
+      own PR autonomously once all gates pass. Before doing either, the
+      worker paused for one explicit confirmation: main currently has zero
+      branch protection and zero required status checks (confirmed via
+      `gh api`), and repo-level `allow_auto_merge` is `false` -- so making
+      auto-merge real means creating GitHub-level enforcement for the
+      first time, not just restating policy in AGENTS.md.
+    evidence: >
+      See AGENTS.md's SPRINT-004 registry row and reconciliation note, and
+      the PR description for the exact settings proposed.
+    decision_needed: >
+      Confirm whether to proceed with configuring branch protection +
+      required checks + repo-level auto-merge and then auto-merging this
+      PR, or to review the PR manually first per the prior (SPRINT-003)
+      norm.
+    status: "awaiting decision"
+
   - id: "VACANCY-001"
     proposed_by: "SPRINT-001 / WP3 + WP5 research"
     question: "Should LUX ingest HUD's free USPS address-vacancy dataset as a new seller-pressure signal?"
@@ -80,7 +101,13 @@ decisions:
       Jaia + Kyle decide: keep SPRINT-002's implementation, keep Kyle's
       approach if it differs, or merge the two. Not a decision an agent
       should make unilaterally.
-    status: "awaiting decision"
+    status: >
+      no longer blocking (per SPRINT-004, 2026-07-25) -- the underlying
+      question is unchanged and still genuinely undecided between Jaia and
+      Kyle, but it no longer gates further Pinellas work. SPRINT-002/003's
+      Pinellas adapter is merged, schema-verified against real data, and in
+      active use regardless of how this resolves whenever Jaia/Kyle look at
+      it.
 
   - id: "SPRINT-002-pinellas-schema-verification"
     proposed_by: "SPRINT-002"
