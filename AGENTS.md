@@ -1002,7 +1002,7 @@ such write is deterministic-only (exact, unique folio/PIN/STRAP/legal match — 
 fuzzy/name/price/date), bounded (candidate_limit 2/pair, commit_max_pairs cap),
 backed by an in-job immutable reviewed candidate artifact (DATA-006K1),
 rollback-logged, and hard-aborted on any invalid Asset FK or link conflict.
-Kill-switch/throttle: set repo variable `OPS_AUTO_002_SCHEDULE_MODE` to `report`
+Deterministic-commit batch ceiling raised from 2 to 500 for the reviewed-artifact path only (owner-authorized 2026-07-25, coverage scale-up): bulk commits are still deterministic exact matches from an immutable reviewed artifact, single graph-snapshot pair, rollback-logged, invalid-FK aborted; legacy/offset writes stay bounded at 2. Kill-switch/throttle: set repo variable `OPS_AUTO_002_SCHEDULE_MODE` to `report`
 (pause all writes) or `ingest` (pause link writes). Jaia to be kept informed.
 This is the ONLY sanctioned automatic linker write; the rule below still applies
 to every other linker/scoring/matching write.
