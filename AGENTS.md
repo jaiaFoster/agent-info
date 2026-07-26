@@ -476,8 +476,18 @@ Confirmed open ingestion-integrity gaps:
 - GRAPH-001 must use computed read-only graph queries from canonical tables for
   v1. Do not introduce Neo4j or duplicate canonical data into a second truth
   store.
-- Parcel ingestion must run in chunked page ranges after DATA-006J1. Pages 0-4
-  already exist; next preferred ranges are pages 5-9, 10-14, 15-19, and 20-24.
+- Parcel ingestion must run in chunked page ranges after DATA-006J1. **Stale
+  guidance corrected 2026-07-26 (SPRINT-005 WP1)**: this used to read "pages
+  0-4 already exist; next preferred ranges are pages 5-9, 10-14, 15-19, and
+  20-24" — that was written when total ingested coverage was much smaller.
+  Real production state as of 2026-07-26: `assets_total=5859`, and dry-run
+  page requests for both 5-9 and 10-14 (page_size=100, i.e. positions
+  500-1500) resolved to 100% already-existing assets (0 created in write
+  mode for either range) — meaning coverage already extends well past page
+  14. Before requesting any further page range, check current
+  `assets_total` via `/api/ops/summary` and dry-run near
+  `assets_total / page_size` rather than assuming a small sequential range
+  is still novel.
 
 North Star (current, reconciled by SPRINT-005-GOV, 2026-07-25):
 Continuously transform public evidence into explainable, high-confidence

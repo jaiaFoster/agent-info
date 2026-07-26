@@ -1,6 +1,8 @@
-# Confidence Foundation — SPRINT-004
+# Confidence Foundation — SPRINT-004 / SPRINT-005 WP3
 
-`core/confidence/foundation.py`, `ALGORITHM_VERSION = "SPRINT-004-CONF-v1"`.
+`core/confidence/foundation.py`, `ALGORITHM_VERSION = "SPRINT-005-CONF-v2"`
+(bumped from `SPRINT-004-CONF-v1` — output shape gained fields, see
+"SPRINT-005 WP3 additions" below; the underlying formula is unchanged).
 
 ## Why this is a separate module from opportunity scoring
 
@@ -56,14 +58,42 @@ probability of anything — until (if ever) a calibration study is done
 against real outcomes. Downstream consumers (`core/simulation/policy.py`)
 must not present it as one.
 
+## SPRINT-005 WP3 additions
+
+- **`confidence_score`, `evidence_summary`, `explanation`** — three new
+  top-level keys on `compute_confidence()`'s return dict, alongside the
+  existing `confidence_index`/`confidence_level` (kept for backward
+  compatibility; `confidence_score == confidence_index`, same value under
+  two names). `evidence_summary` is a compact, human-scannable dict
+  (signal count, distinct types, oldest/newest evidence age, signal ids) --
+  distinct from `components` (the full per-dimension breakdown), meant to
+  be read at a glance. `explanation` is one plain-English sentence built by
+  `_build_explanation()` -- explainability applied to the confidence score
+  itself, not just to opportunity strength.
+- **`transaction_as_evidence(transaction)`** -- adapts a `TransactionModel`
+  row to the same signal-like duck type `compute_confidence()` already
+  expects (`.id`, `.signal_type`, `.value`, `.detected_at`,
+  `.source_adapter`), so buyer-side evidence (purchase transactions) reuses
+  this exact engine. There is no separate buyer-confidence implementation
+  -- `scripts/run_buyer_intelligence.py` and
+  `core.scoring.targeted_recalculation.recompute_buyer_demand_for_subjects()`
+  both call `compute_confidence([transaction_as_evidence(tx) for tx in
+  txs], as_of)` directly.
+
 ## Where it's wired in today
 
-`core/scoring/targeted_recalculation.recompute_seller_pressure_for_
-subjects()` and `scripts/run_seller_pressure.py`'s `compute_all()` both
-attach `confidence_components` into the persisted `ScoreModel.explanation`
-JSON, so every seller-pressure score — whether produced by the full-batch
-runner or the new targeted path — carries the same confidence breakdown.
-`core/simulation/policy.py` reads it for threshold filtering.
+`core/scoring/persistence.py` is now the single place both the full-batch
+runners (`scripts/run_seller_pressure.py`, `scripts/run_buyer_intelligence.py`)
+and the targeted recompute path
+(`core/scoring/targeted_recalculation.py`) write `confidence_components`
+into the persisted `ScoreModel.explanation` JSON and into a match's
+`confidence_summary` (via `confidence_summary_for_match()`) -- so every
+seller-pressure and buyer-demand score, and every match row, carries the
+same confidence breakdown regardless of which code path produced it.
+`core/simulation/policy.py` and `core/intel/buyer_validation_cohort.py`
+(SPRINT-005 WP4) both read it via the shared
+`confidence_components_for_score_row()` accessor for threshold filtering,
+rather than each re-deriving it from `row.explanation`.
 
 ## Simulation guide (core/simulation/policy.py)
 
