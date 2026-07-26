@@ -334,8 +334,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 bounded fact-write workflow follow-up, 2026-07-26):
-Canonical Fact Engine Expansion — First Bounded Production Fact Write
+Current Phase (reconciled by BLOCKER-001 operational validation, 2026-07-26):
+Canonical Fact Engine Expansion — Derived Fact Lifecycle Verified
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -360,9 +360,12 @@ applied in production and the credentialed review workflow produced a
 read-only packet successfully. The first bounded production fact write has
 also completed through a manual workflow with live schema check, pre-write
 review, explicit `write_enabled=true`, and post-write audit/shadow artifacts.
-Consumer cutover remains blocked until BLOCKER-001 derived fact lifecycle is
-validated in production and shadow parity targets are reviewed. Infrastructure
-correctness wins over coverage expansion.
+BLOCKER-001 derived-fact lifecycle has been operationally validated in
+production across 100 -> 250 -> 500 bounded writes plus a same-batch 500 replay:
+derived facts supersede cleanly, replay creates zero new active facts, asserted
+fact behavior remains unchanged, and shadow parity was re-measured. Consumer
+cutover remains blocked by confidence-parity calibration/review, not by derived
+fact supersession. Infrastructure correctness wins over coverage expansion.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -426,14 +429,22 @@ Completed:
 - SPRINT-006 operational step — First bounded canonical fact write run
   `30216145191` completed 2026-07-26: 740 asserted facts created, 691 derived
   facts created, 1,431 active canonical facts total, 0 orphan asserted facts.
+- BLOCKER-001 — Derived Fact Supersession resolved and operationally verified
+  2026-07-26: PR #71 merged, 250-record write run `30217860756` succeeded with
+  23 derived supersessions / 0 rejected facts, 500-record write run
+  `30218371159` succeeded with 87 derived supersessions / 0 rejected facts, and
+  500-record replay run `30218699070` created 0 asserted facts, 0 derived facts,
+  and 0 supersessions with active inventory unchanged at 5,316 facts.
 
 Current Priority:
-- BLOCKER-001 — Derived Fact Supersession. No additional production fact writes
-  beyond bounded validation until lifecycle semantics are proven.
+- SPRINT-006 — Shadow parity review and confidence-calibration decision. Buyer
+  intelligence fact-backed parity is 1.0 after 500-record expansion, but
+  confidence parity remains 0.0, so consumer cutover remains blocked.
 
 Next:
-- Validate incremental expansion 100 -> 250 -> 500 using derived supersession,
-  then re-measure shadow parity before any consumer cutover decision.
+- Review confidence-parity deltas and decide whether to calibrate fact-backed
+  confidence scoring or keep the legacy confidence consumer while facts remain
+  shadow-only.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -619,7 +630,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — PRODUCTION SCHEMA READINESS WORKFLOW GUARD ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production DB currently missing canonical_facts until migration is explicitly run; review workflow must stop cleanly at schema gate; production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006 | Jaia/Codex | CURRENT — FACT ENGINE OPERATIONALLY VERIFIED / CONSUMER CUTOVER BLOCKED | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production migration is applied and BLOCKER-001 derived lifecycle is resolved. Bounded production writes verified at 100 -> 250 -> 500 plus same-batch 500 replay. Consumer cutover remains deferred until confidence-parity/report review; no paid/outreach/probabilistic work from fact engine. | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1777,6 +1788,23 @@ Registry reconciliation after BLOCKER-001 derived fact supersession patch (2026-
   100 -> 250 -> 500 expansion and shadow parity is re-measured.
 - No paid provider, outreach/contact, scoring write, matching write, or
   probabilistic weakening is authorized by this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after BLOCKER-001 operational validation (2026-07-26):
+- BLOCKER-001 is now resolved/operationally verified: production bounded fact
+  writes succeeded at 250 records (`30217860756`) and 500 records
+  (`30218371159`), and the same 500-record batch replay (`30218699070`) created
+  zero new active asserted facts, zero new derived facts, and zero supersessions.
+- Derived lifecycle behavior is validated: changed derived facts are
+  superseded with lineage preserved, exact replay is idempotent, and asserted
+  fact behavior remains unchanged.
+- Shadow parity was re-measured after the fix: buyer-intelligence parity is
+  1.0 at the 500-record bound; confidence parity remains 0.0 and therefore
+  blocks consumer cutover pending calibration/review.
+- Current priority moves from BLOCKER-001 to SPRINT-006 shadow parity review
+  and confidence-calibration decision. No paid provider, outreach/contact,
+  scoring write, matching write, or consumer cutover is authorized by this
+  reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
