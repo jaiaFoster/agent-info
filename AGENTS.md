@@ -357,10 +357,11 @@ Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
 follow-up, consumer-shadow bridge, first-write review packet builder, and
 manual review workflow are merged. The canonical facts migration has now been
 applied in production and the credentialed review workflow produced a
-read-only packet successfully. Current work adds the missing manual,
-credentialed, bounded fact-write workflow so production writes use the same
-live schema check, pre-write review, explicit `write_enabled=true` gate, and
-post-write audit/shadow artifacts instead of ad hoc local execution.
+read-only packet successfully. The first bounded production fact write has
+also completed through a manual workflow with live schema check, pre-write
+review, explicit `write_enabled=true`, and post-write audit/shadow artifacts.
+Consumer cutover remains blocked until those artifacts are reviewed and a
+separate cutover scope is approved.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -419,14 +420,20 @@ Completed:
   2026-07-26: Alembic `f2a8c913d5b6 -> 6d3f8b2a1c90`.
 - SPRINT-006 follow-up — Manual migration workflow live-schema closeout guard
   PR #67 merged 2026-07-26.
+- SPRINT-006 follow-up — Manual bounded canonical fact write workflow PR #68
+  merged 2026-07-26.
+- SPRINT-006 operational step — First bounded canonical fact write run
+  `30216145191` completed 2026-07-26: 740 asserted facts created, 691 derived
+  facts created, 1,431 active canonical facts total, 0 orphan asserted facts.
 
 Current Priority:
-- SPRINT-006 follow-up — Manual bounded canonical fact write workflow and first
-  approved bounded fact write. No consumer cutover.
+- SPRINT-006 follow-up — Review first-write artifacts and decide consumer
+  cutover/no-cutover criteria. No consumer cutover yet.
 
 Next:
-- Run first bounded canonical fact write only through the new manual workflow,
-  then review post-write audit/shadow artifacts before any consumer cutover.
+- Review first-write artifacts from run `30216145191`, especially buyer
+  parity/confidence parity, then scope consumer cutover or additional fact
+  coverage separately.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -1724,6 +1731,19 @@ Registry reconciliation after SPRINT-006 bounded fact-write workflow follow-up (
   cutover remains blocked pending post-write artifact review.
 - No paid provider, outreach/contact, scoring write, matching write, or
   probabilistic weakening is authorized by this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006 first bounded fact write closeout (2026-07-26):
+- Recorded first bounded write run `30216145191`: live schema passed, pre-write
+  review clean, `write_enabled=true`, write succeeded in 3m24s.
+- Production canonical fact inventory after write: 1,431 total/active facts,
+  740 asserted, 691 derived, 0 orphan asserted facts.
+- Buyer shadow after write: 413 buyers checked, 100 fact-backed buyers present,
+  buyer-intelligence parity rate 0.2228, confidence parity rate 0.0. This is
+  evidence for review, not authorization for consumer cutover.
+- Consumer cutover remains blocked pending artifact review and an explicit
+  cutover scope. No paid provider, outreach/contact, scoring write, matching
+  write, or probabilistic weakening is authorized by this reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
