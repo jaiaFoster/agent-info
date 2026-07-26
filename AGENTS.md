@@ -73,9 +73,10 @@ build before implementing intelligence:
 - **Deterministic Transaction → Asset linking** — a working, replayable,
   reviewed-commit linker (DATA-006I/K/K1) exists and has committed real
   production links. Read that as "the linking machinery is proven," not "the
-  graph is fully linked": as of the last production check, 12 of 406
-  transactions carry a deterministic Asset link (2.96% coverage). Growing that
-  coverage is an open, actively worked problem (DATA-006L, DATA-012, DATA-013,
+  graph is fully linked": as of 2026-07-26, 45 of 446 transactions carry a
+  deterministic Asset link (10.09% coverage), now growing automatically each day
+  via the OPS-AUTO-002 loop (up from 8/223 on 2026-07-18). Growing that
+  coverage is an actively worked problem (DATA-006L, DATA-012, DATA-013,
   INTEL-004, OPS-AUTO-002), not a solved one.
 - **GRAPH-001 operational proof** — read-only, computed graph queries over the
   canonical tables (no separate graph database) are live in production,
@@ -256,8 +257,8 @@ intelligence phase is done.
 What's still open is quality, not existence:
 
 - **Coverage** — match quality is bottlenecked by how many transactions have
-  a deterministically linked Asset (2.96% as of the last production check).
-  DATA-006L, DATA-012, DATA-013, INTEL-004, and OPS-AUTO-002 all exist
+  a deterministically linked Asset (10.09% as of 2026-07-26, climbing daily
+  via OPS-AUTO-002). DATA-006L, DATA-012, DATA-013, INTEL-004, and OPS-AUTO-002 all exist
   specifically to grow linked coverage toward pressure-weighted, actionable
   properties rather than raw volume.
 - **Confidence estimation** — INTEL-003 (cash-buyer detection) and further
@@ -448,6 +449,13 @@ Next:
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
+
+Production status snapshot (2026-07-26):
+- transactions 446, transactions_with_asset 45, coverage 10.09%, invalid_asset_fk 0
+- assets 6,729 (targeted HCPA parcels; growing daily via OPS-AUTO-002), signals 12,555
+- scores: 7,208 seller pressure, 226 buyer demand; matches 370 persisted candidates
+- all 45 links are DETERMINISTIC_NORMALIZED_LEGAL_DESCRIPTION; coverage climbing ~28 links/day unattended
+- service status: online (dashboard); GRAPH_PARTIAL_LINK_COVERAGE
 
 Production status snapshot (2026-07-18, post-MATCH-001):
 - transactions 223, transactions_with_asset 8, coverage 3.59%, invalid FK 0
