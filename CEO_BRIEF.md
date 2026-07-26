@@ -67,6 +67,15 @@ execution detail:
   non-disclosure states, which breaks LUX's evidence-based model
   regardless of their macro appeal.
 
+**Update 2026-07-26:** Phoenix and Troy now have formal tickets —
+`AZ-ADAPTER-001` and `NY-ADAPTER-001` (the latter's scope extended to
+Albany County at Tim's request). Neither authorizes adapter code yet; both
+are blocked on the same shared asset-linker identity-vocabulary decision
+(Maricopa uses APN, NY uses Section-Block-Lot, and the shared linker has
+no slot for either). Also added `MARKET-001`, a new, independent, unblocked
+ticket for a national investor-purchase heatmap (free Redfin Data Center
+quarterly data) to help prioritize which market to evaluate next.
+
 ## Pinellas expansion progress (SPRINT-002, 2026-07-25)
 
 Built the first repeatable jurisdiction-onboarding framework and a full

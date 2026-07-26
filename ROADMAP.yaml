@@ -116,10 +116,11 @@ expansion_strategy:
         county: "Duval County, FL"
     blocking_ticket: "FL-ADAPTER-001"
   phoenix_arizona:
+    ticket: "AZ-ADAPTER-001"
     county: "Maricopa County, AZ"
     purpose: "first out-of-state architecture-validation target"
-    status: "planned, no ingestion/adapter work started"
-    confirmed_by: "SPRINT-001 market ranking — keep unmodified"
+    status: "OPEN — ticketed 2026-07-26, no ingestion/adapter work started"
+    confirmed_by: "SPRINT-001 market ranking — keep unmodified; ranked #1 of 13 candidates (score 20)"
     readiness_assessment: >
       SPRINT-003 produced a readiness assessment (not onboarding work):
       primary assessor source is expected to be a proven ArcGIS FeatureServer
@@ -130,15 +131,34 @@ expansion_strategy:
       Recorder's paid bulk deed data or scope the first pass as
       parcel/assessor-only. See docs/research/MARICOPA_READINESS_ASSESSMENT.md.
   troy_new_york:
-    county: "Rensselaer County, NY"
-    purpose: "second out-of-state architecture-validation target"
-    status: "planned, no ingestion/adapter work started"
+    ticket: "NY-ADAPTER-001"
+    county: "Rensselaer County (Troy), extended in scope to Albany County"
+    purpose: "second out-of-state architecture-validation target; Albany added per Tim's request 2026-07-26 (not part of SPRINT-001's evaluated candidate set — needs its own source-probe)"
+    status: "OPEN — ticketed 2026-07-26, no ingestion/adapter work started"
     risk_note: >
       SPRINT-001 found population declining since 2020 (-1,317 residents
       2021-2023) and the weakest data access (permits, probate) of any
       market researched. Recommendation: keep, but explicitly as a
       non-revenue architecture-validation bet, not a market-opportunity one
       — consistent with how AGENTS.md already frames it.
+    advantage: >
+      NYS GIS Clearinghouse publishes one free statewide parcel dataset
+      covering both Rensselaer and Albany, so one parcel adapter likely
+      serves both counties -- cheaper than Maricopa's or Florida's
+      county-by-county pattern. Deed/recorder side is still per-county
+      (Rensselaer County Clerk, Albany County Clerk).
+
+market_discovery:
+  ticket: "MARKET-001"
+  status: "OPEN — ticketed 2026-07-26"
+  purpose: >
+    National investor-purchase heatmap (Redfin Data Center free quarterly
+    metro data, Census ACS fallback) to help prioritize which markets LUX
+    evaluates next for expansion. Upstream of and distinct from the
+    per-jurisdiction adapter tickets above and from INTEL-*'s scoring of
+    LUX's own already-ingested evidence. Small, standalone scope -- new
+    ingestion job + one new lightweight table, no core/ or adapter-boundary
+    changes required.
   deprioritized_candidates:
     - name: "Austin (Travis County, TX)"
       reason: "non-disclosure state — sale price isn't public record, breaks LUX's evidence-based deterministic model"
@@ -168,8 +188,8 @@ recently_proposed_not_yet_approved:
   # Discovered/Unscoped items from SPRINT-001, pending Jaia's decision
   - "VACANCY-001 — HUD USPS vacancy data ingestion"
   - "HEIR-001 — heir/inherited property signal (pair with DATA-006P)"
-  - "SPRINT-003-maricopa-asset-linker-vocabulary — extend shared linker for APN identity before Maricopa adapter work"
-  - "SPRINT-003-maricopa-recorder-paid-data — fund Maricopa Recorder's paid bulk data, or scope parcel-only"
+  - "SPRINT-003-maricopa-asset-linker-vocabulary — extend shared linker for APN/SBL identity before Maricopa or Rensselaer/Albany adapter work; now tracked as a named dependency on AZ-ADAPTER-001 and NY-ADAPTER-001"
+  - "SPRINT-003-maricopa-recorder-paid-data — fund Maricopa Recorder's paid bulk data, or scope parcel-only; now tracked on AZ-ADAPTER-001"
 
 resolved_since_last_roadmap:
   - "jurisdiction_code core/ schema change — SPRINT-004 added jurisdiction_code/connector_id columns to pipeline_runs and events (migration f2a8c913d5b6), additive and backward-compatible, within the sprint's own explicitly-authorized scope (see AGENTS.md SPRINT-004 row). No further ADR needed for this specific change."
