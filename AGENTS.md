@@ -450,16 +450,17 @@ Completed:
   1.0 against the legacy-equivalent contract.
 
 Current Priority:
-- NEXT DECISION — SKIP-PILOT-001 / ENRICH-001 bounded paid-contact validation
-  scope. SPRINT-006C recommends a separately approved, bounded paid skip-trace
-  validation pilot using production gates plus legacy-equivalent confidence
-  only. No paid provider, contact enrichment, outreach sending, or enriched-
-  confidence production cutover is authorized until Jaia explicitly approves
-  that pilot.
+- SKIP-PILOT-001 — Bounded Paid Skip-Trace Validation. Approved by Jaia.
+  Implementation now has a bounded buyer-cohort runner and manual dry-run
+  workflow, but live paid purchase is blocked until the real BatchData
+  skip-trace adapter and DNC.com scrub adapter are implemented, tested, and
+  configured. No automatic outreach is authorized.
 
 Next:
-- If approved separately: SKIP-PILOT-001 — bounded paid skip-trace validation
-  over the decision-ready buyer cohort, with no automatic outreach.
+- PROVIDER-BATCHDATA-001 — implement the BatchData paid skip-trace adapter
+  against current official API docs.
+- PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter against current
+  official API docs.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -652,7 +653,9 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SKIP-PILOT-001 | Jaia/Codex | NEXT DECISION — SEPARATE APPROVAL REQUIRED | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only | Requires Jaia approval, provider/compliance readiness, and no automatic outreach. SPRINT-006C recommended readiness from a confidence-semantics perspective only. | Validated contact source path for MVP-001 |
+| SKIP-PILOT-001 | Jaia/Codex | CURRENT — APPROVED / LIVE PURCHASE BLOCKED BY PROVIDER ADAPTER READINESS | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails, but current BatchData and DNC.com adapters are explicit stubs with `live_ready=false`; live paid mode must fail closed until PROVIDER-BATCHDATA-001 and PROVIDER-DNC-001 are complete. | Validated contact source path for MVP-001 |
+| PROVIDER-BATCHDATA-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement BatchData skip-trace provider request/response mapping against current official API docs, with mocked HTTP tests, sanitized errors, whitelist-only persistence, and `live_ready=true` only when configured | Requires BatchData account/API key and current API contract. Do not infer unsupported fields. | Paid skip-trace batch execution |
+| PROVIDER-DNC-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement DNC.com/DNCScrub phone scrub adapter against current official API docs, with mocked HTTP tests, sanitized errors, fail-closed statuses, and `live_ready=true` only when configured | Requires DNC.com account/API key/SAN and current API contract. | Callable-contact validation for paid pilot |
 | SPRINT-006 | Jaia/Codex | COMPLETE — FACT ENGINE OPERATIONALLY VERIFIED / LEGACY-EQUIVALENT CONFIDENCE READY | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production migration is applied; BLOCKER-001 derived lifecycle resolved; bounded production writes verified at 100 -> 250 -> 500 plus same-batch 500 replay; SPRINT-006C verified legacy-equivalent confidence parity. Enriched canonical confidence remains shadow-only until calibrated. | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
@@ -1877,6 +1880,23 @@ Registry reconciliation after SPRINT-006C final closeout (2026-07-26):
 - No paid provider, skip trace purchase, contact enrichment, outreach sending,
   scoring write, matching write, canonical fact write, schema migration, or
   production consumer cutover occurred in this closeout.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SKIP-PILOT-001 guarded implementation patch
+(2026-07-26):
+- SKIP-PILOT-001 is approved/current. Added the bounded buyer-cohort runner,
+  manual workflow, machine-readable/Markdown pilot artifacts, idempotent
+  buyer-validation lead creation, dry-run defaults, and no-outreach safety
+  posture.
+- Live paid purchase remains blocked by provider implementation readiness, not
+  by sprint approval. Current BatchData and DNC.com adapters are explicit stubs
+  and now advertise `live_ready=false`; paid/write mode fails closed before
+  DB writes/provider calls when adapters are not live-ready.
+- Added PROVIDER-BATCHDATA-001 and PROVIDER-DNC-001 as explicit blockers for
+  live SKIP-PILOT-001 execution.
+- No paid provider call, skip-trace purchase, contact enrichment, outreach
+  sending, CRM activation, scoring write, matching write, schema migration, or
+  destructive operation occurred in this patch.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
