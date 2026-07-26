@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-005-GOV, 2026-07-25):
-Confidence Live — Intelligence Calibration & Decision Policy Next
+Current Phase (reconciled by SPRINT-006 foundation, 2026-07-26):
+Canonical Fact Engine Foundation — Reusable Deterministic Knowledge Layer
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -348,10 +348,16 @@ Identification -> Outreach -> Revenue), the current gap is not outreach
 mechanics (OUTREACH-001 already ships human-reviewed drafts) — it's
 calibrating intelligence/confidence and defining an explicit decision
 policy for when a bounded cohort is actually ready for paid identification.
-That is SPRINT-005's stated objective.
+SPRINT-005 began that calibration path. SPRINT-006 now adds the reusable fact
+layer underneath it: deterministic knowledge should be extracted once from
+proven evidence, persisted with provenance, and reused by buyer intelligence,
+confidence, matching, graph, and future verticals.
 
 Current Milestone:
-Both market sides scored from canonical evidence (INTEL-001 seller pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), and 200 persisted candidate matches with outcome tracking (MATCH-001). Next: intelligence calibration and a bounded (~25 buyer) decision-ready cohort (SPRINT-005) before any paid identification pilot, ahead of MVP-001 First Dollar.
+Canonical Fact Engine foundation (SPRINT-006): asserted and derived facts are
+stored with evidence/lineage, first deterministic producers run through a
+shared registry, and selected intelligence consumers can run fact-backed
+shadow paths before cutover.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -399,9 +405,13 @@ Completed:
 - MATCH-001 — Matching hardening: buy boxes, persisted matches, outcome tracking (2026-07-18)
 
 Current Priority:
-- OUTREACH-001 — Human-reviewed outreach drafts and approval queue. First target set exists: 200 persisted candidate matches with lineage. No blind auto-send, no contact enrichment without SKIP-001/ENRICH-001 compliance decisions.
+- SPRINT-006 — Canonical Fact Engine. Foundation PR manual: schema,
+  repository, producer protocol, initial deterministic producers,
+  derived/profile foundation, shadow consumer helpers, docs, tests. No
+  consumer cutover or production fact write until reviewed.
 
 Next:
+- SPRINT-006 follow-up producers/derivations after foundation merge.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -587,6 +597,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
+| SPRINT-006 | Jaia/Codex | CURRENT — FOUNDATION PR MANUAL | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, and consumer shadow paths | First foundational PR must be manually merged by Jaia per sprint policy; production fact writes and consumer cutover deferred until foundation reviewed | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1053,6 +1064,12 @@ Registry reconciliation after SPRINT-005-GOV (2026-07-25, Governance & State Rec
 - Replaced the historical, infrastructure-era North Star ("Build a durable, reusable data engine before implementing intelligence") with the current one ("Continuously transform public evidence into explainable, high-confidence market decisions before spending money on customer acquisition"), in both this file and `ROADMAP.yaml`. The old text is preserved as an explicit historical note, not deleted. Added the operating-philosophy phase sequence (Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification -> Outreach -> Revenue) alongside it.
 - Updated "Current Project Status" (Current Phase/Milestone) from "Derived Intelligence Live — Outreach Next" to "Confidence Live — Intelligence Calibration & Decision Policy Next", reflecting that SPRINT-004 already shipped continuous evidence/confidence automation and OUTREACH-001's mechanics already shipped 2026-07-22 — the actual current gap is calibrating intelligence/confidence and defining an explicit decision policy, which is SPRINT-005's (previewed, not yet started) stated objective.
 - Resolved `jurisdiction_code-core-change` in `OPEN_DECISIONS.yaml` (SPRINT-004 already implemented the bounded version of this within its own explicitly-authorized scope; a broader extension remains a distinct, unproposed question) and closed `SPRINT-004-governance-flip-confirmation` as resolved (see above).
+
+Registry reconciliation after SPRINT-006 foundation (2026-07-26, Canonical Fact Engine, WP1/WP2 foundation + initial producers):
+- Added SPRINT-006 to Current. This is the sprint's first foundational PR, so merge is manual by Jaia per the sprint's own `foundational_merge` policy.
+- Updated Current Phase/Milestone/Priority from confidence-calibration wording to Canonical Fact Engine foundation while preserving MVP-001 First Dollar as product objective.
+- Added canonical fact architecture docs and validation packet. No existing ticket was deleted, renumbered, or silently overwritten.
+- No paid provider activation, outreach, scoring/matching write, probabilistic matching, destructive migration, or legacy consumer removal occurred.
 - Added `PROJECT_PROGRESS.md` (diagrams-first executive dashboard) and one line to `scripts/publish_ai_state.py`'s `REQUIRED_ARTIFACTS` so the mirror carries it — a one-line, test-covered (`tests/test_publish_ai_state.py`, 16/16 passing) addition to an ops/governance sync script, not a product or connector change. Documented (did not implement) a mirror-debounce recommendation in the OPS-SYNC-001 runbook, per this ticket's own "improve consistency without increasing mirror scope" instruction.
 - Ran the full test suite as a safety check even though this ticket's own `validation` block requires none: 594 passing, one pre-existing failure (`test_rerun_is_idempotent_for_existing_rows`) confirmed unrelated to this sprint (present on plain `main` before this branch existed, from the same-day OPS-AUTO-002 commit `18d6077`) — same finding SPRINT-004 already surfaced and flagged, not fixed here either, still out of scope.
 - No ticket deleted, renumbered, or silently overwritten. No product, database, connector, or intelligence-scoring code was touched by this patch.

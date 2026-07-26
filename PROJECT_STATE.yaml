@@ -8,32 +8,23 @@
 # changes.
 
 schema_version: 1
-last_updated_utc: "2026-07-25T00:00:00Z"
-last_updated_by: "SPRINT-005-GOV (Governance & State Reconciliation)"
+last_updated_utc: "2026-07-26T00:00:00Z"
+last_updated_by: "SPRINT-006 foundation (Canonical Fact Engine)"
 
 active_expansion_work:
-  ticket: "SPRINT-004 (merged, closed) -- SPRINT-005 (preview, not yet started)"
-  status: "SPRINT-004 merged by Jaia (PR #55, manual review, 2026-07-25). SPRINT-005 (Intelligence Calibration & Buyer Validation) previewed but not yet started."
+  ticket: "SPRINT-006 (current foundation PR)"
+  status: "Canonical Fact Engine foundational implementation is current. First foundational PR requires Jaia manual merge."
   summary: >
-    SPRINT-004 shipped LUX's continuous-intelligence automation layer: a
-    generic connector scheduling/lifecycle contract, checkpoint-based
-    incremental and full-export ingestion, deterministic evidence events,
-    targeted (not full-batch) intelligence rescoring, a versioned
-    confidence foundation separate from opportunity strength, continuous
-    prioritization with preserved rank history, read-only paid-action
-    simulation, and per-connector health/failure isolation -- proven
-    against real, live Hillsborough and Pinellas sources (see
-    sprint_004_validation_results.yaml), no production write. Jaia
-    reviewed and merged it manually (the worker paused rather than
-    flipping GitHub's branch-protection/auto-merge settings unilaterally
-    for a first-time governance change -- see AGENTS.md's Merge Authority
-    section, now further reconciled by this sprint).
+    SPRINT-006 creates the reusable deterministic fact layer beneath
+    intelligence: asserted facts from SourceRecord/RawEvidence, derived facts
+    from input-fact lineage, producer registry, entity profiles, and
+    fact-backed shadow consumer helpers. SPRINT-005 WP1-WP3 has merged and
+    improved confidence/intelligence persistence; SPRINT-006 makes the
+    deterministic knowledge reusable instead of feature-specific.
   known_issue: >
-    None outstanding from SPRINT-004. SPRINT-005 (previewed at the bottom
-    of the SPRINT-005-GOV ticket) has not started; its objective is
-    intelligence/confidence calibration and a bounded (~25 buyer)
-    decision-ready cohort before any paid skip-trace pilot.
-  full_detail: "docs/research/SPRINT-004-SUMMARY.md, sprint_004_validation_results.yaml, PROJECT_PROGRESS.md"
+    First SPRINT-006 foundational PR is manual by sprint policy. Production
+    fact writes and legacy consumer cutover remain deferred until reviewed.
+  full_detail: "docs/architecture/CANONICAL_FACT_ENGINE.md, docs/operations/SPRINT_006_VALIDATION_PACKET.md, AGENTS.md"
 
 project:
   name: "LUX"
@@ -45,7 +36,7 @@ project:
     County). Core is intentionally market-agnostic.
   repository: "fsassaman-commits/lux-core"
 
-current_phase: "Confidence Live — Intelligence Calibration & Decision Policy Next"
+current_phase: "Canonical Fact Engine Foundation — Reusable Deterministic Knowledge Layer"
 
 current_milestone:
   name: "MVP-001 — First Dollar"
@@ -119,8 +110,8 @@ completed_intelligence_tickets:
   - "LEADGEN-001 — Skip Tracing & Lead Management (runs on mocks until go-live)"
   - "SPRINT-004 — Continuous Intelligence Automation (merged PR #55, 2026-07-25)"
 
-current_priority_ticket: "SPRINT-005 (preview, not yet started) — Intelligence Calibration & Buyer Validation"
-current_priority_status: "PREVIEWED, NOT STARTED — see ROADMAP.yaml's next_priority_order and current_priority"
+current_priority_ticket: "SPRINT-006 — Canonical Fact Engine"
+current_priority_status: "FOUNDATION PR CURRENT — manual Jaia merge required before follow-up autonomous producer/consumer work"
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."

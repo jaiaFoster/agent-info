@@ -148,17 +148,15 @@ expansion_strategy:
 ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
 
 current_priority: >
-  SPRINT-005 (preview, not yet started) — Intelligence Calibration & Buyer
-  Validation: expand Hillsborough/Pinellas intelligence, improve
-  deterministic linkage, deepen buyer histories, calibrate confidence, and
-  produce a bounded (~25 buyer) decision-ready cohort for the first paid
-  skip-trace validation pilot. Ranks #1 ("Intelligence Quality") on
-  next_priority_order above. OUTREACH-001's own mechanics already shipped
-  (2026-07-22) and are not blocked -- it's simply no longer the top
-  priority under the reconciled ordering.
+  SPRINT-006 — Canonical Fact Engine: create the reusable deterministic
+  knowledge layer beneath intelligence. Foundation PR adds additive fact
+  schema, repository, producer registry, initial deterministic producers,
+  derived/profile helpers, and fact-backed shadow consumer helpers. First
+  foundational merge is manual by Jaia.
 
 next_up:
-  - "SPRINT-005 — Intelligence Calibration & Buyer Validation (preview)"
+  - "SPRINT-006 follow-up — more producers, derivations, profiles, parity reports"
+  - "SPRINT-005 continuation — Intelligence Calibration & Buyer Validation on fact-backed foundation"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
   - "VAL-001 — Valuation once Asset price context deepens"
