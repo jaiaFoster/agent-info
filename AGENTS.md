@@ -355,12 +355,11 @@ confidence, matching, graph, and future verticals.
 Current Milestone:
 Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
 follow-up, consumer-shadow bridge, first-write review packet builder, and
-manual review workflow are merged. First credentialed review run showed the
-production database is missing the `canonical_facts` table, while the old
-schema check only verified ORM metadata. Follow-up runs then proved a second
-workflow bug: `tee` masked the nonzero live-schema check exit. Current work
-hardens that pipefail behavior before any production fact write or consumer
-cutover.
+manual review workflow are merged. The canonical facts migration has now been
+applied in production and the credentialed review workflow produced a
+read-only packet successfully. Current work hardens the manual migration
+workflow's final schema check so future migration closeouts verify the live DB,
+not only ORM metadata.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -413,14 +412,18 @@ Completed:
 - SPRINT-006 follow-up — Manual credentialed fact review workflow PR #62 merged 2026-07-26
 - SPRINT-006 follow-up — Fact review bulk preflight optimization + standing
   non-consequential auto-merge policy PR #65 merged 2026-07-26
+- SPRINT-006 follow-up — Production schema readiness workflow pipefail guard
+  PR #66 merged 2026-07-26
+- SPRINT-006 operational step — Production canonical facts migration applied
+  2026-07-26: Alembic `f2a8c913d5b6 -> 6d3f8b2a1c90`.
 
 Current Priority:
-- SPRINT-006 follow-up — Production schema readiness workflow pipefail guard for
-  canonical facts. No consumer cutover or production fact write.
+- SPRINT-006 follow-up — Manual migration workflow live-schema closeout guard.
+  No consumer cutover or production fact write.
 
 Next:
-- Run/apply the canonical facts migration only after explicit approval, then
-  rerun the canonical fact review workflow.
+- Review the read-only canonical fact packet from run `30215545107`, then scope
+  any approved first fact write separately.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -1690,6 +1693,21 @@ Registry reconciliation after SPRINT-006 schema-pipefail follow-up (2026-07-26):
 - No existing ticket was deleted, renumbered, or silently overwritten.
 - Removed stale per-sprint-only merge wording from the top rules and handoff
   checklist so the Merge Authority section remains the single source of truth.
+
+Registry reconciliation after SPRINT-006 production migration + live-check follow-up (2026-07-26):
+- Recorded authorized production migration run `30215517628`: Alembic upgraded
+  `f2a8c913d5b6 -> 6d3f8b2a1c90 (head)`, creating `canonical_facts`.
+- Recorded credentialed read-only review run `30215545107`: live schema check
+  passed with `live_missing: []`; fact review produced 741 asserted projected
+  facts, 691 derived projected facts, 1,432 combined projected facts; safety
+  flags confirmed no database mutation, no scores/matches write, no consumer
+  cutover, no paid providers, and no outreach.
+- Current patch updates the manual migration workflow's final schema check to
+  pass `secrets.DATABASE_URL`; the previous closeout step was metadata-only.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
 
