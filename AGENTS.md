@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 review-packet follow-up, 2026-07-26):
-Canonical Fact Engine Expansion — First-Write Review Packet
+Current Phase (reconciled by SPRINT-006 review-workflow follow-up, 2026-07-26):
+Canonical Fact Engine Expansion — Credentialed Review Packet Workflow
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -355,9 +355,9 @@ confidence, matching, graph, and future verticals.
 
 Current Milestone:
 Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
-follow-up, and consumer-shadow bridge are merged; current work adds a
-first-write review packet that previews asserted and derived fact coverage
-before any production fact write or consumer cutover.
+follow-up, consumer-shadow bridge, and first-write review packet builder are
+merged; current work adds a manual credentialed workflow to generate the review
+packet artifacts before any production fact write or consumer cutover.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -406,13 +406,14 @@ Completed:
 - SPRINT-006 foundation — Canonical Fact Engine foundation PR #58 merged 2026-07-26
 - SPRINT-006 follow-up — Derived facts, profiles, and read-only parity audit PR #59 merged 2026-07-26
 - SPRINT-006 follow-up — Fact-backed confidence bridge and buyer shadow report PR #60 merged 2026-07-26
+- SPRINT-006 follow-up — First-write fact review packet builder PR #61 merged 2026-07-26
 
 Current Priority:
-- SPRINT-006 follow-up — First-write fact review packet with projected derived
-  facts. No consumer cutover or production fact write.
+- SPRINT-006 follow-up — Manual credentialed fact review workflow. No consumer
+  cutover or production fact write.
 
 Next:
-- SPRINT-006 production fact write dry-run/review packet execution and review.
+- SPRINT-006 production fact review workflow execution and artifact review.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -598,7 +599,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — FIRST-WRITE REVIEW PACKET ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, and first-write review packets | Production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006 | Jaia/Codex | CURRENT — CREDENTIALED REVIEW WORKFLOW ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, and manual credentialed review workflow | Production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1618,6 +1619,16 @@ Registry reconciliation after SPRINT-006 first-write review-packet follow-up (20
 - Marked the consumer-shadow bridge follow-up as merged.
 - Kept SPRINT-006 Current for the first-write review packet that previews
   asserted and derived facts before any production fact write.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
+- Updated PROJECT_STATE.yaml and ROADMAP.yaml to match this current priority.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006 credentialed review-workflow follow-up (2026-07-26):
+- Marked the first-write review-packet builder as merged.
+- Kept SPRINT-006 Current for a manual GitHub Actions workflow that generates
+  the credentialed review artifacts using `secrets.DATABASE_URL`.
 - No production fact write, consumer cutover, paid provider, outreach/contact,
   scoring write, matching write, or probabilistic weakening is authorized by
   this reconciliation.

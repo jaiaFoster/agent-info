@@ -172,3 +172,18 @@ that no DB mutation, score write, match write, outreach, paid provider call, or
 consumer cutover occurred. This closes the review gap where a dry-run could
 show asserted fact counts while derived facts remained invisible until after a
 write.
+
+Credentialed GitHub Actions path:
+
+```text
+Canonical Fact Engine Review Packet
+```
+
+The workflow is manually triggered only. It uses the existing
+`DATABASE_URL` GitHub Actions secret, runs schema verification, generates the
+fact review packet, verifies read-only safety flags, then uploads:
+
+- `canonical-fact-review.json`
+- `fact-engine-audit.json`
+- `buyer-intelligence-dry-run.json`
+- `buyer-fact-shadow-report.json`

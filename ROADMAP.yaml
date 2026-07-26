@@ -150,12 +150,12 @@ ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Comm
 current_priority: >
   SPRINT-006 — Canonical Fact Engine: create the reusable deterministic
   knowledge layer beneath intelligence. Foundation PR #58, derived/profile
-  PR #59, and consumer-shadow PR #60 are merged. Current follow-up adds a
-  read-only first-write review packet that previews asserted and derived fact
-  coverage before production fact writes or consumer cutover.
+  PR #59, consumer-shadow PR #60, and review-packet builder PR #61 are merged.
+  Current follow-up adds a manual credentialed GitHub Actions workflow to
+  generate review artifacts before production fact writes or consumer cutover.
 
 next_up:
-  - "SPRINT-006 production fact write review packet execution and Jaia review"
+  - "SPRINT-006 production fact review workflow execution and Jaia artifact review"
   - "SPRINT-005 continuation — Intelligence Calibration & Buyer Validation on fact-backed foundation"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
