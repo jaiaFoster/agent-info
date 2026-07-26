@@ -334,7 +334,7 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 schema-guard follow-up, 2026-07-26):
+Current Phase (reconciled by SPRINT-006 schema-pipefail follow-up, 2026-07-26):
 Canonical Fact Engine Expansion — Production Schema Readiness Workflow Guard
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
@@ -357,8 +357,10 @@ Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
 follow-up, consumer-shadow bridge, first-write review packet builder, and
 manual review workflow are merged. First credentialed review run showed the
 production database is missing the `canonical_facts` table, while the old
-schema check only verified ORM metadata. Current work hardens live DB schema
-readiness before any production fact write or consumer cutover.
+schema check only verified ORM metadata. Follow-up runs then proved a second
+workflow bug: `tee` masked the nonzero live-schema check exit. Current work
+hardens that pipefail behavior before any production fact write or consumer
+cutover.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -409,9 +411,11 @@ Completed:
 - SPRINT-006 follow-up — Fact-backed confidence bridge and buyer shadow report PR #60 merged 2026-07-26
 - SPRINT-006 follow-up — First-write fact review packet builder PR #61 merged 2026-07-26
 - SPRINT-006 follow-up — Manual credentialed fact review workflow PR #62 merged 2026-07-26
+- SPRINT-006 follow-up — Fact review bulk preflight optimization + standing
+  non-consequential auto-merge policy PR #65 merged 2026-07-26
 
 Current Priority:
-- SPRINT-006 follow-up — Production schema readiness workflow guard for
+- SPRINT-006 follow-up — Production schema readiness workflow pipefail guard for
   canonical facts. No consumer cutover or production fact write.
 
 Next:
@@ -1670,6 +1674,20 @@ Registry reconciliation after merge-authority update (2026-07-26):
   production writes, paid providers, outreach/contact, destructive operations,
   canonical identity-policy changes, legal/compliance decisions, and new
   recurring infrastructure cost.
+
+Registry reconciliation after SPRINT-006 schema-pipefail follow-up (2026-07-26):
+- Recorded optimized review workflow run `30215280366`: the live schema check
+  printed `live_missing: ['canonical_facts']`, but the shell pipeline
+  `python scripts/check_schema.py | tee schema-readiness.txt` returned success
+  because `pipefail` was not enabled.
+- Current patch adds `set -o pipefail` so the missing production table stops
+  the workflow at the schema gate and still uploads `schema-readiness.txt`.
+- No migration was run by this patch. Run/apply canonical facts migration only
+  after explicit approval, then rerun the review workflow.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
 - Removed stale per-sprint-only merge wording from the top rules and handoff
   checklist so the Merge Authority section remains the single source of truth.
 
