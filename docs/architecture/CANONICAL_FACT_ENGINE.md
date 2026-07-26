@@ -104,6 +104,17 @@ Excluded deliberately:
 legacy transaction parsing and fact-backed intelligence run side-by-side before
 cutover.
 
+The same module now exposes a confidence bridge:
+
+- `fact_as_confidence_evidence(...)`
+- `compute_confidence_from_facts(...)`
+- `confidence_shadow_parity(...)`
+
+This converts active canonical facts into the signal-like evidence shape used
+by the shared confidence foundation. Facts remain reusable knowledge; the
+confidence engine remains the consumer. The bridge is read-only and does not
+change scoring/matching behavior.
+
 No legacy consumer is removed in this foundational PR.
 
 ## Read-only audit
@@ -119,6 +130,16 @@ Reports:
 - derived facts missing lineage
 - sample fact-backed profiles
 - buyer-intelligence shadow parity rate
+- confidence shadow parity rate
+
+Buyer-intelligence runner sidecar report:
+
+```bash
+python3 scripts/run_buyer_intelligence.py --fact-shadow-report data/output/buyer_fact_shadow.json
+```
+
+The normal buyer-intelligence artifact and score behavior stay unchanged unless
+this optional read-only report flag is passed.
 
 ## Operational command
 

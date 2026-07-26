@@ -149,13 +149,13 @@ ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Comm
 
 current_priority: >
   SPRINT-006 — Canonical Fact Engine: create the reusable deterministic
-  knowledge layer beneath intelligence. Foundation PR #58 is merged. Current
-  follow-up expands deterministic derived facts, profile completeness and
-  contradiction reporting, plus read-only fact inventory / buyer parity audit
-  before production fact writes or consumer cutover.
+  knowledge layer beneath intelligence. Foundation PR #58 and derived/profile
+  PR #59 are merged. Current follow-up adds fact-backed confidence evidence
+  and optional buyer-intelligence shadow reporting before production fact
+  writes or consumer cutover.
 
 next_up:
-  - "SPRINT-006 follow-up — more producers and consumer shadow migrations after parity report"
+  - "SPRINT-006 production fact write dry-run/review packet after consumer shadow reports are reviewed"
   - "SPRINT-005 continuation — Intelligence Calibration & Buyer Validation on fact-backed foundation"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"

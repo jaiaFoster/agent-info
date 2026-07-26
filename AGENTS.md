@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 follow-up, 2026-07-26):
-Canonical Fact Engine Expansion — Derived Facts, Profiles, Consumer Parity
+Current Phase (reconciled by SPRINT-006 consumer-shadow follow-up, 2026-07-26):
+Canonical Fact Engine Expansion — Consumer Shadow Integration
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -354,9 +354,10 @@ proven evidence, persisted with provenance, and reused by buyer intelligence,
 confidence, matching, graph, and future verticals.
 
 Current Milestone:
-Canonical Fact Engine expansion (SPRINT-006): foundation is merged; current
-work expands deterministic derived facts, fact-backed profiles, and read-only
-consumer parity reports before any production fact write or consumer cutover.
+Canonical Fact Engine expansion (SPRINT-006): foundation and derived/profile
+follow-up are merged; current work adds fact-backed confidence evidence and
+buyer-intelligence shadow reports before any production fact write or consumer
+cutover.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -403,13 +404,15 @@ Completed:
 - DATA-009 — Scoring/Matching Reconnection v1 (2026-07-18)
 - MATCH-001 — Matching hardening: buy boxes, persisted matches, outcome tracking (2026-07-18)
 - SPRINT-006 foundation — Canonical Fact Engine foundation PR #58 merged 2026-07-26
+- SPRINT-006 follow-up — Derived facts, profiles, and read-only parity audit PR #59 merged 2026-07-26
 
 Current Priority:
-- SPRINT-006 follow-up — Derived facts, fact-backed profiles, read-only
-  fact inventory/parity audit. No consumer cutover or production fact write.
+- SPRINT-006 follow-up — Fact-backed confidence evidence bridge and optional
+  buyer-intelligence shadow report. No consumer cutover or production fact write.
 
 Next:
-- SPRINT-006 follow-up producers/consumer shadow migrations after parity report.
+- SPRINT-006 production fact write dry-run/review packet after consumer shadow
+  reports are reviewed.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -595,7 +598,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — FOUNDATION MERGED, FOLLOW-UP ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, and consumer shadow paths | Production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006 | Jaia/Codex | CURRENT — CONSUMER SHADOW INTEGRATION ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, and consumer shadow reports | Production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1600,6 +1603,16 @@ Key rules:
 ---
 
 ## Notes From Reconciliation
+
+Registry reconciliation after SPRINT-006 consumer-shadow follow-up (2026-07-26):
+- Marked SPRINT-006 foundation and derived/profile follow-up as merged.
+- Kept SPRINT-006 Current for the fact-backed confidence bridge and optional
+  buyer-intelligence shadow report.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
+- Updated PROJECT_STATE.yaml and ROADMAP.yaml to match this current priority.
+- No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
 
