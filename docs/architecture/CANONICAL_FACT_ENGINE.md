@@ -157,3 +157,18 @@ python3 scripts/run_fact_engine.py --write --max-records 100 --include-derived
 
 Write mode creates canonical facts only. It does not send outreach, activate
 paid providers, or modify scores/matches.
+
+## First-write review packet
+
+Before the first production fact write, generate a read-only packet:
+
+```bash
+python3 scripts/run_fact_engine.py --review-packet --include-derived --max-records 1000
+```
+
+This packet projects asserted facts, previews derived facts from current active
+facts plus eligible projected asserted facts, and records safety flags showing
+that no DB mutation, score write, match write, outreach, paid provider call, or
+consumer cutover occurred. This closes the review gap where a dry-run could
+show asserted fact counts while derived facts remained invisible until after a
+write.
