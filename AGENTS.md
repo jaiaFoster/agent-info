@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 foundation, 2026-07-26):
-Canonical Fact Engine Foundation — Reusable Deterministic Knowledge Layer
+Current Phase (reconciled by SPRINT-006 follow-up, 2026-07-26):
+Canonical Fact Engine Expansion — Derived Facts, Profiles, Consumer Parity
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -354,10 +354,9 @@ proven evidence, persisted with provenance, and reused by buyer intelligence,
 confidence, matching, graph, and future verticals.
 
 Current Milestone:
-Canonical Fact Engine foundation (SPRINT-006): asserted and derived facts are
-stored with evidence/lineage, first deterministic producers run through a
-shared registry, and selected intelligence consumers can run fact-backed
-shadow paths before cutover.
+Canonical Fact Engine expansion (SPRINT-006): foundation is merged; current
+work expands deterministic derived facts, fact-backed profiles, and read-only
+consumer parity reports before any production fact write or consumer cutover.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -403,15 +402,14 @@ Completed:
 - INTEL-002 — Buyer Intelligence Engine v1 (2026-07-18)
 - DATA-009 — Scoring/Matching Reconnection v1 (2026-07-18)
 - MATCH-001 — Matching hardening: buy boxes, persisted matches, outcome tracking (2026-07-18)
+- SPRINT-006 foundation — Canonical Fact Engine foundation PR #58 merged 2026-07-26
 
 Current Priority:
-- SPRINT-006 — Canonical Fact Engine. Foundation PR manual: schema,
-  repository, producer protocol, initial deterministic producers,
-  derived/profile foundation, shadow consumer helpers, docs, tests. No
-  consumer cutover or production fact write until reviewed.
+- SPRINT-006 follow-up — Derived facts, fact-backed profiles, read-only
+  fact inventory/parity audit. No consumer cutover or production fact write.
 
 Next:
-- SPRINT-006 follow-up producers/derivations after foundation merge.
+- SPRINT-006 follow-up producers/consumer shadow migrations after parity report.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -597,7 +595,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — FOUNDATION PR MANUAL | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, and consumer shadow paths | First foundational PR must be manually merged by Jaia per sprint policy; production fact writes and consumer cutover deferred until foundation reviewed | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006 | Jaia/Codex | CURRENT — FOUNDATION MERGED, FOLLOW-UP ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, and consumer shadow paths | Production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1069,6 +1067,12 @@ Registry reconciliation after SPRINT-006 foundation (2026-07-26, Canonical Fact 
 - Added SPRINT-006 to Current. This is the sprint's first foundational PR, so merge is manual by Jaia per the sprint's own `foundational_merge` policy.
 - Updated Current Phase/Milestone/Priority from confidence-calibration wording to Canonical Fact Engine foundation while preserving MVP-001 First Dollar as product objective.
 - Added canonical fact architecture docs and validation packet. No existing ticket was deleted, renumbered, or silently overwritten.
+- No paid provider activation, outreach, scoring/matching write, probabilistic matching, destructive migration, or legacy consumer removal occurred.
+
+Registry reconciliation after SPRINT-006 derived/profile follow-up (2026-07-26):
+- Marked SPRINT-006 foundation as completed/merged and kept SPRINT-006 Current for permitted follow-up work under the sprint's `autonomous_after_foundation` policy.
+- Expanded current phase/milestone to derived facts, fact-backed profiles, and read-only consumer parity reporting.
+- Added no new production write authority. Production fact writes and consumer cutover remain gated on review.
 - No paid provider activation, outreach, scoring/matching write, probabilistic matching, destructive migration, or legacy consumer removal occurred.
 - Added `PROJECT_PROGRESS.md` (diagrams-first executive dashboard) and one line to `scripts/publish_ai_state.py`'s `REQUIRED_ARTIFACTS` so the mirror carries it — a one-line, test-covered (`tests/test_publish_ai_state.py`, 16/16 passing) addition to an ops/governance sync script, not a product or connector change. Documented (did not implement) a mirror-debounce recommendation in the OPS-SYNC-001 runbook, per this ticket's own "improve consistency without increasing mirror scope" instruction.
 - Ran the full test suite as a safety check even though this ticket's own `validation` block requires none: 594 passing, one pre-existing failure (`test_rerun_is_idempotent_for_existing_rows`) confirmed unrelated to this sprint (present on plain `main` before this branch existed, from the same-day OPS-AUTO-002 commit `18d6077`) — same finding SPRINT-004 already surfaced and flagged, not fixed here either, still out of scope.

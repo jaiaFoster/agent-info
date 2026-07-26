@@ -81,6 +81,22 @@ Initial producers:
 
 - `purchase_count` from active `entity_acquired_asset` facts.
 - `transaction_count` from active `transaction_relates_to_asset` facts.
+- `active_months` from dated acquisition facts.
+- `purchases_per_year` from dated acquisition facts.
+- `median_days_between_purchases` from dated acquisition facts.
+- `average_purchase_amount` from acquisition amounts >= 1000.
+- `preferred_jurisdictions` from acquisition fact jurisdiction codes.
+- `evidence_diversity_count` from acquisition raw evidence IDs.
+- `last_transfer_date` from linked transaction facts.
+- `current_ownership_duration_days` from latest transfer date.
+- `ownership_chain_length` from linked transaction facts.
+- `investor_purchase_count` from acquisition facts grouped by jurisdiction.
+- `repeat_buyer_share` from acquisition buyer IDs grouped by jurisdiction.
+
+Excluded deliberately:
+
+- `cash_purchase_ratio` until financing evidence can prove cash/financed state.
+- fuzzy geography or affiliation derivations.
 
 ## Consumer shadow path
 
@@ -89,6 +105,20 @@ legacy transaction parsing and fact-backed intelligence run side-by-side before
 cutover.
 
 No legacy consumer is removed in this foundational PR.
+
+## Read-only audit
+
+```bash
+python3 scripts/audit_fact_engine.py --limit 25
+```
+
+Reports:
+
+- fact inventory by predicate, subject type, producer
+- orphan asserted facts
+- derived facts missing lineage
+- sample fact-backed profiles
+- buyer-intelligence shadow parity rate
 
 ## Operational command
 

@@ -9,21 +9,21 @@
 
 schema_version: 1
 last_updated_utc: "2026-07-26T00:00:00Z"
-last_updated_by: "SPRINT-006 foundation (Canonical Fact Engine)"
+last_updated_by: "SPRINT-006 follow-up (Derived facts, profiles, parity)"
 
 active_expansion_work:
-  ticket: "SPRINT-006 (current foundation PR)"
-  status: "Canonical Fact Engine foundational implementation is current. First foundational PR requires Jaia manual merge."
+  ticket: "SPRINT-006 (current follow-up)"
+  status: "Canonical Fact Engine foundation PR #58 merged. Follow-up expands derived facts, profiles, and read-only parity/audit reporting."
   summary: >
     SPRINT-006 creates the reusable deterministic fact layer beneath
-    intelligence: asserted facts from SourceRecord/RawEvidence, derived facts
-    from input-fact lineage, producer registry, entity profiles, and
-    fact-backed shadow consumer helpers. SPRINT-005 WP1-WP3 has merged and
-    improved confidence/intelligence persistence; SPRINT-006 makes the
-    deterministic knowledge reusable instead of feature-specific.
+    intelligence. Foundation PR #58 added the canonical_facts table,
+    repository, producer registry, eight initial producers, derived/profile
+    foundation, and buyer shadow helper. Current follow-up adds richer
+    derived statistics, profile completeness/contradiction reporting, and a
+    read-only fact inventory/parity audit.
   known_issue: >
-    First SPRINT-006 foundational PR is manual by sprint policy. Production
-    fact writes and legacy consumer cutover remain deferred until reviewed.
+    Production fact writes and legacy consumer cutover remain deferred until
+    reviewed. Current follow-up is non-destructive/read-only aside from code.
   full_detail: "docs/architecture/CANONICAL_FACT_ENGINE.md, docs/operations/SPRINT_006_VALIDATION_PACKET.md, AGENTS.md"
 
 project:
@@ -36,7 +36,7 @@ project:
     County). Core is intentionally market-agnostic.
   repository: "fsassaman-commits/lux-core"
 
-current_phase: "Canonical Fact Engine Foundation — Reusable Deterministic Knowledge Layer"
+current_phase: "Canonical Fact Engine Expansion — Derived Facts, Profiles, Consumer Parity"
 
 current_milestone:
   name: "MVP-001 — First Dollar"
@@ -111,7 +111,7 @@ completed_intelligence_tickets:
   - "SPRINT-004 — Continuous Intelligence Automation (merged PR #55, 2026-07-25)"
 
 current_priority_ticket: "SPRINT-006 — Canonical Fact Engine"
-current_priority_status: "FOUNDATION PR CURRENT — manual Jaia merge required before follow-up autonomous producer/consumer work"
+current_priority_status: "FOUNDATION MERGED — follow-up active for derived facts, profiles, and read-only parity/audit reporting"
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."
