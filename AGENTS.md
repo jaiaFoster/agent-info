@@ -360,8 +360,9 @@ applied in production and the credentialed review workflow produced a
 read-only packet successfully. The first bounded production fact write has
 also completed through a manual workflow with live schema check, pre-write
 review, explicit `write_enabled=true`, and post-write audit/shadow artifacts.
-Consumer cutover remains blocked until those artifacts are reviewed and a
-separate cutover scope is approved.
+Consumer cutover remains blocked until the shadow confidence bridge correctly
+measures source-backed fact evidence without inflating confidence from derived
+profile facts, and until a separate cutover scope is approved.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -427,13 +428,12 @@ Completed:
   facts created, 1,431 active canonical facts total, 0 orphan asserted facts.
 
 Current Priority:
-- SPRINT-006 follow-up — Review first-write artifacts and decide consumer
-  cutover/no-cutover criteria. No consumer cutover yet.
+- SPRINT-006 follow-up — Fix confidence shadow parity so derived/profile facts
+  do not inflate evidence confidence. No consumer cutover yet.
 
 Next:
-- Review first-write artifacts from run `30216145191`, especially buyer
-  parity/confidence parity, then scope consumer cutover or additional fact
-  coverage separately.
+- Rerun buyer/fact shadow after confidence bridge filter, then scope consumer
+  cutover or additional fact coverage separately.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -1744,6 +1744,22 @@ Registry reconciliation after SPRINT-006 first bounded fact write closeout (2026
 - Consumer cutover remains blocked pending artifact review and an explicit
   cutover scope. No paid provider, outreach/contact, scoring write, matching
   write, or probabilistic weakening is authorized by this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006 confidence shadow filter follow-up (2026-07-26):
+- Artifact review found confidence parity at 0.0 because the fact-backed
+  confidence bridge counted derived/profile facts (`purchase_count`,
+  `active_months`, `preferred_jurisdictions`, etc.) as independent evidence,
+  inflating fact-backed confidence to HIGH where legacy transaction evidence
+  remained LOW.
+- Current patch restricts the confidence shadow bridge to asserted,
+  source-backed predicates and maps `entity_acquired_asset` to legacy
+  `transaction_d` evidence type for parity comparison. Canonical fact
+  predicates remain unchanged.
+- Consumer cutover remains blocked pending rerun/review of shadow artifacts.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
