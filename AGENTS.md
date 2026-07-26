@@ -334,8 +334,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 schema-pipefail follow-up, 2026-07-26):
-Canonical Fact Engine Expansion — Production Schema Readiness Workflow Guard
+Current Phase (reconciled by SPRINT-006 bounded fact-write workflow follow-up, 2026-07-26):
+Canonical Fact Engine Expansion — First Bounded Production Fact Write
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -357,9 +357,10 @@ Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
 follow-up, consumer-shadow bridge, first-write review packet builder, and
 manual review workflow are merged. The canonical facts migration has now been
 applied in production and the credentialed review workflow produced a
-read-only packet successfully. Current work hardens the manual migration
-workflow's final schema check so future migration closeouts verify the live DB,
-not only ORM metadata.
+read-only packet successfully. Current work adds the missing manual,
+credentialed, bounded fact-write workflow so production writes use the same
+live schema check, pre-write review, explicit `write_enabled=true` gate, and
+post-write audit/shadow artifacts instead of ad hoc local execution.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -416,14 +417,16 @@ Completed:
   PR #66 merged 2026-07-26
 - SPRINT-006 operational step — Production canonical facts migration applied
   2026-07-26: Alembic `f2a8c913d5b6 -> 6d3f8b2a1c90`.
+- SPRINT-006 follow-up — Manual migration workflow live-schema closeout guard
+  PR #67 merged 2026-07-26.
 
 Current Priority:
-- SPRINT-006 follow-up — Manual migration workflow live-schema closeout guard.
-  No consumer cutover or production fact write.
+- SPRINT-006 follow-up — Manual bounded canonical fact write workflow and first
+  approved bounded fact write. No consumer cutover.
 
 Next:
-- Review the read-only canonical fact packet from run `30215545107`, then scope
-  any approved first fact write separately.
+- Run first bounded canonical fact write only through the new manual workflow,
+  then review post-write audit/shadow artifacts before any consumer cutover.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -1707,6 +1710,20 @@ Registry reconciliation after SPRINT-006 production migration + live-check follo
 - No production fact write, consumer cutover, paid provider, outreach/contact,
   scoring write, matching write, or probabilistic weakening is authorized by
   this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006 bounded fact-write workflow follow-up (2026-07-26):
+- Recorded blocker after Jaia's "Proceed or raise blocker": production
+  `DATABASE_URL` is available only through GitHub Actions secrets, and no
+  bounded manual fact-write workflow existed.
+- Current patch adds `Canonical Fact Engine Bounded Write`, a manual-only
+  workflow with live schema check, pre-write review packet, explicit
+  `write_enabled=true` gate, bounded `max_records`, optional derived facts,
+  post-write audit, buyer fact-shadow report, and always-uploaded artifacts.
+- First bounded write is authorized only through this workflow. Consumer
+  cutover remains blocked pending post-write artifact review.
+- No paid provider, outreach/contact, scoring write, matching write, or
+  probabilistic weakening is authorized by this reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
