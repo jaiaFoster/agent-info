@@ -28,9 +28,8 @@ Rules:
 - Move completed work to Completed.
 - Add newly discovered work to Discovered / Unscoped unless scope is already approved.
 - Update the full Ticket Registry, not only Current Priority.
-- Merge authority: default is Jaia; see "## Merge Authority" below for the
-  narrow, explicit, per-sprint conditions under which an agent may merge
-  its own work instead.
+- Merge authority: see "## Merge Authority" below. Non-consequential patches
+  may auto-merge after gates pass; consequential patches still require Jaia.
 
 ---
 
@@ -1097,7 +1096,7 @@ Registry reconciliation after SPRINT-006 derived/profile follow-up (2026-07-26):
 | Kyle | CTO | Data architecture, adapters, Pinellas pipeline, buy-box matching. |
 | Colton | Data/ML | Scraping, database, AI/ML support. |
 | Claude (AI) | Architect | Handoffs, architecture decisions, ticket system. |
-| Codex | Coding agent | Implements scoped tickets only. May merge only when its own sprint ticket explicitly grants it — see "## Merge Authority" below. |
+| Codex | Coding agent | Implements scoped tickets only. May auto-merge non-consequential PRs after gates pass; consequential changes still require Jaia — see "## Merge Authority" below. |
 
 See "## Merge Authority" below for the full, current, single policy — do
 not treat any shorter restatement elsewhere in this file as an
@@ -1108,26 +1107,23 @@ changes again.
 
 ## Merge Authority
 
-**Default merge authority belongs to Jaia.** Individual sprint
-specifications may explicitly grant autonomous, quality-gated merge
-authority for themselves. Absent that explicit grant, merges remain
-manual — this is the default for essentially every sprint, not an
-exception. (History: this replaced an earlier, stricter "Jaia is sole
-merge authority, no agent ever self-merges, full stop" rule as of
-SPRINT-004/2026-07-25, then was restated in this cleaner form by
-SPRINT-005-GOV/2026-07-25 once two sprints had actually exercised it.)
+**Standing merge rule as of 2026-07-26:** Codex/coding agents may
+auto-merge non-consequential PRs after the required gates pass. Consequential
+PRs still require Jaia's explicit merge approval. Individual sprint
+specifications may narrow this authority further or explicitly grant merge
+authority for a consequential PR, but silence no longer blocks ordinary
+low-risk hygiene/guard/doc/test/refactor patches from auto-merge.
 
 **The rule:** an agent may merge a pull request itself — whether via
 GitHub's auto-merge feature or a direct merge once conditions are met —
 for one specific pull request, only when *all* of the following hold
 simultaneously:
 
-1. The sprint ticket that authorized the work explicitly grants merge
-   authority for this sprint (e.g. `auto_merge_policy.enabled: true`,
-   `worker_may_merge_directly_after_gates: true`, or equivalent unambiguous
-   language naming this sprint). Silence, an old ticket's boilerplate, or
-   an agent's own judgment that a PR "looks done" is never sufficient —
-   the grant must be explicit and per-sprint.
+1. The PR is non-consequential: docs, tests, read-only diagnostics,
+   workflow guardrails, schema-readiness checks, logging, or localized
+   refactors that do not change production data semantics or customer-facing
+   behavior. If a reasonable reviewer could view the change as consequential,
+   treat it as consequential and stop for Jaia.
 2. Every required quality/safety gate for that sprint has actually passed:
    full test suite, mandatory CI checks, no critical security finding, no
    destructive migration, documentation complete, state artifacts
@@ -1161,10 +1157,9 @@ sprint ticket's `merge_policy`/`auto_merge` field can waive these — they
 are a separate, non-mergeable-away layer of approval that exists
 independent of who has merge authority for the code itself.
 
-**Default absent an explicit per-sprint grant:** the original discipline
-still applies — implement, commit, push, open the PR, and stop for Jaia's
-manual merge decision. Most sprints will continue to work this way; the
-auto-merge path above is the deliberate exception, not the new normal.
+**Default for consequential changes:** implement, commit, push, open the PR,
+and stop for Jaia's manual merge decision unless that specific consequential
+action has already been explicitly authorized in chat or ticket scope.
 
 This is distinct from — and does not conflict with — the **Approved
 Operational Policy** below, which governs a separate kind of authority:
@@ -1600,7 +1595,8 @@ Key rules:
 - Verification section must have exact commands and expected output.
 - `dry_run` must be verified explicitly when relevant.
 - Review packet ends with explicit `proceed?`.
-- Merge authority defaults to Jaia; self-merge only under an explicit per-sprint grant (see "## Merge Authority").
+- Merge authority follows "## Merge Authority": non-consequential patches may
+  auto-merge after gates pass; consequential patches still require Jaia.
 - One consolidated review packet at the end of each patch.
 - Confirm deployed commit matches expected before starting production-impacting work.
 - Every PR must reconcile this AGENTS.md Ticket Registry.
@@ -1666,6 +1662,16 @@ Registry reconciliation after SPRINT-006 schema-guard follow-up (2026-07-26):
   scoring write, matching write, or probabilistic weakening is authorized by
   this reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after merge-authority update (2026-07-26):
+- Recorded Jaia's standing instruction that future non-consequential patches
+  may be auto-merged after gates pass.
+- Preserved explicit Jaia approval for consequential changes: migrations,
+  production writes, paid providers, outreach/contact, destructive operations,
+  canonical identity-policy changes, legal/compliance decisions, and new
+  recurring infrastructure cost.
+- Removed stale per-sprint-only merge wording from the top rules and handoff
+  checklist so the Merge Authority section remains the single source of truth.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
 
