@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by BLOCKER-001 operational validation, 2026-07-26):
-Canonical Fact Engine Expansion — Derived Fact Lifecycle Verified
+Current Phase (reconciled by SPRINT-006C confidence semantics patch, 2026-07-26):
+Confidence Parity Calibration & Cutover Decision
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -366,7 +366,9 @@ production across 100 -> 250 -> 500 bounded writes plus a same-batch 500 replay:
 derived facts supersede cleanly, replay creates zero new active facts, asserted
 fact behavior remains unchanged, and shadow parity was re-measured. Consumer
 cutover remains blocked by confidence-parity calibration/review, not by derived
-fact supersession. Infrastructure correctness wins over coverage expansion.
+fact supersession. SPRINT-006C is now resolving that confidence divergence by
+separating legacy-equivalent buyer confidence from enriched canonical
+confidence. Infrastructure correctness wins over coverage expansion.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -438,14 +440,18 @@ Completed:
   and 0 supersessions with active inventory unchanged at 5,316 facts.
 
 Current Priority:
-- SPRINT-006 — Shadow parity review and confidence-calibration decision. Buyer
-  intelligence fact-backed parity is 1.0 after 500-record expansion, but
-  confidence parity remains 0.0, so consumer cutover remains blocked.
+- SPRINT-006C — Confidence Parity Calibration & Cutover Decision. Buyer
+  intelligence fact-backed parity is 1.0 after 500-record expansion. The
+  confidence divergence root cause is semantic mismatch: legacy confidence uses
+  purchase/acquisition evidence only, while enriched canonical confidence can
+  include additional asserted role/ownership/linkage facts. Current decision:
+  retain both with distinct names; validate legacy-equivalent fact confidence
+  as the safe cutover target and keep enriched confidence shadow-only pending
+  calibration.
 
 Next:
-- Review confidence-parity deltas and decide whether to calibrate fact-backed
-  confidence scoring or keep the legacy confidence consumer while facts remain
-  shadow-only.
+- Run SPRINT-006C production read-only confidence audit, verify unexplained
+  delta rate is 0.0, then produce final cutover/shadow report.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -638,7 +644,8 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — FACT ENGINE OPERATIONALLY VERIFIED / CONSUMER CUTOVER BLOCKED | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production migration is applied and BLOCKER-001 derived lifecycle is resolved. Bounded production writes verified at 100 -> 250 -> 500 plus same-batch 500 replay. Consumer cutover remains deferred until confidence-parity/report review; no paid/outreach/probabilistic work from fact engine. | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006C | Jaia/Codex | CURRENT — CONFIDENCE SEMANTICS PATCH IN PROGRESS | Confidence Parity Calibration & Cutover Decision: explain confidence divergence, validate legacy-equivalent fact-backed confidence, keep enriched canonical confidence separately named until calibrated, and produce decision-ready top-buyer cohort preview | No paid/contact/outreach actions. Consumer cutover requires production read-only audit with unexplained_delta_rate 0.0 and explicit rollback posture. | Bounded paid skip-trace pilot readiness recommendation |
+| SPRINT-006 | Jaia/Codex | CURRENT — FACT ENGINE OPERATIONALLY VERIFIED / CONSUMER CUTOVER BLOCKED | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production migration is applied and BLOCKER-001 derived lifecycle is resolved. Bounded production writes verified at 100 -> 250 -> 500 plus same-batch 500 replay. Consumer cutover remains deferred until SPRINT-006C confidence semantics/report review; no paid/outreach/probabilistic work from fact engine. | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1815,6 +1822,23 @@ Registry reconciliation after BLOCKER-001 operational validation (2026-07-26):
   and confidence-calibration decision. No paid provider, outreach/contact,
   scoring write, matching write, or consumer cutover is authorized by this
   reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006C confidence semantics patch (2026-07-26):
+- Added SPRINT-006C as current under the approved autonomous sprint scope:
+  Confidence Parity Calibration & Cutover Decision.
+- Root cause documented: legacy confidence uses purchase/acquisition evidence
+  only; enriched canonical confidence can include additional asserted
+  role/ownership/linkage facts. That is an intentional semantic difference,
+  not a reason to tune weights blindly.
+- Current code separates `legacy_equivalent` fact-backed confidence from
+  `enriched` canonical confidence. Legacy-equivalent confidence is the safe
+  cutover target; enriched confidence remains separately named/shadow-only
+  until calibrated.
+- Added read-only confidence audit workflow/script and decision-ready buyer
+  cohort preview. No paid provider, skip trace purchase, contact enrichment,
+  outreach, scoring write, matching write, canonical fact write, schema
+  migration, or consumer cutover is authorized by this reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
