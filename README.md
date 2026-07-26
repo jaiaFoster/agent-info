@@ -31,6 +31,6 @@ content validation that enforces this on every sync.
 
 ## Synchronization metadata
 
-- Last synchronized: `2026-07-26T19:55:08Z`
-- Source commit: `9e19a4a96985df16dfb485c4c48c5d6a02d057a5`
+- Last synchronized: `2026-07-26T20:08:06Z`
+- Source commit: `b855ed4cbd41209cac16f661890f941dc7946e18`
 - Source repository: `fsassaman-commits/lux-core`
