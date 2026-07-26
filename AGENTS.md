@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 DB-readiness follow-up, 2026-07-26):
-Canonical Fact Engine Expansion — Production Schema Readiness Gate
+Current Phase (reconciled by SPRINT-006 schema-guard follow-up, 2026-07-26):
+Canonical Fact Engine Expansion — Production Schema Readiness Workflow Guard
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -412,8 +412,8 @@ Completed:
 - SPRINT-006 follow-up — Manual credentialed fact review workflow PR #62 merged 2026-07-26
 
 Current Priority:
-- SPRINT-006 follow-up — Production schema readiness gate for canonical facts.
-  No consumer cutover or production fact write.
+- SPRINT-006 follow-up — Production schema readiness workflow guard for
+  canonical facts. No consumer cutover or production fact write.
 
 Next:
 - Run/apply the canonical facts migration only after explicit approval, then
@@ -603,7 +603,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — PRODUCTION SCHEMA READINESS GATE ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production DB currently missing canonical_facts until migration is explicitly run; production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006 | Jaia/Codex | CURRENT — PRODUCTION SCHEMA READINESS WORKFLOW GUARD ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production DB currently missing canonical_facts until migration is explicitly run; review workflow must stop cleanly at schema gate; production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1653,6 +1653,18 @@ Registry reconciliation after SPRINT-006 DB-readiness follow-up (2026-07-26):
   scoring write, matching write, or probabilistic weakening is authorized by
   this reconciliation.
 - Updated PROJECT_STATE.yaml and ROADMAP.yaml to match this current priority.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006 schema-guard follow-up (2026-07-26):
+- Recorded run `30214604282`: live schema readiness now reports
+  `live_missing: ['canonical_facts']` before fact review generation.
+- Current patch guards the workflow so fact review/audit/shadow steps do not
+  cascade into known missing-table crashes when schema readiness fails.
+- No migration was run by this patch. Run/apply canonical facts migration only
+  after explicit approval, then rerun the review workflow.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:

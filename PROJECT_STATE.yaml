@@ -9,11 +9,11 @@
 
 schema_version: 1
 last_updated_utc: "2026-07-26T00:00:00Z"
-last_updated_by: "SPRINT-006 follow-up (Production schema readiness gate)"
+last_updated_by: "SPRINT-006 follow-up (Production schema readiness workflow guard)"
 
 active_expansion_work:
   ticket: "SPRINT-006 (current follow-up)"
-  status: "Canonical Fact Engine PRs #58-#62 merged. First credentialed review run showed production DB is missing canonical_facts; current follow-up hardens live DB schema readiness before rerunning review workflow."
+  status: "Canonical Fact Engine PRs #58-#63 merged. Credentialed review runs show production DB is missing canonical_facts; current follow-up guards the review workflow so it stops cleanly at schema readiness."
   summary: >
     SPRINT-006 creates the reusable deterministic fact layer beneath
     intelligence. Foundation PR #58 added the canonical_facts table,
@@ -28,6 +28,8 @@ active_expansion_work:
     first run showed the connected production database is missing
     canonical_facts, so current work hardens live DB schema readiness and
     blocks review execution until migration is explicitly approved/applied.
+    A follow-up guard prevents downstream audit/shadow steps from crashing
+    after the schema gate fails.
   known_issue: >
     Production fact writes and legacy consumer cutover remain deferred until
     reviewed. Current follow-up is non-destructive/read-only aside from code.
@@ -43,7 +45,7 @@ project:
     County). Core is intentionally market-agnostic.
   repository: "fsassaman-commits/lux-core"
 
-current_phase: "Canonical Fact Engine Expansion — Production Schema Readiness Gate"
+current_phase: "Canonical Fact Engine Expansion — Production Schema Readiness Workflow Guard"
 
 current_milestone:
   name: "MVP-001 — First Dollar"
@@ -118,7 +120,7 @@ completed_intelligence_tickets:
   - "SPRINT-004 — Continuous Intelligence Automation (merged PR #55, 2026-07-25)"
 
 current_priority_ticket: "SPRINT-006 — Canonical Fact Engine"
-current_priority_status: "PRs #58-#62 MERGED — production canonical_facts table missing; live schema readiness gate active before rerunning review workflow"
+current_priority_status: "PRs #58-#63 MERGED — production canonical_facts table missing; workflow guard active before rerunning review workflow"
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."

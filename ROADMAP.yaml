@@ -152,9 +152,10 @@ current_priority: >
   knowledge layer beneath intelligence. Foundation PR #58, derived/profile
   PR #59, consumer-shadow PR #60, and review-packet builder PR #61 are merged.
   PR #62 added a manual credentialed GitHub Actions workflow to generate
-  review artifacts before production fact writes or consumer cutover. The first
-  credentialed run showed production is missing canonical_facts, so the current
-  blocker is live DB schema readiness/migration approval.
+  review artifacts before production fact writes or consumer cutover. The
+  credentialed runs showed production is missing canonical_facts, so the
+  current blocker is live DB schema readiness/migration approval; review
+  workflow now stops cleanly at the schema gate.
 
 next_up:
   - "Explicitly approve/apply canonical_facts production migration, then rerun SPRINT-006 fact review workflow"
