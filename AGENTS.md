@@ -335,8 +335,8 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006 review-workflow follow-up, 2026-07-26):
-Canonical Fact Engine Expansion — Credentialed Review Packet Workflow
+Current Phase (reconciled by SPRINT-006 DB-readiness follow-up, 2026-07-26):
+Canonical Fact Engine Expansion — Production Schema Readiness Gate
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -355,9 +355,11 @@ confidence, matching, graph, and future verticals.
 
 Current Milestone:
 Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
-follow-up, consumer-shadow bridge, and first-write review packet builder are
-merged; current work adds a manual credentialed workflow to generate the review
-packet artifacts before any production fact write or consumer cutover.
+follow-up, consumer-shadow bridge, first-write review packet builder, and
+manual review workflow are merged. First credentialed review run showed the
+production database is missing the `canonical_facts` table, while the old
+schema check only verified ORM metadata. Current work hardens live DB schema
+readiness before any production fact write or consumer cutover.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -407,13 +409,15 @@ Completed:
 - SPRINT-006 follow-up — Derived facts, profiles, and read-only parity audit PR #59 merged 2026-07-26
 - SPRINT-006 follow-up — Fact-backed confidence bridge and buyer shadow report PR #60 merged 2026-07-26
 - SPRINT-006 follow-up — First-write fact review packet builder PR #61 merged 2026-07-26
+- SPRINT-006 follow-up — Manual credentialed fact review workflow PR #62 merged 2026-07-26
 
 Current Priority:
-- SPRINT-006 follow-up — Manual credentialed fact review workflow. No consumer
-  cutover or production fact write.
+- SPRINT-006 follow-up — Production schema readiness gate for canonical facts.
+  No consumer cutover or production fact write.
 
 Next:
-- SPRINT-006 production fact review workflow execution and artifact review.
+- Run/apply the canonical facts migration only after explicit approval, then
+  rerun the canonical fact review workflow.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -599,7 +603,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006 | Jaia/Codex | CURRENT — CREDENTIALED REVIEW WORKFLOW ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, and manual credentialed review workflow | Production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SPRINT-006 | Jaia/Codex | CURRENT — PRODUCTION SCHEMA READINESS GATE ACTIVE | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production DB currently missing canonical_facts until migration is explicitly run; production fact writes and consumer cutover deferred until parity/report review; no paid/outreach/probabilistic work | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -1629,6 +1633,22 @@ Registry reconciliation after SPRINT-006 credentialed review-workflow follow-up 
 - Marked the first-write review-packet builder as merged.
 - Kept SPRINT-006 Current for a manual GitHub Actions workflow that generates
   the credentialed review artifacts using `secrets.DATABASE_URL`.
+- No production fact write, consumer cutover, paid provider, outreach/contact,
+  scoring write, matching write, or probabilistic weakening is authorized by
+  this reconciliation.
+- Updated PROJECT_STATE.yaml and ROADMAP.yaml to match this current priority.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006 DB-readiness follow-up (2026-07-26):
+- Marked the credentialed review workflow as merged.
+- Recorded failed run `30214282846`: the workflow used `DATABASE_URL`, but
+  production ORM queries failed because `canonical_facts` is not present in
+  the connected database.
+- Updated the current priority to harden live DB schema readiness; the prior
+  `scripts/check_schema.py` only verified ORM metadata and could not catch
+  this production schema gap.
+- No migration was run by this patch. Run/apply canonical facts migration only
+  after explicit approval, then rerun the review workflow.
 - No production fact write, consumer cutover, paid provider, outreach/contact,
   scoring write, matching write, or probabilistic weakening is authorized by
   this reconciliation.
