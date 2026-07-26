@@ -14,23 +14,21 @@ decisions:
   - id: "SPRINT-004-governance-flip-confirmation"
     proposed_by: "SPRINT-004"
     question: >
-      SPRINT-004 explicitly authorizes a quality-gated auto-merge policy
-      and grants the worker authority to enable it and merge the sprint's
-      own PR autonomously once all gates pass. Before doing either, the
-      worker paused for one explicit confirmation: main currently has zero
-      branch protection and zero required status checks (confirmed via
-      `gh api`), and repo-level `allow_auto_merge` is `false` -- so making
-      auto-merge real means creating GitHub-level enforcement for the
-      first time, not just restating policy in AGENTS.md.
+      SPRINT-004 explicitly authorized a quality-gated auto-merge policy
+      and granted the worker authority to enable it and merge the sprint's
+      own PR autonomously once all gates pass. The worker paused before
+      doing either GitHub branch-protection/auto-merge configuration or
+      auto-merging, since main had zero branch protection and zero
+      required status checks at the time.
     evidence: >
-      See AGENTS.md's SPRINT-004 registry row and reconciliation note, and
-      the PR description for the exact settings proposed.
-    decision_needed: >
-      Confirm whether to proceed with configuring branch protection +
-      required checks + repo-level auto-merge and then auto-merging this
-      PR, or to review the PR manually first per the prior (SPRINT-003)
-      norm.
-    status: "awaiting decision"
+      Jaia reviewed PR #55 manually and merged it (2026-07-25) rather than
+      having the worker configure GitHub-level auto-merge enforcement --
+      answering the question via the default "manual merge" path rather
+      than by explicitly authorizing the settings flip. Branch protection
+      on `main` remains unconfigured as of SPRINT-005-GOV; no agent has
+      been asked to configure it.
+    decision_needed: "None -- resolved by Jaia's manual merge of PR #55."
+    status: "resolved"
 
   - id: "VACANCY-001"
     proposed_by: "SPRINT-001 / WP3 + WP5 research"
@@ -52,9 +50,18 @@ decisions:
       Should core/models/entities.py and core/db/models.py generalize
       source_county into a structured jurisdiction_code, and add
       jurisdiction scoping to PipelineRun/RawEvidence/SourceRecord?
-    evidence: "Needed for Maricopa/Rensselaer adapters to cleanly extend the shared linker rather than special-case it; flagged as a core/ change requiring explicit sign-off per AGENTS.md's 'if expansion work starts touching core/, stop and get sign-off' rule."
-    decision_needed: "Approve a formal ADR process for this change, or decline."
-    status: "awaiting decision — not implemented"
+    evidence: >
+      Implemented by SPRINT-004 (2026-07-25, migration f2a8c913d5b6):
+      added nullable jurisdiction_code/connector_id columns to
+      pipeline_runs and events -- additive, backward-compatible, zero
+      backfill required. This was within SPRINT-004's own explicitly-
+      authorized scope ("jurisdiction-aware metadata and policy hooks"),
+      so no separate ADR process was needed for this specific, bounded
+      change. A broader jurisdiction_code migration onto RawEvidence/
+      SourceRecord/Asset (beyond pipeline_runs/events) remains
+      unimplemented and would still warrant its own sign-off if proposed.
+    decision_needed: "None for the change already made. A broader extension (RawEvidence/SourceRecord/Asset) would need its own proposal."
+    status: "resolved (bounded scope); broader extension not proposed"
 
   - id: "notion-roadmap-sync"
     proposed_by: "historical (pre-dates SPRINT-001)"

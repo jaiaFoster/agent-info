@@ -9,14 +9,36 @@
 schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
 
-north_star: "Build a durable, reusable data engine before implementing intelligence."
-operating_philosophy_update: >
-  SPRINT-004 (2026-07-25) added an explicit second-phase principle:
-  "spend computation before spending dollars." Before scaling paid skip
-  tracing/outreach, expand the breadth, freshness, and confidence of
-  public evidence LUX already has -- continuous connector scheduling,
-  targeted rescoring, and a versioned confidence layer all serve this,
-  and all remain strictly upstream of any paid action.
+# Reconciled by SPRINT-005-GOV (2026-07-25). The prior infrastructure-era
+# north_star and phase list are preserved in AGENTS.md's "Current Project
+# Status" history, not deleted -- this file states only the current,
+# active version, per this sprint's "no contradictory governance" goal.
+north_star: >
+  Continuously transform public evidence into explainable, high-confidence
+  market decisions before spending money on customer acquisition.
+
+operating_philosophy: >
+  Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification
+  -> Outreach -> Revenue. Each phase gates the next: a decision to spend
+  money identifying a contact should follow an explicit, versioned
+  confidence judgment (core/confidence/foundation.py), not just a raw
+  opportunity score. SPRINT-004 (2026-07-25) built the Evidence/
+  Intelligence/Confidence automation; SPRINT-005 targets Confidence
+  calibration and an explicit Decision policy before any Paid
+  Identification pilot.
+
+next_priority_order:
+  # WP3, SPRINT-005-GOV (2026-07-25). Supersedes any older, narrower
+  # "current_priority: OUTREACH-001" framing below -- OUTREACH-001's
+  # mechanics already shipped; it is no longer the top-ranked priority.
+  1: "Intelligence Quality"
+  2: "Geographic Expansion"
+  3: "Evidence Freshness"
+  4: "Confidence"
+  5: "Decision Policy"
+  6: "Paid Identification"
+  7: "Outreach"
+  8: "First Dollar"
 
 strategic_objective:
   id: "MVP-001"
@@ -45,13 +67,15 @@ path_to_first_dollar:
     shipped: "2026-07-22"
   - step: 7
     name: "Continuous evidence + confidence-gated prioritization (SPRINT-004)"
-    status: "PR open, real bounded validation complete, awaiting Jaia's governance-flip confirmation"
+    status: "live"
+    shipped: "2026-07-25"
     note: >
       Generic connector scheduling, incremental/full-export ingestion,
       evidence events, targeted rescoring, a confidence foundation,
       continuous prioritization, and read-only paid-action simulation.
-      Deliberately upstream of skip tracing/outreach -- expands and
-      qualifies evidence before spending money identifying contacts.
+      Merged (PR #55) by Jaia's manual review. Deliberately upstream of
+      skip tracing/outreach -- expands and qualifies evidence before
+      spending money identifying contacts.
   - step: 8
     name: "Skip trace highest-confidence matches (OUTREACH-003)"
     status: "not yet live"
@@ -123,9 +147,18 @@ expansion_strategy:
 
 ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
 
-current_priority: "OUTREACH-001"
+current_priority: >
+  SPRINT-005 (preview, not yet started) — Intelligence Calibration & Buyer
+  Validation: expand Hillsborough/Pinellas intelligence, improve
+  deterministic linkage, deepen buyer histories, calibrate confidence, and
+  produce a bounded (~25 buyer) decision-ready cohort for the first paid
+  skip-trace validation pilot. Ranks #1 ("Intelligence Quality") on
+  next_priority_order above. OUTREACH-001's own mechanics already shipped
+  (2026-07-22) and are not blocked -- it's simply no longer the top
+  priority under the reconciled ordering.
 
 next_up:
+  - "SPRINT-005 — Intelligence Calibration & Buyer Validation (preview)"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
   - "VAL-001 — Valuation once Asset price context deepens"

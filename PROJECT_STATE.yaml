@@ -9,33 +9,31 @@
 
 schema_version: 1
 last_updated_utc: "2026-07-25T00:00:00Z"
-last_updated_by: "SPRINT-004 (Continuous Intelligence Automation)"
+last_updated_by: "SPRINT-005-GOV (Governance & State Reconciliation)"
 
 active_expansion_work:
-  ticket: "SPRINT-004"
-  status: "PR open, real bounded validation complete, awaiting Jaia's governance-flip confirmation before auto-merge"
+  ticket: "SPRINT-004 (merged, closed) -- SPRINT-005 (preview, not yet started)"
+  status: "SPRINT-004 merged by Jaia (PR #55, manual review, 2026-07-25). SPRINT-005 (Intelligence Calibration & Buyer Validation) previewed but not yet started."
   summary: >
-    Built LUX's continuous-intelligence automation layer: a generic
-    connector scheduling/lifecycle contract, checkpoint-based incremental
-    and full-export ingestion, deterministic evidence events, targeted
-    (not full-batch) intelligence rescoring, a versioned confidence
-    foundation separate from opportunity strength, continuous
+    SPRINT-004 shipped LUX's continuous-intelligence automation layer: a
+    generic connector scheduling/lifecycle contract, checkpoint-based
+    incremental and full-export ingestion, deterministic evidence events,
+    targeted (not full-batch) intelligence rescoring, a versioned
+    confidence foundation separate from opportunity strength, continuous
     prioritization with preserved rank history, read-only paid-action
-    simulation, and per-connector health/failure isolation. Proven against
-    real, live Hillsborough and Pinellas sources through the full new
-    pipeline into an isolated local database (see
-    sprint_004_validation_results.yaml) -- no production write occurred.
-    Governance: replaced "Jaia is sole merge authority, no exceptions"
-    with an explicit, quality-gated, per-sprint auto-merge policy (this
-    sprint's ticket is the first to invoke it). Zero core/ behavioral
-    forks by county; zero Hillsborough/Pinellas regressions.
+    simulation, and per-connector health/failure isolation -- proven
+    against real, live Hillsborough and Pinellas sources (see
+    sprint_004_validation_results.yaml), no production write. Jaia
+    reviewed and merged it manually (the worker paused rather than
+    flipping GitHub's branch-protection/auto-merge settings unilaterally
+    for a first-time governance change -- see AGENTS.md's Merge Authority
+    section, now further reconciled by this sprint).
   known_issue: >
-    Actually flipping GitHub's branch-protection/auto-merge repository
-    settings and merging this sprint's own PR is paused pending one
-    explicit confirmation from Jaia (main currently has zero branch
-    protection today) -- see OPEN_DECISIONS.yaml's
-    SPRINT-004-governance-flip-confirmation entry and the final report.
-  full_detail: "docs/research/SPRINT-004-SUMMARY.md, sprint_004_validation_results.yaml, docs/architecture/CONNECTOR_AUTOMATION_CONTRACT.md, docs/architecture/EVIDENCE_EVENT_MODEL.md, docs/architecture/CONFIDENCE_FOUNDATION.md"
+    None outstanding from SPRINT-004. SPRINT-005 (previewed at the bottom
+    of the SPRINT-005-GOV ticket) has not started; its objective is
+    intelligence/confidence calibration and a bounded (~25 buyer)
+    decision-ready cohort before any paid skip-trace pilot.
+  full_detail: "docs/research/SPRINT-004-SUMMARY.md, sprint_004_validation_results.yaml, PROJECT_PROGRESS.md"
 
 project:
   name: "LUX"
@@ -47,7 +45,7 @@ project:
     County). Core is intentionally market-agnostic.
   repository: "fsassaman-commits/lux-core"
 
-current_phase: "Derived Intelligence Live — Outreach Next"
+current_phase: "Confidence Live — Intelligence Calibration & Decision Policy Next"
 
 current_milestone:
   name: "MVP-001 — First Dollar"
@@ -74,15 +72,19 @@ infrastructure_summary: >
   shifted from building ingestion infrastructure to improving derived
   intelligence and closing the loop to a real transaction.
 
-intelligence_status: "v1 live"
+intelligence_status: "v1 live + continuous automation (SPRINT-004)"
 intelligence_summary: >
   INTEL-001 (seller pressure) and INTEL-002 (buyer demand) v1 are live,
   scoring canonical evidence into explainable, versioned projections.
   DATA-009 reconnected /api/opportunities and /api/matches to those
   projections. MATCH-001 persists ranked candidate matches with outcome
-  tracking. OUTREACH-001 v1 ships human-reviewed, compliance-gated outreach
-  drafts, currently running against mock contact providers pending Lead
-  Engine go-live.
+  tracking. SPRINT-004 added continuous evidence scheduling, targeted (not
+  full-batch) rescoring, a versioned confidence layer distinct from
+  opportunity strength, continuous prioritization with rank history, and
+  read-only paid-action simulation (core/simulation/policy.py) -- all
+  strictly upstream of any paid action. OUTREACH-001 v1 ships
+  human-reviewed, compliance-gated outreach drafts, currently running
+  against mock contact providers pending Lead Engine go-live.
 
 production_snapshot:
   as_of: "2026-07-18"
@@ -115,13 +117,14 @@ completed_intelligence_tickets:
   - "DATA-009 — Scoring/Matching Reconnection v1"
   - "MATCH-001 — Ranked Counterparty Matching Hardening"
   - "LEADGEN-001 — Skip Tracing & Lead Management (runs on mocks until go-live)"
+  - "SPRINT-004 — Continuous Intelligence Automation (merged PR #55, 2026-07-25)"
 
-current_priority_ticket: "OUTREACH-001"
-current_priority_status: "IN PROGRESS / v1 SHIPPED 2026-07-22"
+current_priority_ticket: "SPRINT-005 (preview, not yet started) — Intelligence Calibration & Buyer Validation"
+current_priority_status: "PREVIEWED, NOT STARTED — see ROADMAP.yaml's next_priority_order and current_priority"
 
 known_constraints:
-  - "Merge authority is quality-gated and per-sprint (SPRINT-004, 2026-07-25): a worker may auto-merge only when its sprint ticket explicitly grants it AND every required gate passes. Absent that explicit grant, the default remains Jaia's manual merge decision — see AGENTS.md's Merge Authority section."
-  - "Paid actions, outreach/contact, destructive production operations, and canonical-identity changes always require Jaia's explicit approval regardless of any sprint's merge grant."
+  - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."
+  - "Paid actions, outreach/contact, production-ingestion approval, destructive production operations, and identity-resolution-policy changes always require Jaia's explicit approval regardless of any sprint's merge grant."
   - "Codex/coding agents may run bounded dry-runs and evidence audits without additional approval; linker write mode, scoring/matching writes, outreach/contact actions, and destructive DB operations all require Jaia's explicit approval."
   - "Core never imports from adapters/; adapters import Core schemas only."
   - "Unresolved is preferable to false resolution — no fuzzy matching, no guessed Asset links."

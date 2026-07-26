@@ -28,7 +28,9 @@ Rules:
 - Move completed work to Completed.
 - Add newly discovered work to Discovered / Unscoped unless scope is already approved.
 - Update the full Ticket Registry, not only Current Priority.
-- Jaia merges — Codex never self-merges.
+- Merge authority: default is Jaia; see "## Merge Authority" below for the
+  narrow, explicit, per-sprint conditions under which an agent may merge
+  its own work instead.
 
 ---
 
@@ -333,11 +335,23 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase:
-Derived Intelligence Live — Outreach Next
+Current Phase (reconciled by SPRINT-005-GOV, 2026-07-25):
+Confidence Live — Intelligence Calibration & Decision Policy Next
+
+Both market sides are scored from canonical evidence (INTEL-001 seller
+pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
+persisted candidate matches with outcome tracking (MATCH-001), and (as of
+SPRINT-004) continuous evidence scheduling plus a versioned confidence
+layer distinct from opportunity strength. Per the new operating-philosophy
+sequence (Evidence -> Intelligence -> Confidence -> Decision -> Paid
+Identification -> Outreach -> Revenue), the current gap is not outreach
+mechanics (OUTREACH-001 already ships human-reviewed drafts) — it's
+calibrating intelligence/confidence and defining an explicit decision
+policy for when a bounded cohort is actually ready for paid identification.
+That is SPRINT-005's stated objective.
 
 Current Milestone:
-Both market sides scored from canonical evidence (INTEL-001 seller pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), and 200 persisted candidate matches with outcome tracking (MATCH-001). Next: human-reviewed outreach packets (OUTREACH-001) toward MVP-001 First Dollar.
+Both market sides scored from canonical evidence (INTEL-001 seller pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), and 200 persisted candidate matches with outcome tracking (MATCH-001). Next: intelligence calibration and a bounded (~25 buyer) decision-ready cohort (SPRINT-005) before any paid identification pilot, ahead of MVP-001 First Dollar.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -465,10 +479,31 @@ Confirmed open ingestion-integrity gaps:
 - Parcel ingestion must run in chunked page ranges after DATA-006J1. Pages 0-4
   already exist; next preferred ranges are pages 5-9, 10-14, 15-19, and 20-24.
 
-North Star:
-Build a durable, reusable data engine before implementing intelligence.
+North Star (current, reconciled by SPRINT-005-GOV, 2026-07-25):
+Continuously transform public evidence into explainable, high-confidence
+market decisions before spending money on customer acquisition.
 
-Development Philosophy:
+(Historical note: the original North Star here — "Build a durable,
+reusable data engine before implementing intelligence" — described the
+infrastructure-construction era and is superseded now that infrastructure
+is complete and SPRINT-004 shipped continuous evidence/confidence
+automation. Not deleted from project memory; see the Ticket Registry's
+SPRINT-001 through SPRINT-004 history for how that era played out.)
+
+Operating philosophy (current phase sequence):
+Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification
+-> Outreach -> Revenue.
+
+Each phase gates the next: intelligence is only as good as the evidence
+feeding it; a decision to spend money identifying a contact (paid
+identification) should follow an explicit, versioned confidence judgment,
+not just a raw opportunity score; outreach follows identification, and
+revenue (MVP-001, First Dollar) follows a completed outreach-to-close
+loop. This does not change engineering priority ordering by itself — see
+ROADMAP.yaml's `next_priority_order` for the current sequencing of actual
+work.
+
+Development Philosophy (methodological, within any given ticket):
 1. Understand
 2. Normalize
 3. Store
@@ -552,7 +587,9 @@ Pre-Ingestion Source Rule:
 |---|---|---|---|---|
 | SPRINT-003 | Jaia/Claude | MERGED (PR #54, 2026-07-25), PRODUCTION INGESTION NOT YET APPROVED | Pinellas Production Validation: prove the SPRINT-002 jurisdiction-expansion framework against real, live Pinellas data and eliminate remaining schema assumptions | Downloaded and checksummed real PCPAO samples for `RP_PROPERTY_INFO`/`RP_LEGAL`/`RP_SALES_HISTORY`/`RP_ALL_OWNERS`/`RP_ALL_SITE_ADDRESSES`; discovered and fixed real-world defects SPRINT-002 didn't know about (required `Referer`/`Origin` header or 403, ZIP-wrapped "JSON" responses, trailing-comma-malformed JSON); corrected the assumed 6-table join to the real, verified 3-table join. Rewrote `adapters/real_estate/sources/pinellas.py`, `adapters/real_estate/parsing/pinellas_parcel_parser.py`, `adapters/real_estate/ingestion/pinellas_parcels.py` against real schemas; 22 Pinellas-specific tests (was 24, now covers real-data shapes instead of the old 6-table design), full suite 464 passing, zero Hillsborough regressions, zero `core/` changes. Ran a real bounded 200-parcel ingestion end-to-end in an **isolated local database only** — zero critical integrity failures, verified idempotent on rerun. **No production database write occurred**; `database_write_allowed`/`ingest_supported` remain false, unchanged from SPRINT-002, pending Jaia's explicit approval. Added a new **Merge Authority** section to this file (see below), at the time establishing Jaia as sole merge authority unconditionally — since superseded by SPRINT-004's quality-gated auto-merge policy (see the current Merge Authority section). Deliverables: `docs/research/PINELLAS_SOURCE_VALIDATION.md`, `docs/audits/PINELLAS_DATA_QUALITY_REPORT.md`, `docs/audits/PINELLAS_PERFORMANCE_BASELINE.md`, `docs/guides/COUNTY_ONBOARDING_GUIDE.md`, `docs/guides/ADAPTER_VALIDATION_CHECKLIST.md`, `docs/research/MARICOPA_READINESS_ASSESSMENT.md` (research only, no Maricopa code), `benchmark_results.yaml`, full review packet `docs/research/SPRINT-003-SUMMARY.md`. Stopped after opening the PR per that ticket's instruction; Jaia subsequently reviewed and merged PR #54. The INGEST-002 shared-ownership note from SPRINT-002 was not actively reconciled by Jaia/Kyle during this sprint either — see SPRINT-004's registry reconciliation for how that stopped being treated as a blocker. |
 |---|---|---|---|---|
-| SPRINT-004 | Jaia/Claude | PR OPEN — auto-merge policy explicitly authorized by this ticket, subject to final governance-flip confirmation with Jaia (see final report) | Continuous Intelligence Automation: generic connector scheduling/lifecycle, incremental ingestion + checkpoints, evidence events, targeted intelligence rescoring, a confidence-quality foundation, continuous prioritization, read-only paid-action simulation, and source health/failure isolation — reusable across jurisdictions, zero `core/` behavioral forks by county | New: `ingestion/scheduler.py` (generic scheduling decisions, no per-county branches), `ingestion/checkpoints.py`, `ingestion/evidence_events.py`, `core/scoring/targeted_recalculation.py`, `core/confidence/foundation.py`, `core/prioritization/ranking.py`, `core/simulation/policy.py`, `core/health/connector_health.py`, `scripts/run_scheduler.py`. Extended `adapters/real_estate/sources/connectors.py`'s `SourceDescriptor` with the full connector-automation contract (identity/lifecycle/scheduling/acquisition/processing) plus `validate_connector()`/lifecycle-transition rules; every currently-registered connector validates cleanly. New migration `f2a8c913d5b6` adds `connector_checkpoints`/`rank_history`/`evidence_quarantine` tables plus additive nullable columns on `events`/`pipeline_runs` — zero backfill required, zero existing row invalidated. Fixed a real pre-existing bug found along the way: `core/api/ops_queries.py`'s source-health dashboard only ever read the Hillsborough registry file, silently excluding Pinellas. Added a scheduler-level enforcement of the Pre-Ingestion Source Rule (a connector without `"write"` in `supported_run_modes` cannot be driven into a real DB write through the generic scheduler regardless of `dry_run`/`force`) — a real gap this sprint's own real-data validation surfaced and closed before it shipped. 125+ new tests, full suite passing, zero Hillsborough/Pinellas regressions. Real bounded validation (`sprint_004_validation_results.yaml`): a real live Hillsborough ArcGIS pull through the full scheduler->checkpoint->evidence-event->targeted-rescore->confidence->ranking->simulation pipeline into an isolated local DB, plus two independent real Pinellas fingerprint fetches proving the unchanged-export short-circuit — **no production write occurred**, and Pinellas's pre-existing `database_write_allowed`-gate was proven to still hold, unweakened, through the new scheduler layer. Also fixed: a targeted-rescore/checkpoint interaction bug this sprint's own real-data validation found (a dry-run-only connector's content-hash checkpoint was previously unreachable, since the commit path required `not dry_run`) — corrected so fingerprint bookkeeping (not canonical-data cursors) can commit regardless of dry_run. **Removed the Kyle/INGEST-002 ownership overlap as a blocker** (see registry reconciliation) without claiming the underlying implementation question was actually decided by Jaia/Kyle — it wasn't; it simply stopped gating other work. Rewrote this file's Merge Authority section per this ticket's explicit governance-change requirement (see above) — a scoped, quality-gated auto-merge policy, not a blanket one. |
+| SPRINT-004 | Jaia/Claude | MERGED (PR #55, 2026-07-25, Jaia's manual review — worker paused rather than unilaterally configuring GitHub's branch-protection/auto-merge settings for a first-time governance change) | Continuous Intelligence Automation: generic connector scheduling/lifecycle, incremental ingestion + checkpoints, evidence events, targeted intelligence rescoring, a confidence-quality foundation, continuous prioritization, read-only paid-action simulation, and source health/failure isolation — reusable across jurisdictions, zero `core/` behavioral forks by county | New: `ingestion/scheduler.py` (generic scheduling decisions, no per-county branches), `ingestion/checkpoints.py`, `ingestion/evidence_events.py`, `core/scoring/targeted_recalculation.py`, `core/confidence/foundation.py`, `core/prioritization/ranking.py`, `core/simulation/policy.py`, `core/health/connector_health.py`, `scripts/run_scheduler.py`. Extended `adapters/real_estate/sources/connectors.py`'s `SourceDescriptor` with the full connector-automation contract (identity/lifecycle/scheduling/acquisition/processing) plus `validate_connector()`/lifecycle-transition rules; every currently-registered connector validates cleanly. New migration `f2a8c913d5b6` adds `connector_checkpoints`/`rank_history`/`evidence_quarantine` tables plus additive nullable columns on `events`/`pipeline_runs` — zero backfill required, zero existing row invalidated. Fixed a real pre-existing bug found along the way: `core/api/ops_queries.py`'s source-health dashboard only ever read the Hillsborough registry file, silently excluding Pinellas. Added a scheduler-level enforcement of the Pre-Ingestion Source Rule (a connector without `"write"` in `supported_run_modes` cannot be driven into a real DB write through the generic scheduler regardless of `dry_run`/`force`) — a real gap this sprint's own real-data validation surfaced and closed before it shipped. 125+ new tests, full suite passing, zero Hillsborough/Pinellas regressions. Real bounded validation (`sprint_004_validation_results.yaml`): a real live Hillsborough ArcGIS pull through the full scheduler->checkpoint->evidence-event->targeted-rescore->confidence->ranking->simulation pipeline into an isolated local DB, plus two independent real Pinellas fingerprint fetches proving the unchanged-export short-circuit — **no production write occurred**, and Pinellas's pre-existing `database_write_allowed`-gate was proven to still hold, unweakened, through the new scheduler layer. Also fixed: a targeted-rescore/checkpoint interaction bug this sprint's own real-data validation found (a dry-run-only connector's content-hash checkpoint was previously unreachable, since the commit path required `not dry_run`) — corrected so fingerprint bookkeeping (not canonical-data cursors) can commit regardless of dry_run. **Removed the Kyle/INGEST-002 ownership overlap as a blocker** (see registry reconciliation) without claiming the underlying implementation question was actually decided by Jaia/Kyle — it wasn't; it simply stopped gating other work. Rewrote this file's Merge Authority section per this ticket's explicit governance-change requirement (see above) — a scoped, quality-gated auto-merge policy, not a blanket one. |
+|---|---|---|---|---|
+| SPRINT-005-GOV | Jaia/Claude | AUTO-MERGE AUTHORIZED for this sprint specifically (its own ticket's explicit grant) — see final report for merge status | Governance & State Reconciliation: no product/database/connector/intelligence changes, documentation and governance artifacts only. Removed several leftover contradictory "Jaia merges, never self-merge" statements scattered across this file (the "Who Owns What" table, a "Critical Rules" entry, the "Handoff Standard" checklist, and an "AGENTS.md Update Policy" bullet) that predated SPRINT-004's policy change and were never cleaned up — all now point to one current Merge Authority section instead of restating a stale rule independently. Updated the North Star and added an explicit operating-philosophy phase sequence (Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification -> Outreach -> Revenue) to `AGENTS.md`/`ROADMAP.yaml`, reflecting that infrastructure is done and the current gap is intelligence/confidence calibration and an explicit decision policy, not outreach mechanics. Reconciled stale state: SPRINT-004 was still shown as "PR open, awaiting governance-flip confirmation" in `PROJECT_STATE.yaml`/`ROADMAP.yaml`/`OPEN_DECISIONS.yaml`/`CEO_BRIEF.md`/this file's own ticket row, even though Jaia had already reviewed and merged it (PR #55) manually; the `jurisdiction_code-core-change` decision was still marked "awaiting decision — not implemented" though SPRINT-004 had already implemented it within its own explicitly-authorized scope. Added `PROJECT_PROGRESS.md`, a diagrams-first executive dashboard (geography, roadmap phase sequence, engine/intelligence maturity, current milestone, next priorities), and added it to the OPS-SYNC-001 mirror's `REQUIRED_ARTIFACTS` (one-line, test-covered change to `scripts/publish_ai_state.py`; not a product/behavior change). Documented (did not implement) a mirror debounce recommendation in `docs/runbooks/OPS_SYNC_001_AI_STATE_MIRROR.md`, per this ticket's own "improve consistency without increasing mirror scope" constraint. Zero tests required by this ticket's own `validation` block; ran the full existing suite anyway as a safety check (594 passing, one pre-existing unrelated failure from the same-day OPS-AUTO-002 commit, flagged not fixed, unchanged from SPRINT-004's own finding). |
 |---|---|---|---|---|
 | OPS-SYNC-001 | Jaia/Claude | COMPLETE / OPERATIONALLY VERIFIED — PRs #50, #51, #52 all merged 2026-07-25 | Automated AI-readable project-state mirror: publishes AGENTS.md/PROJECT_STATE.yaml/ROADMAP.yaml/OPEN_DECISIONS.yaml/CEO_BRIEF.md/SPRINT_HISTORY to jaiaFoster/agent-info after every push to main | Live and auto-syncing on every push to main. Idempotency fix (PR #52) merged; reruns against an unchanged source commit now produce zero git diff. `jaiaFoster/lux-core` (the original candidate destination) was reset by the workflow before the retarget fix landed; Jaia reviewed and explicitly chose to leave it as-is rather than revert. See `docs/runbooks/OPS_SYNC_001_AI_STATE_MIRROR.md` |
 |---|---|---|---|---|
@@ -999,34 +1036,52 @@ Registry reconciliation after SPRINT-004 (2026-07-25, Continuous Intelligence Au
 - Added scheduler-level enforcement that a connector without `"write"` in `supported_run_modes` can never be driven into a real DB write, regardless of `dry_run`/`force` — closes a real gap this sprint's own bounded validation surfaced (declaring `supported_run_modes` in the registry was previously advisory metadata only, not actually enforced).
 - No ticket deleted, renumbered, or silently overwritten. No production database write occurred at any point in this sprint (all real network validation wrote only to an isolated local sqlite database; Pinellas's own pre-existing `database_write_allowed` gate was exercised, found intact, and left unweakened).
 
+Registry reconciliation after SPRINT-005-GOV (2026-07-25, Governance & State Reconciliation, WP1-WP7):
+- Added SPRINT-005-GOV to Open — Committed (see row above): a documentation/governance-only sprint, zero product/database/connector/intelligence changes, per its own explicit constraints.
+- Confirmed SPRINT-004's actual resolution: Jaia reviewed PR #55 manually and merged it (2026-07-25) rather than authorizing the worker to configure GitHub branch-protection/auto-merge settings for the first time — the "governance-flip-confirmation" question from SPRINT-004's final report was answered by action (a manual merge), not by an explicit yes to the settings flip. Updated the stale "PR open, awaiting confirmation" status on SPRINT-004's own registry row, in `PROJECT_STATE.yaml`, `ROADMAP.yaml`, `OPEN_DECISIONS.yaml`, and `CEO_BRIEF.md` — all four had continued to describe SPRINT-004 as unmerged after it had, in fact, merged.
+- **Found and fixed several leftover contradictory merge-policy statements** that predated SPRINT-004's rewrite of the main "## Merge Authority" section and were never cleaned up when that section was added: the "AGENTS.md Update Policy" bullet list ("Jaia merges — Codex never self-merges"), the "Who Owns What" table's Codex row and the standalone "Jaia merges all PRs. Never self-merge." line beneath it, Critical Rule #10 ("Never self-merge. Jaia merges."), and the "Handoff Standard" checklist's "Jaia merges — never self-merge." bullet. All four now point to the single current Merge Authority section instead of independently (and, since SPRINT-004, incorrectly) restating an absolute rule. This is exactly the class of contradiction this sprint exists to catch — SPRINT-004 added a correct, detailed policy section but didn't sweep the rest of the file for older statements that now conflicted with it.
+- Replaced the historical, infrastructure-era North Star ("Build a durable, reusable data engine before implementing intelligence") with the current one ("Continuously transform public evidence into explainable, high-confidence market decisions before spending money on customer acquisition"), in both this file and `ROADMAP.yaml`. The old text is preserved as an explicit historical note, not deleted. Added the operating-philosophy phase sequence (Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification -> Outreach -> Revenue) alongside it.
+- Updated "Current Project Status" (Current Phase/Milestone) from "Derived Intelligence Live — Outreach Next" to "Confidence Live — Intelligence Calibration & Decision Policy Next", reflecting that SPRINT-004 already shipped continuous evidence/confidence automation and OUTREACH-001's mechanics already shipped 2026-07-22 — the actual current gap is calibrating intelligence/confidence and defining an explicit decision policy, which is SPRINT-005's (previewed, not yet started) stated objective.
+- Resolved `jurisdiction_code-core-change` in `OPEN_DECISIONS.yaml` (SPRINT-004 already implemented the bounded version of this within its own explicitly-authorized scope; a broader extension remains a distinct, unproposed question) and closed `SPRINT-004-governance-flip-confirmation` as resolved (see above).
+- Added `PROJECT_PROGRESS.md` (diagrams-first executive dashboard) and one line to `scripts/publish_ai_state.py`'s `REQUIRED_ARTIFACTS` so the mirror carries it — a one-line, test-covered (`tests/test_publish_ai_state.py`, 16/16 passing) addition to an ops/governance sync script, not a product or connector change. Documented (did not implement) a mirror-debounce recommendation in the OPS-SYNC-001 runbook, per this ticket's own "improve consistency without increasing mirror scope" instruction.
+- Ran the full test suite as a safety check even though this ticket's own `validation` block requires none: 594 passing, one pre-existing failure (`test_rerun_is_idempotent_for_existing_rows`) confirmed unrelated to this sprint (present on plain `main` before this branch existed, from the same-day OPS-AUTO-002 commit `18d6077`) — same finding SPRINT-004 already surfaced and flagged, not fixed here either, still out of scope.
+- No ticket deleted, renumbered, or silently overwritten. No product, database, connector, or intelligence-scoring code was touched by this patch.
+
 ---
 
 ## Who Owns What
 
 | Person | Role | Owns |
 |---|---|---|
-| Jaia | COO | All PRs. Merges everything. Final say on architecture. |
+| Jaia | COO | Default merge authority for all PRs. Final say on architecture. |
 | Fox (fsassaman) | CEO | UI, GitHub org, Vercel, Supabase deployment/config. |
 | Kyle | CTO | Data architecture, adapters, Pinellas pipeline, buy-box matching. |
 | Colton | Data/ML | Scraping, database, AI/ML support. |
 | Claude (AI) | Architect | Handoffs, architecture decisions, ticket system. |
-| Codex | Coding agent | Implements scoped tickets only. Never self-merges. |
+| Codex | Coding agent | Implements scoped tickets only. May merge only when its own sprint ticket explicitly grants it — see "## Merge Authority" below. |
 
-Jaia merges all PRs. Never self-merge.
+See "## Merge Authority" below for the full, current, single policy — do
+not treat any shorter restatement elsewhere in this file as an
+independent rule; this section is the one to update if the policy ever
+changes again.
 
 ---
 
 ## Merge Authority
 
-**SPRINT-004 (2026-07-25) superseded the prior "Jaia is sole merge
-authority, no agent ever self-merges" policy with an explicit,
-quality-gated auto-merge policy.** The change is scoped and conditional,
-not a blanket grant — read the whole section before assuming a given PR
-qualifies.
+**Default merge authority belongs to Jaia.** Individual sprint
+specifications may explicitly grant autonomous, quality-gated merge
+authority for themselves. Absent that explicit grant, merges remain
+manual — this is the default for essentially every sprint, not an
+exception. (History: this replaced an earlier, stricter "Jaia is sole
+merge authority, no agent ever self-merges, full stop" rule as of
+SPRINT-004/2026-07-25, then was restated in this cleaner form by
+SPRINT-005-GOV/2026-07-25 once two sprints had actually exercised it.)
 
-**The rule:** an agent may enable auto-merge and allow a pull request to
-merge itself, for one specific pull request, only when *all* of the
-following hold simultaneously:
+**The rule:** an agent may merge a pull request itself — whether via
+GitHub's auto-merge feature or a direct merge once conditions are met —
+for one specific pull request, only when *all* of the following hold
+simultaneously:
 
 1. The sprint ticket that authorized the work explicitly grants merge
    authority for this sprint (e.g. `auto_merge_policy.enabled: true`,
@@ -1055,13 +1110,17 @@ required gate set, and only then re-enables it. A check is never bypassed,
 disabled, or narrowed merely to unblock a merge.
 
 **Always requires Jaia's explicit approval in chat, independent of any
-sprint's merge grant:** paid actions (skip tracing, contact-data purchases,
-any provider spend), sending outreach or contacting a seller/buyer,
-executing a contract, any destructive or irreversible production database
-operation, a change to canonical identity semantics, a new recurring
-infrastructure cost, and any decision requiring legal/licensing judgment.
-No sprint ticket's `merge_policy`/`auto_merge` field can waive these —
-they are a separate, non-mergeable-away layer of approval.
+sprint's merge grant:** activating a paid provider (skip tracing, contact-
+data purchases, any provider spend), sending outreach or contacting a
+seller/buyer, approving a new source for real **production ingestion**
+(flipping `database_write_allowed`/`ingest_supported` per the
+Pre-Ingestion Source Rule), any destructive or irreversible production
+database operation, a change to canonical **identity-resolution policy**
+(deterministic-identity rules, fuzzy-matching introduction), a new
+recurring infrastructure cost, and any **legal/compliance** decision. No
+sprint ticket's `merge_policy`/`auto_merge` field can waive these — they
+are a separate, non-mergeable-away layer of approval that exists
+independent of who has merge authority for the code itself.
 
 **Default absent an explicit per-sprint grant:** the original discipline
 still applies — implement, commit, push, open the PR, and stop for Jaia's
@@ -1122,7 +1181,7 @@ Codex must never automatically trigger:
 7. No code behavior change without a verification plan.
 8. No secrets in files, PRs, logs, or chat.
 9. Never fabricate Asset links. Unresolved is better than false resolution.
-10. Never self-merge. Jaia merges.
+10. Merge authority defaults to Jaia; an agent may merge only when its own sprint ticket explicitly grants quality-gated autonomous merge authority (see "## Merge Authority").
 
 ---
 
@@ -1502,7 +1561,7 @@ Key rules:
 - Verification section must have exact commands and expected output.
 - `dry_run` must be verified explicitly when relevant.
 - Review packet ends with explicit `proceed?`.
-- Jaia merges — never self-merge.
+- Merge authority defaults to Jaia; self-merge only under an explicit per-sprint grant (see "## Merge Authority").
 - One consolidated review packet at the end of each patch.
 - Confirm deployed commit matches expected before starting production-impacting work.
 - Every PR must reconcile this AGENTS.md Ticket Registry.

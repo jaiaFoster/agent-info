@@ -1,6 +1,8 @@
 # CEO Brief — LUX
 
-*Last updated: 2026-07-25. Derived from AGENTS.md; regenerate whenever the Ticket Registry's Current Project Status changes.*
+*Last updated: 2026-07-25 (SPRINT-005-GOV governance reconciliation). Derived from AGENTS.md; regenerate whenever the Ticket Registry's Current Project Status changes.*
+
+*For a visual, diagrams-first snapshot (geography, roadmap, engine/intelligence maturity, current milestone), see [`PROJECT_PROGRESS.md`](PROJECT_PROGRESS.md). This document remains the narrative brief and decision log.*
 
 ## What LUX is
 
@@ -110,21 +112,33 @@ tracing — and what it would cost — at different confidence thresholds,
 **without ever calling a paid provider**. Proven against real, live
 Hillsborough and Pinellas data end-to-end into an isolated database (no
 production write). **This sprint also changed governance**: the prior
-"only Jaia merges, ever" rule is now a quality-gated, per-sprint auto-merge
-policy — this ticket is the first to invoke it — with paid/destructive/
-external actions still hard-gated on your explicit approval regardless.
-**One thing is paused for your input before this merges itself**: `main`
-currently has zero branch-protection rules today, so making auto-merge
-real means creating that enforcement for the first time, not just
-updating policy text. See "what needs a decision" below and the final
-report for the exact PR/settings.
+"only Jaia merges, ever" rule became a quality-gated, per-sprint auto-merge
+policy, with paid/destructive/external actions still hard-gated on your
+explicit approval regardless. You reviewed PR #55 manually and merged it
+(2026-07-25) — the worker paused rather than unilaterally flipping GitHub's
+branch-protection/auto-merge settings for a first-time governance change,
+consistent with "default is manual merge unless explicitly granted."
+
+## Governance & state reconciliation (SPRINT-005-GOV, 2026-07-25)
+
+A documentation/governance-only sprint (no product or database changes):
+removed several leftover contradictory "Jaia merges, never self-merge"
+statements scattered across `AGENTS.md` that predated the SPRINT-004
+policy change and were never cleaned up; restated the merge policy in one
+clean, current form; updated the North Star and operating philosophy to
+**Evidence → Intelligence → Confidence → Decision → Paid Identification →
+Outreach → Revenue**, reflecting that infrastructure is done and the
+current gap is intelligence/confidence calibration, not outreach
+mechanics; reconciled stale state (SPRINT-004 shown as "PR open" when it
+had already merged, a resolved `jurisdiction_code` decision still marked
+"awaiting"); and added `PROJECT_PROGRESS.md`, a diagrams-first executive
+dashboard. This sprint's own PR carries the same explicit,
+self-scoped auto-merge grant SPRINT-004 introduced — see its ticket for
+the exact conditions.
 
 ## What needs a decision from you right now
 
 See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:
-- **SPRINT-004's governance flip**: confirm whether to proceed with
-  configuring branch protection + required checks + auto-merge on `main`
-  and letting this sprint's PR merge itself, or review it manually first.
 - Three new proposals from SPRINT-001's research (a cheap new vacancy
   signal, a heir/inherited-property signal) are still sitting unscoped.
 - **Pinellas production approval**: schema verification is done and a
@@ -147,14 +161,15 @@ See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:
 
 ## Standing rules that changed, and what didn't
 
-Merge authority is now quality-gated and per-sprint, not an unconditional
-"Jaia only" rule (SPRINT-004) — see AGENTS.md's Merge Authority section for
+Default merge authority is yours; a sprint may explicitly grant a worker
+quality-gated autonomous merge for itself (SPRINT-004, then restated
+cleanly by SPRINT-005-GOV) — see AGENTS.md's Merge Authority section for
 the exact conditions. What did **not** change: paid actions (skip tracing,
-contact purchases, any provider spend), outreach/contact, destructive
-production database operations, and canonical-identity changes still
-always require your explicit approval in chat, no matter what a sprint
-ticket's merge policy claims. This mirror repository
-(`jaiaFoster/agent-info`) is a read-only, automatically generated snapshot
-for AI/executive inspection; it is not a place for direct development, and
-nothing here is a substitute for reading `AGENTS.md` in the canonical
-repository when precision matters.
+contact purchases, any provider spend), outreach/contact, production-
+ingestion approval, destructive production database operations, and
+identity-resolution-policy changes still always require your explicit
+approval in chat, no matter what a sprint ticket's merge policy claims.
+This mirror repository (`jaiaFoster/agent-info`) is a read-only,
+automatically generated snapshot for AI/executive inspection; it is not a
+place for direct development, and nothing here is a substitute for reading
+`AGENTS.md` in the canonical repository when precision matters.
