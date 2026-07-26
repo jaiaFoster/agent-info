@@ -335,8 +335,9 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006C confidence semantics patch, 2026-07-26):
-Confidence Parity Calibration & Cutover Decision
+Current Phase (reconciled by SPRINT-006C final closeout, 2026-07-26):
+Canonical Fact Engine validated; bounded paid-contact pilot requires separate
+approval
 
 Both market sides are scored from canonical evidence (INTEL-001 seller
 pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
@@ -364,11 +365,13 @@ review, explicit `write_enabled=true`, and post-write audit/shadow artifacts.
 BLOCKER-001 derived-fact lifecycle has been operationally validated in
 production across 100 -> 250 -> 500 bounded writes plus a same-batch 500 replay:
 derived facts supersede cleanly, replay creates zero new active facts, asserted
-fact behavior remains unchanged, and shadow parity was re-measured. Consumer
-cutover remains blocked by confidence-parity calibration/review, not by derived
-fact supersession. SPRINT-006C is now resolving that confidence divergence by
-separating legacy-equivalent buyer confidence from enriched canonical
-confidence. Infrastructure correctness wins over coverage expansion.
+fact behavior remains unchanged, and shadow parity was re-measured. SPRINT-006C
+then resolved the confidence divergence by separating legacy-equivalent buyer
+confidence from enriched canonical confidence. Production read-only audit
+confirmed unexplained confidence delta rate `0.0`; the legacy-equivalent
+fact-backed confidence contract is parity-safe, while enriched canonical
+confidence remains separately named and shadow-only until calibrated.
+Infrastructure correctness wins over coverage expansion.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -438,20 +441,25 @@ Completed:
   `30218371159` succeeded with 87 derived supersessions / 0 rejected facts, and
   500-record replay run `30218699070` created 0 asserted facts, 0 derived facts,
   and 0 supersessions with active inventory unchanged at 5,316 facts.
+- SPRINT-006C — Confidence Parity Calibration & Cutover Decision complete:
+  PR #73 merged at `921ece2468a31fd0cb5688bfc6402fc1c7bf362e`; confidence
+  audit run `30220188229` verified exact legacy-equivalent match rate 1.0,
+  unexplained delta rate 0.0, no duplicate active facts, and no paid/contact/
+  outreach/consumer-cutover side effects; canonical fact review run
+  `30220240383` verified buyer intelligence parity 1.0 and confidence parity
+  1.0 against the legacy-equivalent contract.
 
 Current Priority:
-- SPRINT-006C — Confidence Parity Calibration & Cutover Decision. Buyer
-  intelligence fact-backed parity is 1.0 after 500-record expansion. The
-  confidence divergence root cause is semantic mismatch: legacy confidence uses
-  purchase/acquisition evidence only, while enriched canonical confidence can
-  include additional asserted role/ownership/linkage facts. Current decision:
-  retain both with distinct names; validate legacy-equivalent fact confidence
-  as the safe cutover target and keep enriched confidence shadow-only pending
-  calibration.
+- NEXT DECISION — SKIP-PILOT-001 / ENRICH-001 bounded paid-contact validation
+  scope. SPRINT-006C recommends a separately approved, bounded paid skip-trace
+  validation pilot using production gates plus legacy-equivalent confidence
+  only. No paid provider, contact enrichment, outreach sending, or enriched-
+  confidence production cutover is authorized until Jaia explicitly approves
+  that pilot.
 
 Next:
-- Run SPRINT-006C production read-only confidence audit, verify unexplained
-  delta rate is 0.0, then produce final cutover/shadow report.
+- If approved separately: SKIP-PILOT-001 — bounded paid skip-trace validation
+  over the decision-ready buyer cohort, with no automatic outreach.
 - OUTREACH-002 — Response capture after OUTREACH-001.
 - SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
 - VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
@@ -644,8 +652,8 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-006C | Jaia/Codex | CURRENT — CONFIDENCE SEMANTICS PATCH IN PROGRESS | Confidence Parity Calibration & Cutover Decision: explain confidence divergence, validate legacy-equivalent fact-backed confidence, keep enriched canonical confidence separately named until calibrated, and produce decision-ready top-buyer cohort preview | No paid/contact/outreach actions. Consumer cutover requires production read-only audit with unexplained_delta_rate 0.0 and explicit rollback posture. | Bounded paid skip-trace pilot readiness recommendation |
-| SPRINT-006 | Jaia/Codex | CURRENT — FACT ENGINE OPERATIONALLY VERIFIED / CONSUMER CUTOVER BLOCKED | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production migration is applied and BLOCKER-001 derived lifecycle is resolved. Bounded production writes verified at 100 -> 250 -> 500 plus same-batch 500 replay. Consumer cutover remains deferred until SPRINT-006C confidence semantics/report review; no paid/outreach/probabilistic work from fact engine. | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
+| SKIP-PILOT-001 | Jaia/Codex | NEXT DECISION — SEPARATE APPROVAL REQUIRED | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only | Requires Jaia approval, provider/compliance readiness, and no automatic outreach. SPRINT-006C recommended readiness from a confidence-semantics perspective only. | Validated contact source path for MVP-001 |
+| SPRINT-006 | Jaia/Codex | COMPLETE — FACT ENGINE OPERATIONALLY VERIFIED / LEGACY-EQUIVALENT CONFIDENCE READY | Canonical Fact Engine: reusable asserted/derived fact layer over existing evidence, with provenance, idempotency, producer registry, derived facts, profiles, confidence evidence bridge, consumer shadow reports, first-write review packets, manual credentialed review workflow, and live DB schema readiness | Production migration is applied; BLOCKER-001 derived lifecycle resolved; bounded production writes verified at 100 -> 250 -> 500 plus same-batch 500 replay; SPRINT-006C verified legacy-equivalent confidence parity. Enriched canonical confidence remains shadow-only until calibrated. | Fact-backed buyer intelligence, confidence, graph/intelligence reuse, more deterministic knowledge per entity |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
 ### Open — Committed
@@ -743,6 +751,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Status | Evidence |
 |---|---|---|
+| SPRINT-006C — Confidence Parity Calibration & Cutover Decision | COMPLETE 2026-07-26 | PR #73 merged at `921ece2468a31fd0cb5688bfc6402fc1c7bf362e`; confidence audit workflow run `30220188229` passed with `exact_match_rate=1.0`, `unexplained_delta_rate=0.0`, no duplicate active facts, no provider/contact/outreach/cutover side effects, and cutover decision `retain_both_with_distinct_names`. Canonical fact review run `30220240383` passed with buyer intelligence parity 1.0 and confidence parity 1.0 against the legacy-equivalent contract. Final report: `docs/operations/SPRINT_006C_FINAL_REPORT.md`. |
 | SPRINT-001 — Geographic Expansion Research & Expansion Framework | COMPLETE 2026-07-24, research/documentation only, no code/schema/ingestion changes | Five work packages: market ranking (`docs/research/market-ranking.md`, top 5 = Pinellas/Maricopa/Orange/Pasco/Duval, Rensselaer kept with a population-decline risk note, Austin/Salt Lake deprioritized as non-disclosure states), public dataset inventory (`docs/research/data-source-inventory.md`, 108 datasets), opportunity-signal research (`docs/research/opportunity-signals.md`, 31 signals), expansion architecture review (`docs/architecture/expansion-review.md`, flags the legal-description normalizer as the top scaling risk and two `core/` touch points needing explicit sign-off before use), open-ended opportunity scan (`docs/research/future-opportunities.md`). Full synthesis in `docs/research/SPRINT-001-SUMMARY.md`. Validates and adds execution detail to the existing Expansion Strategy; does not reverse it. Proposed as new Discovered/Unscoped items below: VACANCY-001, HEIR-001 |
 | LEADGEN-001 — Skip Tracing & Lead Management | LANDED ON MAIN 2026-07-22 (forward-merged from feat/leadgen-phase1 / PR #47 work by Kyle); RUNS ON MOCKS until go-live | Self-contained `core/leadgen` module: property import, licensed skip-trace adapters (BatchData + mock), DNC/litigator/suppression compliance gate, lead pipeline, compliant exports. 11 `lead_*`/trace tables via migration `c4a71d02e8b9` (re-parented onto `a1c4e9d27b31`). Leads/Compliance/Reports dashboard tabs. 104 module tests. Go-live steps still pending: run migration, record attestation, add BatchData/DNC.com keys |
 | DATA-ROBUST-001 — Signal Robustness Batch 1 | COMPLETE / OPERATIONALLY VERIFIED 2026-07-18 | (1) Manual ingestion workflow gains date-range + budget inputs for the 7/5-7/17 missed-distress backfill; (2) `hillsborough_clerk_instrument_detail` registry flag `database_write_allowed` enabled with Tim's approval to scale legal-desc enrichment toward SCORE-LIVE-001 thresholds; (3) `/api/ops/summary` now reports per-signal-type freshness (the two-week distress outage would have been visible in a day); (4) absentee-owner signal derivation (`scripts/derive_absentee_signals.py` + workflow, 810 candidates from parcel site-vs-mailing mismatch, INTEL-001 weight 0.15 as readiness multiplier). 4 new tests (280 total) |
@@ -1839,6 +1848,26 @@ Registry reconciliation after SPRINT-006C confidence semantics patch (2026-07-26
   cohort preview. No paid provider, skip trace purchase, contact enrichment,
   outreach, scoring write, matching write, canonical fact write, schema
   migration, or consumer cutover is authorized by this reconciliation.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after SPRINT-006C final closeout (2026-07-26):
+- SPRINT-006C is complete. Production read-only confidence audit run
+  `30220188229` verified exact legacy-equivalent match rate 1.0,
+  unexplained delta rate 0.0, no duplicate active facts, and no paid/contact/
+  outreach/consumer-cutover side effects.
+- Canonical fact review run `30220240383` verified buyer intelligence parity
+  1.0 and confidence parity 1.0 against the legacy-equivalent contract.
+- SPRINT-006 is complete from the canonical fact-engine and legacy-equivalent
+  confidence readiness perspective. Enriched canonical confidence remains
+  separately named and shadow-only until calibrated; this is intentional, not a
+  blocker.
+- Added SKIP-PILOT-001 as the next decision item. It requires separate Jaia
+  approval and provider/compliance readiness; SPRINT-006C only recommends that
+  a bounded paid skip-trace validation pilot is now reasonable from a confidence
+  semantics perspective.
+- No paid provider, skip trace purchase, contact enrichment, outreach sending,
+  scoring write, matching write, canonical fact write, schema migration, or
+  production consumer cutover occurred in this closeout.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:
