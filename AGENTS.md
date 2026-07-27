@@ -93,8 +93,9 @@ it, and to closing the loop to a real transaction**:
   scoring canonical evidence into explainable, versioned projections.
 - DATA-009 reconnected `/api/opportunities` and `/api/matches` to those
   projections, replacing an earlier ad hoc scorer/matcher (now deprecated).
-- MATCH-001 persists ranked candidate matches with outcome tracking (200
-  candidates as of the last snapshot).
+- MATCH-001 persists ranked candidate matches with outcome tracking, now
+  recomputed daily and covering every possible property-linked-opportunity x
+  scored-buyer pairing rather than a capped top-N slice (UI-002, 2026-07-26).
 - OUTREACH-001 v1 ships human-reviewed, compliance-gated outreach drafts over
   those matches — currently running against the Lead Engine's mock contact
   providers until go-live (LEADGEN-002 through LEADGEN-005).
@@ -757,6 +758,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Status | Evidence |
 |---|---|---|
+| UI-002 — Properties/Owners/Buyers/Pairings Intelligence Views | COMPLETE 2026-07-26 | Four new dashboard pages reading already-approved INTEL-001/INTEL-002/MATCH-001 projections, at Tim's explicit request to make DB contents/scores/pairings readable without querying Supabase directly. Properties (`/api/properties`, new): every canonical Asset LEFT JOINed to its property-linked (`subject_type='asset'`) INTEL-001 pressure score; unscored properties shown honestly rather than hidden, with an All/Scored/Unscored filter. Owners (`/api/owners`, new): INTEL-001 pressure scores on unlinked participants (`subject_type='participant'`) — kept as a separate page rather than merged into Properties, since most pressure-scored subjects are still unlinked to a confirmed parcel and blending them would misrepresent property-level coverage (Critical Rule #9). Buyers: existing `/api/intel/buyers`, no backend change. Pairings: `/api/matches?source=snapshot`, now paginated (`offset` param, `total_matches`; both `created_at` and `matched_at` exposed), showing every persisted MATCH-001 row ranked by match_score with a click-through score-component breakdown. Enabled full-coverage ranking by removing `market_matching.rank_matches()`'s `top_buyers_per_opportunity` cap (now `None`-able) and `scripts/run_match_snapshot.py`'s `TOP_OPPORTUNITIES=20` cap, plus adding an explicit `subject_type == 'asset'` filter so only property-linked pressure (not the larger unlinked-owner pool) enters matching — per Tim's explicit request ('I want all possible pairings shown... ranked... update daily') and his subsequent confirmation ('yes its ok') after being shown the real production scale (~141 eligible sellers x 226 buyers, ~31.7k possible pairs) before writing code. New `.github/workflows/match-snapshot.yml` schedule (`0 11 * * *`, daily) runs the snapshot fully unattended in write mode by default — see the new Approved Operational Policy exception below for the kill-switch and reasoning. 690 tests passing (was 677 before this patch: 10 new `tests/test_property_owner_rows.py`, 3 new `TestLoadProjectionsScope` cases in `tests/test_match_001.py`), zero regressions. |
 | SPRINT-006C — Confidence Parity Calibration & Cutover Decision | COMPLETE 2026-07-26 | PR #73 merged at `921ece2468a31fd0cb5688bfc6402fc1c7bf362e`; confidence audit workflow run `30220188229` passed with `exact_match_rate=1.0`, `unexplained_delta_rate=0.0`, no duplicate active facts, no provider/contact/outreach/cutover side effects, and cutover decision `retain_both_with_distinct_names`. Canonical fact review run `30220240383` passed with buyer intelligence parity 1.0 and confidence parity 1.0 against the legacy-equivalent contract. Final report: `docs/operations/SPRINT_006C_FINAL_REPORT.md`. |
 | SPRINT-001 — Geographic Expansion Research & Expansion Framework | COMPLETE 2026-07-24, research/documentation only, no code/schema/ingestion changes | Five work packages: market ranking (`docs/research/market-ranking.md`, top 5 = Pinellas/Maricopa/Orange/Pasco/Duval, Rensselaer kept with a population-decline risk note, Austin/Salt Lake deprioritized as non-disclosure states), public dataset inventory (`docs/research/data-source-inventory.md`, 108 datasets), opportunity-signal research (`docs/research/opportunity-signals.md`, 31 signals), expansion architecture review (`docs/architecture/expansion-review.md`, flags the legal-description normalizer as the top scaling risk and two `core/` touch points needing explicit sign-off before use), open-ended opportunity scan (`docs/research/future-opportunities.md`). Full synthesis in `docs/research/SPRINT-001-SUMMARY.md`. Validates and adds execution detail to the existing Expansion Strategy; does not reverse it. Proposed as new Discovered/Unscoped items below: VACANCY-001, HEIR-001 |
 | LEADGEN-001 — Skip Tracing & Lead Management | LANDED ON MAIN 2026-07-22 (forward-merged from feat/leadgen-phase1 / PR #47 work by Kyle); RUNS ON MOCKS until go-live | Self-contained `core/leadgen` module: property import, licensed skip-trace adapters (BatchData + mock), DNC/litigator/suppression compliance gate, lead pipeline, compliant exports. 11 `lead_*`/trace tables via migration `c4a71d02e8b9` (re-parented onto `a1c4e9d27b31`). Leads/Compliance/Reports dashboard tabs. 104 module tests. Go-live steps still pending: run migration, record attestation, add BatchData/DNC.com keys |
@@ -1159,6 +1161,13 @@ Registry reconciliation after PROVIDER-BATCHDATA-001 (2026-07-26, real BatchData
 - No production database write, paid provider call, outreach, or scoring/matching change occurred. `SKIPTRACE_API_KEY` in the repo's GitHub Actions secrets is a BatchData **sandbox** (free, simulated, non-chargeable) token per Tim, not a production key.
 - `PROVIDER-DNC-001` (DNC.com scrub adapter) remains the next open blocker on this path; Tim has not yet provisioned a DNC.com account.
 
+Registry reconciliation after UI-002 (2026-07-26, Properties/Owners/Buyers/Pairings dashboard views, at Tim's explicit request — "make the UI more readable... clear what properties/assets we have... motivated seller score... potential buyers... what buyers should be paired with what potential sellers"):
+- Added `UI-002` to Completed: four new read-only dashboard pages (`ui/src/IntelView.jsx`) plus two new API endpoints (`api/properties.py`, `api/owners.py`), wired into `ui/src/App.jsx` nav/routing. No new score computation — every number shown is a pre-existing, versioned INTEL-001/INTEL-002 projection or persisted MATCH-001 row; the API layer displays, it does not compute (runtime separation rule, unchanged).
+- Removed the artificial caps that made MATCH-001's snapshot a top-20-opportunities x top-10-buyers slice rather than "all possible pairings" as Tim explicitly asked for. This was confirmed with Tim before implementation (real-scale numbers shown first: ~141 x 226 ≈ 31.7k pairs) per this project's own governance culture around automated-write scope changes.
+- Added a second, narrow Approved Operational Policy exception (daily unattended MATCH-001 snapshot writes) alongside the existing OPS-AUTO-002 linker exception — see that section above for the kill-switch (`MATCH_SNAPSHOT_SCHEDULE_MODE`).
+- Did not touch `LEADGEN-002`'s already-flagged-stale status text or the already-flagged-wrong provider env-var-name documentation (both noted, not fixed, in the PROVIDER-BATCHDATA-001 reconciliation above) — out of scope for this patch, still open.
+- No production database write, paid provider call, outreach, identity-resolution change, or destructive operation occurred in this patch. No existing ticket was deleted, renumbered, or silently overwritten.
+
 ---
 
 ## Who Owns What
@@ -1266,7 +1275,21 @@ rollback-logged, and hard-aborted on any invalid Asset FK or link conflict.
 Deterministic-commit batch ceiling raised from 2 to 500 for the reviewed-artifact path only (owner-authorized 2026-07-25, coverage scale-up): bulk commits are still deterministic exact matches from an immutable reviewed artifact, single graph-snapshot pair, rollback-logged, invalid-FK aborted; legacy/offset writes stay bounded at 2. Kill-switch/throttle: set repo variable `OPS_AUTO_002_SCHEDULE_MODE` to `report`
 (pause all writes) or `ingest` (pause link writes). Jaia to be kept informed.
 This is the ONLY sanctioned automatic linker write; the rule below still applies
-to every other linker/scoring/matching write.
+to every other linker/scoring/matching write, except the narrower MATCH-001
+exception immediately below.
+
+**Authorized exception — MATCH-001 daily snapshot automation (Tim/Fox,
+2026-07-26):** the `match-snapshot.yml` schedule (daily, 11:00 UTC) MAY write a
+full recompute of persisted MATCH-001 rows with no per-run human approval. This
+is sanctioned because it is a pure derived-scoring recompute over already-approved,
+versioned INTEL-001/INTEL-002 projections — no new evidence is fabricated and no
+identity/asset linking happens on this path, and `core/scoring/persistence.py`'s
+`upsert_match()` still refuses to overwrite any row a human has already progressed
+past `candidate`. Kill-switch/throttle: set repo variable
+`MATCH_SNAPSHOT_SCHEDULE_MODE` to `report` to pause scheduled writes (dry-run
+only); unset or `write` (default) runs full unattended daily writes. Manual
+dispatch is unaffected and keeps its own explicit `write` input, defaulting to
+dry-run. See UI-002 (Completed) for the full change this exception belongs to.
 
 Codex must never automatically trigger:
 
