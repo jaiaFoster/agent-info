@@ -60,6 +60,29 @@ ingestion runbook.
 (`("dry_run",)` by default; must include `"write"` before a connector can
 ever be driven into a real DB write through the generic scheduler).
 
+## DATA-015A additions
+
+- **`dependencies`**: tuple of `connector_id` values this connector's
+  evidence depends on being ingested first (e.g.
+  `hillsborough_clerk_instrument_detail` depends on `hillsborough_clerk_dpm`
+  because it enriches Transaction rows that connector creates). Advisory
+  today — the generic scheduler does not yet sequence runs by this field —
+  but `validate_dependencies(descriptors)` (takes the whole loaded
+  registry, unlike the per-descriptor `validate_connector()`) checks every
+  reference resolves to a real `connector_id` and that nothing depends on
+  itself.
+- **`health_policy`** (computed property, not a stored field): a single
+  dict view assembled from `retry_max_attempts`, `backoff_seconds`,
+  `max_runtime_seconds`, `freshness_threshold_hours`, and
+  `expected_cadence_hours` — the scheduling fields above remain the one
+  source of truth; this just gives dashboards and generated docs one name
+  to ask for instead of five separate lookups.
+- **Generated documentation**: `scripts/generate_source_registry_docs.py`
+  renders the full registry (every jurisdiction, every source, all fields
+  above plus `dependencies`/`health_policy`, and validation error counts)
+  into `docs/sources/SOURCE_REGISTRY.md`. Regenerate after any registry
+  edit rather than hand-editing that file.
+
 ## Validation
 
 `validate_connector(descriptor) -> list[str]` (empty = valid) checks:
