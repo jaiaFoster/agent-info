@@ -184,7 +184,7 @@ next_up:
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
   - "VAL-001 — Valuation once Asset price context deepens"
-  - "DATA-016 — bulk HCPA parcel-catalog ingestion (downloads.hcpafl.org): first real bounded write verified 2026-07-28 (Tim-approved) -- 10 records, 0 errors, 215 observations created, assets correctly merged onto existing FeatureServer-sourced Asset rows by folio (assets_created=0, assets_existing=10), confirming shared canonical_identity_key design works in production; next is a larger bounded scale-up run, still requires per-run approval"
+  - "DATA-016 — bulk HCPA parcel-catalog ingestion (downloads.hcpafl.org): first real bounded write verified 2026-07-28 (10 records, 0 errors, assets correctly merged onto existing FeatureServer Asset rows by folio). Scale-up to 5,000 records attempted 2026-07-28/29: run #3 (un-chunked commit) timed out at 30min with zero rows landed (clean rollback, no corruption); fixed with COMMIT_BATCH_SIZE=250 chunked commits + 60min timeout; run #4 (fixed code) still hit the 60min cap but landed 2,750/5,000 records cleanly (0 errors, 254 net-new assets, 2,496 merged onto existing assets) before cancellation -- real throughput (~1.3s/record) means a full 5,000-record run needs ~110min, and the connector has no resume/offset capability yet, so a naive re-run would re-walk already-landed records instead of progressing. Decision needed: longer timeout vs. build a --start-offset resume parameter."
 
 completed_since_last_roadmap:
   - "DATA-015D checkpoint-persistence fix (2026-07-28) — the manual bounded parcel-ingestion script now writes ConnectorCheckpointModel on every successful run, matching the scheduler path"
