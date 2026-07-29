@@ -184,7 +184,7 @@ next_up:
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
   - "VAL-001 — Valuation once Asset price context deepens"
-  - "DATA-016 — bulk HCPA parcel-catalog ingestion (downloads.hcpafl.org), scoped 2026-07-28 per DATA-015D's ~1.41% coverage finding; first step is a non-mutating source-probe of the parcel XLS/ZIP file's real schema"
+  - "DATA-016 — bulk HCPA parcel-catalog ingestion (downloads.hcpafl.org): probe complete 2026-07-28, confirmed postback download mechanism, no HTTP Range support, and PARCEL_SPREADSHEET.xls is actually a dBASE III .dbf (531,201 records, 47 fields, FOLIO-keyed) not a row-capped legacy .xls; parser target (it vs. HCparcel_4_public.zip) still open, no adapter code written"
 
 completed_since_last_roadmap:
   - "DATA-015D checkpoint-persistence fix (2026-07-28) — the manual bounded parcel-ingestion script now writes ConnectorCheckpointModel on every successful run, matching the scheduler path"
