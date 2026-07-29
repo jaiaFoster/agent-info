@@ -7,7 +7,7 @@
 # changes materially.
 
 schema_version: 1
-last_updated_utc: "2026-07-25T00:00:00Z"
+last_updated_utc: "2026-07-27T20:48:00Z"
 
 # Reconciled by SPRINT-005-GOV (2026-07-25). The prior infrastructure-era
 # north_star and phase list are preserved in AGENTS.md's "Current Project
@@ -168,21 +168,35 @@ market_discovery:
 ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
 
 current_priority: >
-  SPRINT-006 — Canonical Fact Engine: create the reusable deterministic
-  knowledge layer beneath intelligence. Foundation PR #58, derived/profile
-  PR #59, consumer-shadow PR #60, and review-packet builder PR #61 are merged.
-  PR #62 added a manual credentialed GitHub Actions workflow to generate
-  review artifacts before production fact writes or consumer cutover. The
-  credentialed runs showed production is missing canonical_facts, so the
-  current blocker is live DB schema readiness/migration approval; review
-  workflow now stops cleanly at the schema gate.
+  SPRINT-006 — Canonical Fact Engine is now COMPLETE: the canonical_facts
+  production migration was applied 2026-07-26, bounded fact writes were
+  verified at 100 -> 250 -> 500 records plus a same-batch 500 replay, and
+  SPRINT-006C (PR #73) verified exact legacy-equivalent confidence parity
+  (1.0 match rate, 0.0 unexplained delta). That unblocked the current
+  priority, SKIP-PILOT-001 — a bounded, confidence-gated paid skip-trace
+  validation pilot over ~25 buyers, approved by Jaia. PROVIDER-BATCHDATA-001
+  (real BatchData adapter) shipped 2026-07-26. The only remaining blocker to
+  a live-write pilot run is PROVIDER-DNC-001 (DNC.com scrub adapter, still a
+  stub) — the compliance scrub is a hard gate, not optional.
 
 next_up:
-  - "Explicitly approve/apply canonical_facts production migration, then rerun SPRINT-006 fact review workflow"
-  - "SPRINT-005 continuation — Intelligence Calibration & Buyer Validation on fact-backed foundation"
+  - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter (only remaining SKIP-PILOT-001 live-write blocker)"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
   - "VAL-001 — Valuation once Asset price context deepens"
+  - "Bulk parcel-catalog ingestion — DATA-015D (2026-07-27) found only ~1.41% of the 527,882-parcel Hillsborough catalog is ingested; recommends HCPA's downloads.hcpafl.org bulk-file portal over continued DATA-006L/OPS-AUTO-002 page-at-a-time pagination; not yet a numbered ticket"
+
+completed_since_last_roadmap:
+  # SPRINT-005 (proper, WP1-WP4) is complete and distinct from SPRINT-005-GOV
+  # (governance-only, already reflected below). DATA-014 and DATA-015 are new
+  # tickets that landed after this file's last update and were previously
+  # missing from both AGENTS.md's registry and this roadmap.
+  - "SPRINT-006 — Canonical Fact Engine (complete 2026-07-26)"
+  - "SPRINT-006C — Confidence Parity Calibration & Cutover Decision (complete 2026-07-26, PR #73)"
+  - "PROVIDER-BATCHDATA-001 — BatchData Skip-Trace Provider Adapter (done 2026-07-26)"
+  - "DATA-014 — Entity Classification Fix & Owner-to-Parcel Linking Evidence (complete 2026-07-27)"
+  - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27, PRs #57/#76/#77)"
+  - "DATA-015 — Hillsborough Evidence Expansion & Source Canonicalization (complete 2026-07-27, PRs #78-#85)"
 
 recently_proposed_not_yet_approved:
   # Discovered/Unscoped items from SPRINT-001, pending Jaia's decision
