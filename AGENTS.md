@@ -62,7 +62,8 @@ build before implementing intelligence:
   distress-signal mining, code enforcement, and bulk HCPA parcel ingestion all
   run in production on scheduled crons.
 - **Immutable provenance/evidence pipeline** — every ingested file is
-  content-hashed and archived to a private Supabase bucket before parsing;
+  content-hashed and archived to a private Railway Storage bucket before
+  parsing (migrated off Supabase Storage under INFRA-001, 2026-07-30);
   every canonical record traces back to the raw evidence it came from
   (DATA-006A, OPS-RAW-001, `ARCHIVE_VERIFIED`).
 - **Deterministic normalization** — adapters output source-faithful,
@@ -611,7 +612,8 @@ Investigation always precedes implementation. No implementation ticket should be
 - SourceRecord is first-class and represents source-faithful upstream records.
 - Incremental migration is preferred; coherent larger patches are allowed because current data volume is limited.
 - PostgreSQL remains the system of record.
-- Supabase Storage remains the intended raw evidence store.
+- Railway Storage Buckets are the raw evidence store (migrated off Supabase
+  Storage under INFRA-001, 2026-07-30).
 - Ingestion remains batch-first and replayable.
 - BuyerProfile and SellerCandidate are projections, not canonical truth.
 - No graph database or heavy streaming stack without demonstrated need.
@@ -621,7 +623,7 @@ Investigation always precedes implementation. No implementation ticket should be
 
 Approved Architecture Scaffold:
 1. PostgreSQL is the system of record.
-2. Supabase Storage holds raw evidence.
+2. Railway Storage Buckets hold raw evidence.
 3. Raw evidence is immutable and content-addressable by hash.
 4. Every ingestion belongs to a PipelineRun.
 5. Every canonical record retains source-evidence provenance.
@@ -640,14 +642,14 @@ Runtime Separation Rule:
 - Frontend displays data.
 - API exposes endpoints and may trigger jobs.
 - Workers and CLI perform ingestion, scraping, parsing, scoring, matching, and heavy analysis.
-- Core ingestion services must not depend on Vercel, React, or dashboard code.
+- Core ingestion services must not depend on the API hosting layer (Railway), React, or dashboard code.
 - Any scheduled runtime must call the same ingestion service used by CLI.
 
 Pre-Ingestion Source Rule:
 - Every new public source must exist in the machine-readable source registry.
 - Every new public source must have a prose inventory entry.
 - Probe workflows are non-mutating and must not require `DATABASE_URL` or
-  Supabase secrets.
+  Railway Bucket secrets.
 - Production ingestion requires source probe artifact review, raw archive plan,
   canonical projection plan, bounded limits, idempotency plan, and Jaia approval.
 - Registry flags `database_write_allowed` and `ingest_supported` must both be
@@ -664,7 +666,6 @@ Pre-Ingestion Source Rule:
 | SKIP-PILOT-001 | Jaia/Codex | CURRENT — APPROVED / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. | Validated contact source path for MVP-001 |
 | PROVIDER-DNC-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement DNC.com/DNCScrub phone scrub adapter against current official API docs, with mocked HTTP tests, sanitized errors, fail-closed statuses, and `live_ready=true` only when configured | Requires DNC.com account/API key/SAN and current API contract. | Callable-contact validation for paid pilot |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
-| INFRA-001 | Tim/Claude (Cowork) | OPEN — IN PROGRESS, discovery complete, execution started 2026-07-29 | Migrate the whole project off Vercel (hosting/deploy) and off Supabase (Postgres + Storage) onto Railway. Blank-slate on data (no dump/restore, fresh ingestion from zero). Code architecture unchanged except where Vercel/Supabase coupling forces it. | Discovery handoff: `RAILWAY_MIGRATION_HANDOFF.md`. **Decisions made 2026-07-29 (Tim, in chat):** (1) Object storage — Railway Storage Buckets (native S3-compatible, resolves the handoff's open §2b question; no external R2/B2 needed). (2) API consolidation — full FastAPI rewrite of the 46 `api/**/*.py` Vercel handlers, NOT a thin shim; characterization tests captured against live Vercel behavior first (only 1 existing test file covers `api/*`), then route-group-by-route-group migration verified against those fixtures before cutover. (3) Cron/scheduling — consolidate ALL scheduled jobs (the 2 Vercel Crons plus the existing 33 GitHub Actions workflows) into GitHub Actions as the single location; cheaper than Railway native cron (Railway crons bill as metered compute, GitHub Actions free tier already covers the existing 33 workflows) and avoids splitting scheduling across two systems. (4) Old Supabase project (`dtahutnstyekamzphgjl`) — delete once migration is fully verified and cut over, not before. | Resolves the Supabase free-tier disk-quota lockout (see "Supabase free-tier disk quota blocking DATA-016 completion" row below) as a side effect — moving off Supabase entirely removes that recurring-cost decision. Removes Vercel's `MAX_FILES`/`MAX_SOURCE_RECORDS` serverless-timeout ceiling on cron ingestion once cut over. |
 
 ### Open — Committed
 
@@ -805,6 +806,7 @@ no further manual dispatch needed unless the kill-switch is engaged or a real er
 
 | Ticket | Status | Evidence |
 |---|---|---|
+| INFRA-001 — Vercel/Supabase -> Railway Infrastructure Migration | COMPLETE 2026-07-30 | Full migration off Vercel (hosting/deploy) and Supabase (Postgres + Storage) onto Railway, executed in 15 tracked steps with Tim approving every consequential cutover point in chat. **Data:** blank-slate by design (no dump/restore) — fresh Railway Postgres provisioned, `alembic upgrade head` applied, verified empty pre-cutover. **Storage:** Railway Storage Buckets (native S3-compatible) replace Supabase Storage; `adapters/real_estate/ingestion/downloader.py` rewritten against the S3 API; bucket credentials added to both GitHub Actions secrets and the live Railway service. **API:** all 46 `api/**/*.py` Vercel serverless handlers rewritten as one consolidated FastAPI app (`server/main.py` + `server/routes_*.py`), verified route-group-by-route-group against a characterization-test harness captured from live Vercel behavior before cutover; the SPA-catch-all-breaks-405 regression and a Railway `$PORT` shell-expansion bug were both caught and fixed via this process, not assumed correct. **Deploy:** `railway.json` (Dockerfile builder, multi-stage Node+Python build) + a permanent `ui-build.yml` CI check. **Scheduling:** the 2 Vercel Crons (ingest, distress-enrichment) moved into GitHub Actions alongside the existing 33 workflows, consolidating all scheduling into one system; `vercel.json`'s `crons` array removed in the same merge that activated the GitHub Actions schedules. **Cutover verification:** `DATABASE_URL` GitHub Actions secret and the live Railway service both repointed at Railway Postgres; a real manual dispatch of the Hillsborough ingestion workflow succeeded end-to-end (100 source_records, 50 events, 200 observations, `ARCHIVE_VERIFIED`) and was independently confirmed via a read-only DB check using the same secret. A live-app data-visibility discrepancy (`/api/data/readiness` showing zero rows against a database independently confirmed to hold the new data) was root-caused via a temporary diagnostic endpoint to a stale connection pool on a pre-ingestion deployment, not a wrong-database or code bug — resolved by a fresh deploy, confirmed stable, diagnostic route removed (repo diff-clean against pre-diagnostic `main`). **Decommission:** Vercel project deleted (Tim); Supabase project (`dtahutnstyekamzphgjl`) paused via the Supabase API — reversible; full deletion left as a manual, explicitly-irreversible action for Tim to take via the Supabase dashboard. All INFRA-001 branches (`infra-001-fastapi-rewrite`, `infra-001-storage-rewrite`, `infra-001-github-actions-cron`, `infra-001-railway-migration`) fully merged to `main`, 0 commits ahead. Repo-wide grep confirmed no live code path still reads `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` (only comments, tests, and one dead fallback branch remain, matching pre-existing repo convention of leaving historical narrative text as-is). |
 | DATA-015 — Hillsborough Evidence Expansion & Source Canonicalization | COMPLETE 2026-07-27 (7 self-merged PRs #78-#85 under the ticket's own AUTO merge_authority grant, each independently CI-gated) | WP1 (DATA-015A) Source Registry Canonicalization: added `dependencies` (with `validate_dependencies()`) and `health_policy` registry fields; `scripts/generate_source_registry_docs.py` renders `docs/sources/SOURCE_REGISTRY.md`. WP2 (DATA-015B) Hillsborough Source Inventory: full 21-category inventory (`docs/research/DATA-015B-hillsborough-source-inventory.md`); confirmed foreclosure/lis_pendens/probate signals are substantially live today via the existing Clerk daily-index miner, not "not started"; found a new high-value RealAuction tax-deed excess-proceeds source. WP3 (DATA-015C) Evidence Expansion: root-caused all 4 `code_enforcement` weekly-workflow failures as a vendor-side (Hillsborough County) search-function outage, not a scraper bug; fixed a real gap regardless (the script wrote no PipelineRunModel audit row, making failures invisible to the ops dashboard); registered the connector `degraded` with honest notes; updated the tax-deed/excess-proceeds registry entry with confirmed direct-fetch URLs. WP4 (DATA-015D) Full Parcel Coverage Audit: real production check found `assets_total` 7,456 against a probed live-FeatureServer total of 527,882 Hillsborough parcels — **~1.41% coverage**; root-caused why incremental page-range expansion had stalled (`ConnectorCheckpointModel` empty for `hillsborough_parcels` despite real successful runs — the manual bounded-ingestion path never writes to it) and that parcel geometry is never fetched (`return_geometry=False` hardcoded); recommends HCPA's `downloads.hcpafl.org` bulk-file portal over continued 100-record pagination against a 527K-record catalog as the right mechanism to close a gap this size. WP5 (DATA-015E) Source Observability: extended `ops_sources()` with cumulative per-source funnel metrics (downloaded/parsed/canonicalized/derived_facts). WP6 (DATA-015F) County Expansion Framework: formalized county-onboarding readiness into a 9-item checklist, 7 of 9 computed live via `GET /api/ops/onboarding_checklist`; verified against all 4 real jurisdictions. 772 tests passing at final state. See `docs/research/DATA-015-FINAL-REPORT.md`. **Reframes coverage-growth priority**: the ~1.41% parcel-catalog finding is a more precise, lower-level root cause than DATA-006L's subdivision-targeted campaign addresses — DATA-006L/OPS-AUTO-002's page-at-a-time approach cannot realistically close a 527K-record gap; a bulk-file ingestion path is the recommended next coverage ticket. |
 | SPRINT-005 — Intelligence Calibration & Buyer Validation | COMPLETE 2026-07-27 (PR #57 WP1-WP3 manual-merged by Jaia 2026-07-26; PR #76 WP4 self-merged under the ticket's autonomous_after_foundation grant; PR #77 final summary) | WP1 Evidence Expansion: fixed a stale-`running` PipelineRun wedging `/api/ops/summary` asset-resolution classification; applied a previously-missing SPRINT-004 migration to production (LEADGEN-001/OUTREACH-001 tables had silently never existed since 2026-07-22); corrected AGENTS.md's stale parcel page-range guidance; linker dry-run found 14 genuine deterministic candidates among 429 unresolved transactions. WP2 Intelligence Calibration: `core/scoring/persistence.py` is now the single source of truth for score/match upserts (used by seller-pressure, buyer-intelligence, match-snapshot, and targeted-recalculation runners); fixed a silent divergence between full-batch and targeted match-persistence `components_json` shapes; added rank-history recording to full-batch match persistence. WP3 Confidence Engine: `ALGORITHM_VERSION` bumped `SPRINT-004-CONF-v1` -> `SPRINT-005-CONF-v2`; added `transaction_as_evidence()` in `core/confidence/foundation.py` so buyer-side evidence reuses `compute_confidence()` directly (no parallel buyer-confidence implementation). WP4 Buyer Validation Cohort: `core/intel/buyer_validation_cohort.py` — read-only, confidence-gated (min_confidence_index 0.45), recency-gated (<=730d), active-jurisdiction-gated buyer cohort selection with human-readable rationale per member; shipped as CLI report + `/api/intel/buyer_cohort` endpoint. 756 tests passing at final merge (20 new this sprint). See `docs/research/SPRINT-005-SUMMARY.md`. |
 | DATA-014 — Entity Classification Fix & Owner-to-Parcel Linking Evidence | COMPLETE 2026-07-27 | At Tim's explicit request ('lets do both of these', in response to a recommendation on how to match unlinked motivated-seller Owners to a property address). Two parts, discovered/proposed together during that research: **(1) Entity misclassification fix** — `adapters/real_estate/classification/entity_classifier.py`: insurance/corporate participants (GEICO, Progressive, State Farm, Allstate, USAA, etc.) were being classified `individual` because they matched no existing keyword. Added generic corporate-suffix keywords (INSURANCE/ASSURANCE/MUTUAL/INDEMNITY/CASUALTY/ENTERPRISES/SERVICES/COMPANY/AGENCY) plus a `KNOWN_CORPORATE_NAMES` exact-match set (~60 carriers) for names with no generic keyword. Also fixed a separate, independent bug found during this work: `core/scoring/persistence.py`'s upsert functions dropped `participant_type`/`name`/`normalized_name` on UPDATE (only set on first INSERT), silently reverting reclassifications on the next scoring pass — fixed with test coverage. Backfilled production: 37 participants + 47 score rows reclassified `individual` -> `corporation` (`scripts/reclassify_participant_types.py`, run via direct Supabase SQL since no `DATABASE_URL`/`gh` CLI is available in this environment — candidates SQL-prefiltered then confirmed against the real `classify_entity_type()` locally before writing precise `UPDATE ... WHERE id IN (...)`). **(2) Owner-to-parcel linking evidence** — new additive `owner_asset_links` table (migration `8a4d1f76c2e3`) recording deterministic, order-independent token-matches between an unlinked motivated-seller Participant's name (Clerk civil-record format, "LAST FIRST MIDDLE") and `parcel.owner_name` observations already ingested per Asset (property-appraiser format, "First Middle Last", joint owners, Trustee suffixes) — `scripts/link_owners_to_assets.py`. Per Critical Rule #9 (never fabricate Asset links), a single-candidate match is `resolved`; multiple candidates are recorded `ambiguous` and never auto-resolved. Pure evidence table — does not touch `ScoreModel` or promote participant-level scores to asset-level ones. Backfilled production (same SQL-first approach, faithfully replicating the tokenizer/matcher logic and `uuid.uuid5(NAMESPACE_URL, ...)` link-id scheme so future real script runs stay idempotent): 123 resolved + 822 ambiguous links across 159 participants. `api/owners.py` / `core/api/data_queries.py`'s `owner_rows()` now surfaces `likely_property_address` (resolved) and `candidate_property_count` (ambiguous) per owner; `OwnersView` in `ui/src/IntelView.jsx` shows a new "Likely property" column with an explicit evidence-not-fact tooltip. 747 tests passing via pytest (up from 690 after UI-002 — 57 new: 23 `tests/test_entity_classifier.py`, 5 `tests/test_reclassify_participant_types.py`, 23 `tests/test_link_owners_to_assets.py`, 4 new cases in `tests/test_property_owner_rows.py`, 2 new persistence-refresh cases in `tests/test_scoring_persistence.py`), zero regressions; the pre-existing standalone `tests/test_code_enforcement.py` script (100 checks, run directly, not pytest-collected — a pre-existing repo pattern unrelated to this patch) also still passes. Parcel coverage (~6,729 of Hillsborough County's full roll, DATA-006L) caps the achievable match rate independent of matcher quality — this ceiling rises as DATA-006L coverage expands. |
@@ -1221,6 +1223,15 @@ Registry reconciliation after UI-002 (2026-07-26, Properties/Owners/Buyers/Pairi
 - Did not touch `LEADGEN-002`'s already-flagged-stale status text or the already-flagged-wrong provider env-var-name documentation (both noted, not fixed, in the PROVIDER-BATCHDATA-001 reconciliation above) — out of scope for this patch, still open.
 - No production database write, paid provider call, outreach, identity-resolution change, or destructive operation occurred in this patch. No existing ticket was deleted, renumbered, or silently overwritten.
 
+Registry reconciliation after INFRA-001 (2026-07-30, Vercel/Supabase -> Railway infrastructure migration, Tim/Claude in Cowork, executed over multiple sessions with Tim approving each consequential cutover step in chat):
+- Moved `INFRA-001` from Current to Completed. Full migration executed and verified live: Railway Postgres (blank-slate, `alembic upgrade head`), Railway Storage Buckets replacing Supabase Storage, all 46 Vercel `api/**/*.py` handlers rewritten as one consolidated FastAPI app (`server/`), Railway deploy config (Dockerfile builder), all scheduling (2 former Vercel Crons + 33 existing workflows) consolidated into GitHub Actions, `DATABASE_URL`/bucket secrets swapped in both GitHub Actions and the live Railway service, `.env.example` updated.
+- Two real regressions were caught and fixed during verification, not assumed away: a Starlette catch-all route breaking 405 semantics (fixed with an exception-handler-based SPA fallback instead), and a Railway `startCommand` not shell-expanding `$PORT` (fixed by wrapping in `sh -c`).
+- A live cutover discovery not anticipated in the original plan: Vercel was still auto-deploying on every push to `main` throughout the whole migration (not Railway-only, as originally assumed) — corrected mid-session once found, and 7 pre-existing GitHub Actions workflows still referencing old `SUPABASE_*` secret names were found and swapped to `RAILWAY_BUCKET_*` while confirming decommission readiness.
+- End-to-end live verification: a real manual dispatch of the Hillsborough ingestion workflow succeeded (100 source_records, 50 events, 200 observations, `ARCHIVE_VERIFIED`), independently confirmed via a read-only DB check against the same `DATABASE_URL` GitHub Actions secret. A subsequent live-app data-visibility discrepancy (`/api/data/readiness` reading zero rows against a database independently confirmed non-empty) was diagnosed with a temporary, since-removed debug endpoint and traced to a stale connection pool on a pre-ingestion deployment — resolved by a fresh deploy, not a data-loss or wrong-database issue.
+- Decommission: Vercel project deleted (Tim, directly). Supabase project (`dtahutnstyekamzphgjl`) paused (reversible) rather than deleted — per this project's standing rule against permanent/irreversible actions being taken unilaterally, final deletion is left as an explicit manual step for Tim via the Supabase dashboard, not performed here.
+- Updated the "Approved Provisional Decisions" / "Approved Architecture Scaffold" Supabase Storage lines, the Runtime Separation Rule's Vercel mention, the Pre-Ingestion Source Rule's Supabase-secrets mention, Critical Rule #5, Repo Structure, the Live API Endpoints base URL, the Database/Environment Variables/Infrastructure reference sections, and the Smoke Test section to reflect Railway as current infrastructure. Left historical ticket narrative text referencing Vercel/Supabase as-is (accurate record of what was true at the time), per this file's own convention elsewhere.
+- No product, scoring, matching, or intelligence code was touched. No existing ticket was deleted, renumbered, or silently overwritten.
+
 ---
 
 ## Who Owns What
@@ -1234,7 +1245,7 @@ Registry reconciliation after DATA-014 (2026-07-27, entity classification fix + 
 | Person | Role | Owns |
 |---|---|---|
 | Jaia | COO | Default merge authority for all PRs. Final say on architecture. |
-| Fox (fsassaman) | CEO | UI, GitHub org, Vercel, Supabase deployment/config. |
+| Fox (fsassaman) | CEO | UI, GitHub org, Railway, GitHub Actions deployment/config. |
 | Kyle | CTO | Data architecture, adapters, Pinellas pipeline, buy-box matching. |
 | Colton | Data/ML | Scraping, database, AI/ML support. |
 | Claude (AI) | Architect | Handoffs, architecture decisions, ticket system. |
@@ -1392,7 +1403,9 @@ Codex must never automatically trigger:
 2. Every DB schema change goes through Alembic. Never manual production DB edits.
 3. Prefer Alembic autogenerate; hand-edit migrations only for data migration logic or verified migration defects, and document why in the review packet.
 4. `dry_run=True` / `DRY_RUN=true` must never write to the database. Ever.
-5. Flask is gone. API layer is Vercel serverless in `api/` at repo root.
+5. Flask is gone. API layer is a single FastAPI app in `server/` (INFRA-001,
+   2026-07-30), deployed on Railway. The old per-route Vercel serverless
+   handlers under `api/` are retired/dead code — do not add new routes there.
 6. Before writing any fix, cite the file and line number as evidence.
 7. No code behavior change without a verification plan.
 8. No secrets in files, PRs, logs, or chat.
@@ -1404,7 +1417,8 @@ Codex must never automatically trigger:
 ## Repo Structure
 
 ```text
-api/                    Vercel serverless endpoints (one file = one route)
+api/                    Retired Vercel serverless endpoints (dead code post-INFRA-001, kept for reference)
+server/                 FastAPI app (single service) — routes, DB session dependency, UI static serving
 core/models/            Canonical entity schemas — Participant, Asset, Transaction, Signal
 core/scoring/           ScoringEngine + runner — weighted signal scoring
 core/matching/          MatchingEngine + runner — signal overlap buyer matching
@@ -1421,7 +1435,8 @@ docs/                   PRD, architecture docs, handoff standard, audits
 .github/workflows/      Notion roadmap sync, manual migrations, bounded ingestion workflows
 ```
 
-Supabase Storage bucket:
+Railway Storage bucket (S3-compatible; migrated off Supabase Storage under
+INFRA-001, 2026-07-30):
 
 ```text
 lux-raw-files
@@ -1432,10 +1447,10 @@ lux-raw-files
 
 ## Live API Endpoints
 
-Base URL:
+Base URL (migrated off Vercel to Railway under INFRA-001, 2026-07-30):
 
 ```text
-https://lux-core-sepia.vercel.app
+https://lux-core-production.up.railway.app
 ```
 
 | Method | Endpoint | Description | Key Params |
@@ -1460,7 +1475,7 @@ https://lux-core-sepia.vercel.app
 Example API calls:
 
 ```bash
-BASE="https://lux-core-sepia.vercel.app"
+BASE="https://lux-core-production.up.railway.app"
 
 curl "$BASE/api/health"
 
@@ -1501,8 +1516,10 @@ settled decision.
 
 ## Database
 
-Provider: Supabase PostgreSQL  
-Connection: `DATABASE_URL` in Vercel/GitHub Actions/local env — never hardcoded
+Provider: Railway PostgreSQL (migrated off Supabase PostgreSQL under
+INFRA-001, 2026-07-30)  
+Connection: `DATABASE_URL` in Railway service vars/GitHub Actions
+secrets/local env — never hardcoded
 
 ### Tables
 
@@ -1676,19 +1693,21 @@ Prefer logger over print in application code.
 
 | Variable | Where | Description |
 |---|---|---|
-| POSTGRES_URL | Vercel / Supabase integration | Pooler connection string where available |
-| DATABASE_URL | Vercel / GitHub Actions / local | Primary/fallback PostgreSQL connection string |
-| CRON_SECRET | Vercel env vars | Protects cron endpoint |
-| LUX_DEV_TOKEN | Vercel env vars | Required token for dev diagnostics; no default |
-| LOG_LEVEL | Vercel env vars | INFO default; DEBUG for verbose |
+| POSTGRES_URL | Railway service vars (accepted alias) | Pooler connection string where available |
+| DATABASE_URL | Railway service vars / GitHub Actions secrets / local | Primary/fallback PostgreSQL connection string — points at the Railway Postgres instance (migrated off Supabase under INFRA-001, 2026-07-30) |
+| CRON_SECRET | Railway service vars | Protects cron-triggered endpoints |
+| LUX_DEV_TOKEN | Railway service vars | Required token for dev diagnostics; no default |
+| LOG_LEVEL | Railway service vars | INFO default; DEBUG for verbose |
 | DRY_RUN | Script env var | true = no DB writes where supported |
 | DAYS_BACK | Script env var | How many days back to pull county records |
-| SUPABASE_URL | Vercel + GitHub Actions secrets | Supabase project URL for raw archive |
-| SUPABASE_SERVICE_KEY | Vercel + GitHub Actions secrets | Supabase service role key, not anon key |
-| SUPABASE_STORAGE_BUCKET | Vercel + GitHub Actions secrets/config | Defaults/target bucket if supported; expected bucket `lux-raw-files` |
-| BATCHDATA_API_KEY | Vercel env vars (pending, LEADGEN-004) | Skip-trace provider key. Not yet provisioned — providers fall back to safe mocks without it |
-| DNC_API_KEY | Vercel env vars (pending, LEADGEN-004) | DNC.com scrub provider key. Not yet provisioned — the DNC.com adapter refuses to instantiate without it (fail-safe) |
-| DNC_SAN | Vercel env vars (pending, LEADGEN-004) | DNC.com Subscriber Account Number, required alongside DNC_API_KEY |
+| RAILWAY_BUCKET_NAME | Railway service vars + GitHub Actions secrets | Railway Storage Bucket name for raw archive; expected bucket `lux-raw-files` (replaces `SUPABASE_STORAGE_BUCKET` under INFRA-001, 2026-07-30) |
+| RAILWAY_BUCKET_ACCESS_KEY_ID | Railway service vars + GitHub Actions secrets | S3-compatible access key ID (replaces `SUPABASE_URL`/`SUPABASE_SERVICE_KEY`) |
+| RAILWAY_BUCKET_SECRET_ACCESS_KEY | Railway service vars + GitHub Actions secrets | S3-compatible secret access key |
+| RAILWAY_BUCKET_ENDPOINT | Railway service vars + GitHub Actions secrets | S3-compatible endpoint, default `https://storage.railway.app` |
+| RAILWAY_BUCKET_REGION | Railway service vars + GitHub Actions secrets | Signing region, default `auto`; fixed at bucket-creation time |
+| SKIPTRACE_API_KEY | GitHub Actions secrets (pending live, LEADGEN-004) | Skip-trace provider key (BatchData). Sandbox token added; providers fall back to safe mocks without it |
+| DNC_API_KEY | GitHub Actions secrets (pending, LEADGEN-004) | DNC.com scrub provider key. Not yet provisioned — the DNC.com adapter refuses to instantiate without it (fail-safe) |
+| DNC_SAN_NUMBER | GitHub Actions secrets (pending, LEADGEN-004) | DNC.com Subscriber Account Number, required alongside DNC_API_KEY |
 
 Never print or commit secrets.
 
@@ -1698,23 +1717,30 @@ Never print or commit secrets.
 
 | Service | Provider | Owner |
 |---|---|---|
-| Hosting | Vercel | Fox |
-| Database | Supabase PostgreSQL | Fox / Kyle |
-| Object Storage | Supabase Storage | Fox |
+| Hosting | Railway (single FastAPI service, `server/`, Dockerfile build; migrated off Vercel under INFRA-001, 2026-07-30) | Tim/Fox |
+| Database | Railway PostgreSQL (migrated off Supabase PostgreSQL under INFRA-001, 2026-07-30) | Tim/Fox / Kyle |
+| Object Storage | Railway Storage Buckets, S3-compatible (migrated off Supabase Storage under INFRA-001, 2026-07-30) | Tim/Fox |
+| Scheduling | GitHub Actions (all crons, including the 2 former Vercel Crons, consolidated under INFRA-001, 2026-07-30) | Tim/Fox |
 | Repo | GitHub — fsassaman-commits/lux-core | Fox |
 | Notion Roadmap | Notion | Jaia |
 | Domain | TBD | TBD |
+
+Old Vercel project and Supabase project (`dtahutnstyekamzphgjl`) are
+decommissioned: the Vercel project has been deleted; the Supabase project
+is paused (reversible) pending Tim's final deletion via the dashboard. See
+INFRA-001 in the Ticket Registry for full migration evidence.
 
 ---
 
 ## Smoke Test
 
-Claude cannot reliably reach Vercel domains directly. Jaia runs smoke tests manually.
+Railway domains are directly reachable (unlike the old Vercel setup) — any
+agent with `web_fetch`/`curl` access can run this smoke test itself.
 
 Standard smoke test after every merge:
 
 ```bash
-BASE="https://lux-core-sepia.vercel.app"
+BASE="https://lux-core-production.up.railway.app"
 
 curl -s "$BASE/api/health"
 curl -s "$BASE/api/deals"
