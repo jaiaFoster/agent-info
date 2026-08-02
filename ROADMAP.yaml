@@ -192,19 +192,20 @@ market_discovery:
 ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
 
 current_priority: >
-  SPRINT-017 — Hillsborough Evidence Completion is CURRENT. First slice is
-  WP1 Production Evidence Baseline: generate a read-only production artifact
-  before ranking or implementing more sources. Initial live checks show
+  SPRINT-017 — Hillsborough Evidence Completion is CURRENT. WP1 Production
+  Evidence Baseline is complete (workflow run 30734899137). WP2 Evidence Value
+  Assessment is complete (public source probe run 30734939428 and
+  docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md). Production truth:
   fidelity OK, raw archive verified, 531975 Assets, 4/40 Transactions linked
-  to Assets, 15312 seller-pressure rows, 0 buyer-intelligence rows, and
-  matches currently considering 0 buyers. WP2 source-value ranking and WP3
-  source implementation are gated on the baseline artifact. SKIP-PILOT-001 is
-  deferred to SPRINT-018 and remains blocked from live paid write by
-  PROVIDER-DNC-001 plus founder spend approval.
+  to Assets, 14112 owner-asset evidence links, 15312 seller-pressure rows,
+  0 buyer-intelligence rows, 0 persisted matches, 0 outreach drafts, and
+  0 canonical facts. Next implementation slice is DATA-020A — Hillsborough
+  Clerk Civil Daily Evidence. SKIP-PILOT-001 is deferred to SPRINT-018 and
+  remains blocked from live paid write by PROVIDER-DNC-001 plus founder spend
+  approval.
 
 next_up:
-  - "SPRINT-017-WP1 — run and review production evidence baseline artifact"
-  - "SPRINT-017-WP2 — rank remaining Hillsborough source opportunities using the approved rubric after WP1"
+  - "DATA-020A — Hillsborough Clerk Civil Daily Evidence"
   - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter before any SPRINT-018 paid skip-trace live-write"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
