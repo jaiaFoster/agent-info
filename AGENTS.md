@@ -337,19 +337,18 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by MVP-001 / SPRINT-016 kickoff, 2026-08-01):
-MVP-001 First Revenue Program — SPRINT-016 Database Fidelity & Evidence
-Integrity
+Current Phase (reconciled by SPRINT-016 closeout, 2026-08-02):
+MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion
 
 Both market sides are scored from canonical evidence and the graph/intelligence
 pipeline is live. The approved MVP-001 program now narrows execution to three
 revenue-path sprints: SPRINT-016 production database/storage fidelity,
 SPRINT-017 Hillsborough evidence completion, and SPRINT-018 revenue readiness.
-Before more paid or production-expansion work, SPRINT-016 must prove exactly
-what exists in PostgreSQL and Railway Storage, then repair root causes with
-provenance and replayability preserved.
+SPRINT-016 is complete: PostgreSQL/Railway Storage fidelity is measured,
+production-safe storage defects are repaired, and the one unsafe historical
+archive case is explicit as `LEGACY-HCPA-001`.
 
-Current Milestone:
+Completed Milestone:
 SPRINT-016 — Database Fidelity & Evidence Integrity. First implementation
 slice added a read-only fidelity census, `/api/ops/fidelity`, and a manual
 GitHub workflow. Production census run `30727525246` proved lineage and FK
@@ -366,9 +365,14 @@ archive backfill. Founder approval is granted for the required full HCPA
 validation before any production write. Operational dry-run `30731067131`
 proved the write is not yet safe: one row still matches the current HCPA DBF
 header surrogate, but one row's stored surrogate hash mismatches the current
-file. Write mode was not run. SPRINT-016C-CLOSEOUT is now approved: archive
-the single verified row, preserve the mismatched row as `LEGACY-HCPA-001`, and
-make that explicit legacy exception non-blocking without weakening hash rules.
+file. Write run `30732166959` archived the single verified row
+(`0293f541-b1ae-5397-a2e5-6359f91e6844`) to Railway Storage and left the
+mismatched row (`37753be3-598d-559d-b785-a97a5634edf0`) as
+`LEGACY-HCPA-001`. Final production `/api/ops/fidelity` reports
+`FIDELITY_OK`, `fidelity_blockers=[]`, `archived_rows=22/23`,
+`source_uri_legacy_exception_rows=1`, `blocking_source_uri_only_rows=0`,
+`source_records_without_raw_evidence=0`, `observations_without_source_record=0`,
+and `invalid_transaction_asset_fk=0`.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -445,22 +449,19 @@ Completed:
   outreach/consumer-cutover side effects; canonical fact review run
   `30220240383` verified buyer intelligence parity 1.0 and confidence parity
   1.0 against the legacy-equivalent contract.
+- SPRINT-016 — Database Fidelity & Evidence Integrity complete 2026-08-02:
+  final write run `30732166959` archived the single hash-verified HCPA row,
+  preserved `LEGACY-HCPA-001`, and final live fidelity returned `FIDELITY_OK`.
 
 Current Priority:
-- SPRINT-016C — Source-URI-only RawEvidence archive backfill. Remaining
-  production fidelity blocker: 2 RawEvidence rows are explicitly
-  `source_uri_fallback`; dry-run `30730053522` proved both are HCPA
-  `PARCEL_SPREADSHEET.xls` rows with annotated, non-fetchable source URIs and
-  surrogate/header-derived hashes, not full-file content hashes. Founder
-  approval is granted for SPRINT-016C-CLOSEOUT: archive only the matching row,
-  preserve `37753be3-598d-559d-b785-a97a5634edf0` as legacy source-only
-  exception `LEGACY-HCPA-001`, and rerun the full production fidelity census.
+- SPRINT-017 — Hillsborough Evidence Completion. Finish Hillsborough as the
+  reference jurisdiction, classify live sources, expand deterministic evidence,
+  and improve observed source coverage now that SPRINT-016 fidelity is clean.
 
 Next:
-- SPRINT-016C-CLOSEOUT — run approved write-mode backfill for the single
-  hash-verified HCPA row, then rerun production fidelity census.
-- SPRINT-017 — Hillsborough Evidence Completion.
 - SPRINT-018 — Revenue Readiness, including SKIP-PILOT-001 after DNC gate.
+- FACT-LIVE-001/002 — decide whether to rebuild canonical facts on Railway
+  production before revenue-readiness cutover work.
 - PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter against current
   official API docs. (PROVIDER-BATCHDATA-001 is done as of 2026-07-26 — see
   Completed.)
@@ -665,11 +666,10 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-016C-CLOSEOUT | Codex | CURRENT — APPROVED | Close SPRINT-016 by archiving the one verified HCPA RawEvidence row, preserving `LEGACY-HCPA-001` as a visible non-blocking source-only exception, rerunning production fidelity census, and preparing SPRINT-017 | Approved policy: archive row `0293f541-b1ae-5397-a2e5-6359f91e6844`; do not archive/delete/weaken provenance for mismatched row `37753be3-598d-559d-b785-a97a5634edf0`; document FACT-LIVE-001 RCA without implementation. | SPRINT-017 readiness |
-| SPRINT-016C | Codex | CLOSING OUT — POLICY DECIDED | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | Dry-run `30731067131` on PR #93/main downloaded the current HCPA `PARCEL_SPREADSHEET.xls` via the verified ASP.NET postback path. Row `0293f541-b1ae-5397-a2e5-6359f91e6844` matched the current DBF-header surrogate (`HCPA_SURROGATE_HASH_MATCH`); row `37753be3-598d-559d-b785-a97a5634edf0` mismatched (`HASH_MISMATCH`). Closeout policy preserves the mismatched row as `LEGACY-HCPA-001`, not a blocker. | Clean SPRINT-016 storage tier separation |
+| SPRINT-017 | Codex | CURRENT | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; FACT-LIVE-001 remains open but does not block evidence completion | Stronger reference county before SPRINT-018 revenue readiness |
 | FACT-LIVE-001 | Codex | OPEN — HIGH PRIORITY / RCA COMPLETE | Determine why current Railway production reports `canonical_facts=0` and reconcile production reality with historical SPRINT-006 documentation | RCA: likely INFRA-001 blank-slate Railway migration plus no post-migration canonical-fact rebuild. No live API/scoring/matching consumer dependency found; current usage is fidelity/audit/parity/tooling. See `docs/audits/FACT_LIVE_001_ROOT_CAUSE.md`. | Follow-up FACT-LIVE-002 decision before SPRINT-018 if fact-backed consumers should become live |
 | SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
-| SPRINT-016 | Codex | IN PROGRESS — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | SPRINT-016C source-URI-only archive backfill | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
+| SPRINT-016 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | Complete: final live `/api/ops/fidelity` returned `FIDELITY_OK`, no blockers, `archived_rows=22/23`, one visible non-blocking `LEGACY-HCPA-001` exception, no lineage/FK defects. | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
 | SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
 | PROVIDER-DNC-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement DNC.com/DNCScrub phone scrub adapter against current official API docs, with mocked HTTP tests, sanitized errors, fail-closed statuses, and `live_ready=true` only when configured | Requires DNC.com account/API key/SAN and current API contract. | Callable-contact validation for paid pilot |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
@@ -678,7 +678,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Dependencies / Blockers | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-017 | Codex | PLANNED | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known source, observe every live source, and improve deterministic evidence/linking coverage | SPRINT-016 fidelity census and root-cause repairs | Stronger reference county before geographic expansion |
+| SPRINT-017 | Codex | MOVED TO CURRENT | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known source, observe every live source, and improve deterministic evidence/linking coverage | SPRINT-016 complete | Stronger reference county before geographic expansion |
 | SPRINT-018 | Codex/Jaia | PLANNED | Revenue Readiness: bounded human-reviewed revenue experiment with BatchData, DNC validation, skip-trace quality measurement, and outreach packets only | SPRINT-016/SPRINT-017 evidence gates; PROVIDER-DNC-001; founder approval for paid action | First paid experiment readiness |
 
 ### Open — Committed
