@@ -442,8 +442,10 @@ Completed:
 Current Priority:
 - SPRINT-016C — Source-URI-only RawEvidence archive backfill. Remaining
   production fidelity blocker: 2 RawEvidence rows are explicitly
-  `source_uri_fallback`; determine whether their source bytes can be safely
-  retrieved, hash-verified, uploaded to Railway Storage, and normalized.
+  `source_uri_fallback`; dry-run `30730053522` proved both are HCPA
+  `PARCEL_SPREADSHEET.xls` rows with annotated, non-fetchable source URIs and
+  surrogate/header-derived hashes, not full-file content hashes. Founder input
+  is required before a large full-file HCPA download/upload archive backfill.
 
 Next:
 - SPRINT-016C — archive any remaining source-URI-only RawEvidence rows when
@@ -654,7 +656,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-016C | Codex | CURRENT — SOURCE-URI-ONLY ARCHIVE BACKFILL | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | SPRINT-016B write run `30729864174`; no deletion, paid call, or outreach. Storage upload allowed only for hash-verified raw evidence. | Clean SPRINT-016 storage tier separation |
+| SPRINT-016C | Codex | BLOCKED — FOUNDER INPUT REQUIRED | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | Dry-run `30730053522` found both rows are HCPA `PARCEL_SPREADSHEET.xls`; `source_uri` is an annotation (`https://downloads.hcpafl.org/ (PARCEL_SPREADSHEET.xls, ASP.NET postback download)`), not a direct fetch URL, and existing `content_hash` is not a full-file SHA-256. Backfill likely requires a full HCPA portal postback download/upload of a ~563MB raw file or an accepted alternate immutable-archive policy. Founder decision required because this changes storage/cost/runtime posture. | Clean SPRINT-016 storage tier separation |
 | SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
 | SPRINT-016 | Codex | IN PROGRESS — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | SPRINT-016C source-URI-only archive backfill | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
 | SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
@@ -933,6 +935,16 @@ Registry reconciliation during SPRINT-016C implementation:
   `RawEvidence.content_hash`; write mode uploads only matching bytes and updates
   DB metadata. Hash mismatch remains a blocker, not a guessed archive.
 - No paid provider call, outreach, row deletion, or destructive action.
+
+Registry reconciliation after SPRINT-016C dry-run:
+- SPRINT-016C moved to BLOCKED — FOUNDER INPUT REQUIRED. Dry-run
+  `30730053522` attempted the only 2 source-only rows and got 2 fetch failures.
+  Artifact showed both rows are HCPA `PARCEL_SPREADSHEET.xls` records with an
+  annotated source URI rather than a direct URL; their stored hash prefixes
+  (`6c7090f74f1f`, `711b2e9e18b4`) correspond to prior surrogate/header-derived
+  hashes, not verified full-file raw bytes.
+- No write-mode backfill was run. Production remains clean except
+  `source_uri_only_raw_evidence_rows=2`.
 
 ### Discovered / Unscoped
 
