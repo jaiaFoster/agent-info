@@ -16,7 +16,7 @@ active_program:
   title: "First Revenue Program"
   status: "APPROVED"
   priority: "CRITICAL"
-  current_sprint: "SPRINT-016 — Database Fidelity & Evidence Integrity"
+  current_sprint: "SPRINT-016B — RawEvidence archive metadata repair"
   next_sprints:
     - "SPRINT-017 — Hillsborough Evidence Completion"
     - "SPRINT-018 — Revenue Readiness"
@@ -141,8 +141,8 @@ completed_intelligence_tickets:
   - "PROVIDER-BATCHDATA-001 — BatchData Skip-Trace Provider Adapter (done 2026-07-26)"
   - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27)"
 
-current_priority_ticket: "SPRINT-016 — Database Fidelity & Evidence Integrity"
-current_priority_status: "CURRENT — first slice is read-only production fidelity census, /api/ops/fidelity, and manual census workflow. SKIP-PILOT-001 is approved but deferred to SPRINT-018 and remains live-purchase blocked by PROVIDER-DNC-001."
+current_priority_ticket: "SPRINT-016B — RawEvidence archive metadata repair"
+current_priority_status: "CURRENT — production census found 17 RawEvidence rows missing archive_status and 20 legacy supabase:// storage URI rows, with lineage/FK integrity clean. Repair normalizes verified archive metadata/URIs; SKIP-PILOT-001 remains deferred to SPRINT-018 and live-purchase blocked by PROVIDER-DNC-001."
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."
