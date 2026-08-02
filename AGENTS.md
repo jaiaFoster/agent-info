@@ -677,7 +677,7 @@ Pre-Ingestion Source Rule:
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
 | SPRINT-017 | Codex | CURRENT / WP1-WP2 COMPLETE | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; WP1 baseline run `30734899137` complete; WP2 assessment complete; FACT-LIVE-001 remains open and does not block evidence completion unless a live Sprint-017 consumer needs canonical facts | DATA-020A; stronger reference county before SPRINT-018 revenue readiness |
-| DATA-020A | Codex | NEXT / APPROVED BY WP2 | Hillsborough Clerk Civil Daily Evidence: bounded, archive-first canonical evidence from reachable Clerk Civil daily CSVs | Must define parser outputs, provenance/idempotency, health/freshness metrics, and bounded production validation; no fuzzy Asset links, no outreach, no paid calls | Fresh seller-side legal pressure evidence and better Hillsborough evidence completeness |
+| DATA-020A | Codex | CURRENT / IMPLEMENTATION PR | Hillsborough Clerk Civil Daily Evidence: bounded, archive-first canonical evidence from reachable Clerk Civil daily CSVs | Parser/ingestion/workflow implemented; bounded production dry-run/write validation pending after merge. No fuzzy Asset links, no scoring, no matching, no outreach, no paid calls. | Fresh seller-side legal pressure evidence and better Hillsborough evidence completeness |
 | SPRINT-017-WP1 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Production Evidence Baseline: generate a read-only production artifact covering external source inventory, source-to-canonical funnel, parcel coverage, Transaction→Asset linkage, owner resolution/ambiguity, buyer/seller cohorts, evidence freshness, facts/scores/matches/outreach counts, and known gaps | Complete: PR #97 + #98; baseline workflow run `30734899137` succeeded, no DB/storage mutation, no provider calls. | WP2 Evidence Value Assessment; stale-roadmap reconciliation; safer SPRINT-017 implementation choices |
 | SPRINT-017-WP2 | Codex | COMPLETE | Evidence Value Assessment: rank remaining Hillsborough evidence opportunities using the approved rubric after WP1 | Complete: public source probe run `30734939428`; assessment in `docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md`. | DATA-020A selected as first WP3 implementation source |
 | FACT-LIVE-001 | Codex | OPEN — HIGH PRIORITY / RCA COMPLETE | Determine why current Railway production reports `canonical_facts=0` and reconcile production reality with historical SPRINT-006 documentation | RCA: likely INFRA-001 blank-slate Railway migration plus no post-migration canonical-fact rebuild. No live API/scoring/matching consumer dependency found; current usage is fidelity/audit/parity/tooling. See `docs/audits/FACT_LIVE_001_ROOT_CAUSE.md`. | Follow-up FACT-LIVE-002 decision before SPRINT-018 if fact-backed consumers should become live |
@@ -1010,6 +1010,15 @@ Registry reconciliation after SPRINT-017 WP1/WP2:
   was made or authorized by WP1/WP2.
 - Preserved FACT-LIVE-001 as open/high-priority; buyer intelligence remains
   empty in current production and must not be hand-waved in revenue readiness.
+
+Registry reconciliation during DATA-020A implementation:
+- Promoted `DATA-020A` from NEXT to CURRENT / IMPLEMENTATION PR.
+- Added bounded Civil daily parser/ingestion/workflow/docs; enabled only the
+  `hillsborough_clerk_civil_daily` registry entry for manual bounded write
+  validation.
+- Confirmed scope boundaries: no Asset, Transaction, Signal, Score, Match,
+  contact, outreach, paid-provider, fuzzy-linking, or schedule changes.
+- Bounded production validation remains pending after merge.
 
 ### Discovered / Unscoped
 
