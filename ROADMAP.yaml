@@ -198,8 +198,8 @@ current_priority: >
   docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md). DATA-020A Clerk Civil
   Daily Evidence is complete/operationally verified (dry-run 30735401548,
   production write 30735475109). DATA-020B Clerk Civil Bulk Historical
-  Evidence implementation is current: live source directory verified, bounded
-  parser/ingestion/manual workflow added, local dry-run succeeded. Production
+  Evidence is complete/operationally verified (dry-run 30758662800,
+  production write 30758705198). Production
   truth before DATA-020A: fidelity OK, raw archive verified, 531975 Assets,
   4/40 Transactions linked to Assets, 14112 owner-asset evidence links, 15312
   seller-pressure rows, 0 buyer-intelligence rows, 0 persisted matches, 0
@@ -208,7 +208,7 @@ current_priority: >
   approval.
 
 next_up:
-  - "DATA-020B — Hillsborough Clerk Civil Bulk Historical Evidence"
+  - "DATA-020C — Tax Deed / Excess Proceeds Source Verification"
   - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter before any SPRINT-018 paid skip-trace live-write"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
