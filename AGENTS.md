@@ -361,7 +361,9 @@ RawEvidence rows, normalized 20 legacy `supabase://` rows to Railway
 bucket-relative paths, added 17 missing `archive_status` values, verified 21
 objects in Railway Storage, and performed zero storage mutations. Remaining
 blocker is precise: 2 source-URI-only RawEvidence rows need SPRINT-016C
-archive backfill if source bytes are still retrievable and hash-verifiable.
+archive backfill. Founder approval is granted for the required full HCPA
+`PARCEL_SPREADSHEET.xls` postback download/upload path, with dry-run hash
+validation before any production write.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -444,8 +446,10 @@ Current Priority:
   production fidelity blocker: 2 RawEvidence rows are explicitly
   `source_uri_fallback`; dry-run `30730053522` proved both are HCPA
   `PARCEL_SPREADSHEET.xls` rows with annotated, non-fetchable source URIs and
-  surrogate/header-derived hashes, not full-file content hashes. Founder input
-  is required before a large full-file HCPA download/upload archive backfill.
+  surrogate/header-derived hashes, not full-file content hashes. Founder
+  approval is now granted for a full HCPA portal postback download/upload
+  backfill if dry-run confirms the current DBF header surrogate hash still
+  matches each stored RawEvidence row.
 
 Next:
 - SPRINT-016C — archive any remaining source-URI-only RawEvidence rows when
@@ -656,7 +660,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-016C | Codex | BLOCKED — FOUNDER INPUT REQUIRED | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | Dry-run `30730053522` found both rows are HCPA `PARCEL_SPREADSHEET.xls`; `source_uri` is an annotation (`https://downloads.hcpafl.org/ (PARCEL_SPREADSHEET.xls, ASP.NET postback download)`), not a direct fetch URL, and existing `content_hash` is not a full-file SHA-256. Backfill likely requires a full HCPA portal postback download/upload of a ~563MB raw file or an accepted alternate immutable-archive policy. Founder decision required because this changes storage/cost/runtime posture. | Clean SPRINT-016 storage tier separation |
+| SPRINT-016C | Codex | CURRENT — FOUNDER APPROVED / IMPLEMENTING | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | Dry-run `30730053522` found both rows are HCPA `PARCEL_SPREADSHEET.xls`; `source_uri` is an annotation (`https://downloads.hcpafl.org/ (PARCEL_SPREADSHEET.xls, ASP.NET postback download)`), not a direct fetch URL, and existing `content_hash` is a DBF-header surrogate rather than a full-file SHA-256. Founder approval is granted for full HCPA portal postback download/upload of the ~563MB raw file, guarded by dry-run surrogate-hash validation before write mode. | Clean SPRINT-016 storage tier separation |
 | SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
 | SPRINT-016 | Codex | IN PROGRESS — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | SPRINT-016C source-URI-only archive backfill | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
 | SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
@@ -959,6 +963,7 @@ Registry reconciliation after SPRINT-016C dry-run:
 | Clerk transaction link evidence | Parcel Assets now exist, but Clerk transaction rows may still lack folio/PIN/STRAP/legal/address evidence | DATA-006I audit decides whether DATA-006B Clerk instrument detail is required |
 | Parcel legal description coverage | Canceled 2,500-record write left DB around prior 500-parcel state: `asset_legal_descriptions_seen` 168, parcel-side PIN/STRAP 500, `candidate_links` 0, all 32 strong transaction descriptions `no_match` | DATA-006J1 chunked ranges, then DATA-006I dry-run |
 | Supabase free-tier disk quota blocking DATA-016 completion (new, 2026-07-29) | DATA-017 run #9 (the DATA-016 full-backfill attempt) hit a real, confirmed, still-active Postgres read-only lockout (`default_transaction_read_only=on`, `SHOW transaction_read_only` still returns `on` hours later) root-caused to the Supabase org's `free` plan and the database's 830MB size exceeding the free tier's 500MB disk cap -- not a transient blip, an ongoing quota enforcement that needs a human decision to clear. Current real coverage frozen at 50,950/531,201 (~9.6%) until resolved. This is a **new recurring infrastructure cost** decision (Supabase Pro, ~$25/mo) -- per this file's Merge Authority section, that category of decision always requires Tim's explicit approval in chat and cannot be auto-decided by an agent, same as every other recurring-cost item in this table. | Tim to choose: (a) upgrade to Supabase Pro to lift the disk cap and let the backfill continue, (b) prune existing data to stay under the free-tier cap (would not preserve full parcel coverage), or (c) pause the backfill at its current ~9.6% coverage. Blocks: further DATA-016 write-mode runs (manual or the existing daily scheduled automation, both would fail immediately with the same error until resolved), the stale `pipeline_runs` row from run #9 (`f606bfef-35ad-4cd5-854f-ee6283f299d5`, still shows `status: running` and needs a manual correction once writes are possible again). |
+| FACT-LIVE-001 (new, 2026-08-02) | Live Railway `/api/ops/fidelity` shows `canonical_facts=0` while historical SPRINT-006/SPRINT-006C registry entries correctly describe pre-INFRA bounded fact writes and parity validation. INFRA-001 later migrated to a blank-slate Railway Postgres by design, so production truth now differs from the older fact-engine operational status narrative. | Scope a follow-up to decide whether canonical facts should be repopulated from current Railway evidence before SPRINT-018 revenue readiness, or whether current scoring/matching outputs remain the active consumer path until a fact-backed cutover is explicitly re-run. Not blocking SPRINT-016C raw archive repair. |
 
 Registry reconciliation for DATA-006A:
 - Preserved DATA-006 and recorded its completed deed-parser work plus open property/parcel phase.
