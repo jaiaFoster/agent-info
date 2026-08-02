@@ -9,7 +9,7 @@
 
 schema_version: 1
 last_updated_utc: "2026-08-01T00:00:00Z"
-last_updated_by: "SPRINT-017 WP1 production baseline tooling"
+last_updated_by: "DATA-020A operational verification"
 
 active_program:
   id: "MVP-001"
@@ -141,7 +141,7 @@ completed_intelligence_tickets:
   - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27)"
 
 current_priority_ticket: "SPRINT-017 — Hillsborough Evidence Completion"
-current_priority_status: "CURRENT — WP1 Production Evidence Baseline complete via workflow run 30734899137; WP2 Evidence Value Assessment complete via public-source probe run 30734939428 and docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md. Production truth: fidelity OK, raw archive verified, assets_total=531975, transactions_with_asset=4/40, owner_asset_links=14112, seller_pressure_rows=15312, buyer_intelligence_rows=0, persisted_matches=0, outreach_drafts=0, canonical_facts=0. DATA-020A Hillsborough Clerk Civil Daily Evidence implementation PR is current: bounded parser/ingestion/manual workflow, no schedule/scoring/matching/outreach. FACT-LIVE-001 remains open/high-priority; SKIP-PILOT-001 remains deferred to SPRINT-018 and live-purchase blocked by PROVIDER-DNC-001 plus founder approval."
+current_priority_status: "CURRENT — WP1 Production Evidence Baseline complete via workflow run 30734899137; WP2 Evidence Value Assessment complete via public-source probe run 30734939428 and docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md. DATA-020A Hillsborough Clerk Civil Daily Evidence is complete/operationally verified: dry-run 30735401548 and production write 30735475109 succeeded, creating 1 RawEvidence, 43 SourceRecords, 20 Events, and 129 Observations with ARCHIVE_VERIFIED and zero errors. Production truth before DATA-020A: fidelity OK, raw archive verified, assets_total=531975, transactions_with_asset=4/40, owner_asset_links=14112, seller_pressure_rows=15312, buyer_intelligence_rows=0, persisted_matches=0, outreach_drafts=0, canonical_facts=0. Next WP3 slice is DATA-020B Hillsborough Clerk Civil Bulk Historical Evidence. FACT-LIVE-001 remains open/high-priority; SKIP-PILOT-001 remains deferred to SPRINT-018 and live-purchase blocked by PROVIDER-DNC-001 plus founder approval."
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."

@@ -460,15 +460,17 @@ Current Priority:
   WP1 Production Evidence Baseline is complete: workflow run `30734899137`
   produced the read-only production baseline artifact. WP2 Source Value
   Assessment is complete in `docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md`:
-  Clerk Civil daily filings rank first for WP3 implementation. Initial live
+  Clerk Civil daily filings ranked first for WP3 implementation and DATA-020A
+  is now operationally verified. Initial live
   checks on 2026-08-02 show fidelity is clean, raw archive remains verified,
   Assets total `531975`, Transactions linked `4/40` (10.0%), seller-pressure
   rows `15312`, buyer-intelligence rows `0`, persisted matches `0`, and
   outreach drafts `0`.
 
 Next:
-- DATA-020A — Hillsborough Clerk Civil Daily Evidence: bounded, archive-first,
-  canonical evidence implementation from reachable Clerk Civil daily CSVs.
+- DATA-020B — Hillsborough Clerk Civil Bulk Historical Evidence: archive-first
+  historical Civil evidence expansion using the next high-value source from the
+  SPRINT-017 WP2 rubric.
 - SPRINT-018 — Revenue Readiness, including SKIP-PILOT-001 after DNC gate.
 - FACT-LIVE-001/002 — decide whether to rebuild canonical facts on Railway
   production before revenue-readiness cutover work.
@@ -676,8 +678,9 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-017 | Codex | CURRENT / WP1-WP2 COMPLETE | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; WP1 baseline run `30734899137` complete; WP2 assessment complete; FACT-LIVE-001 remains open and does not block evidence completion unless a live Sprint-017 consumer needs canonical facts | DATA-020A; stronger reference county before SPRINT-018 revenue readiness |
-| DATA-020A | Codex | CURRENT / IMPLEMENTATION PR | Hillsborough Clerk Civil Daily Evidence: bounded, archive-first canonical evidence from reachable Clerk Civil daily CSVs | Parser/ingestion/workflow implemented; bounded production dry-run/write validation pending after merge. No fuzzy Asset links, no scoring, no matching, no outreach, no paid calls. | Fresh seller-side legal pressure evidence and better Hillsborough evidence completeness |
+| SPRINT-017 | Codex | CURRENT / WP1-WP3 IN PROGRESS | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; WP1 baseline run `30734899137` complete; WP2 assessment complete; DATA-020A operationally verified; FACT-LIVE-001 remains open and does not block evidence completion unless a live Sprint-017 consumer needs canonical facts | DATA-020B; stronger reference county before SPRINT-018 revenue readiness |
+| DATA-020B | Codex | NEXT | Hillsborough Clerk Civil Bulk Historical Evidence: archive-first historical Civil evidence expansion using the next high-value source from the SPRINT-017 WP2 rubric | DATA-020A complete; source probe showed Clerk Civil bulk endpoint reachable; must preserve bounded archive-first ingestion and avoid Assets/Transactions/Signals/Scores/Matches/Outreach unless explicitly scoped | Historical seller-side legal pressure evidence and better Hillsborough evidence completeness |
+| DATA-020A | Codex | COMPLETE / OPERATIONALLY VERIFIED | Hillsborough Clerk Civil Daily Evidence: bounded, archive-first canonical evidence from reachable Clerk Civil daily CSVs | PR #100 merged; production dry-run `30735401548` succeeded; production write `30735475109` succeeded with 1 RawEvidence, 43 SourceRecords, 20 Events, 129 Observations, 72 Participants created/seen, archive `ARCHIVE_VERIFIED`, 0 fallbacks/failures, invalid_asset_fk=0, duplicate source records=0, duplicate transactions=0, errors/warnings empty. No fuzzy Asset links, no scoring, no matching, no outreach, no paid calls. | Fresh seller-side legal pressure evidence and better Hillsborough evidence completeness |
 | SPRINT-017-WP1 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Production Evidence Baseline: generate a read-only production artifact covering external source inventory, source-to-canonical funnel, parcel coverage, Transaction→Asset linkage, owner resolution/ambiguity, buyer/seller cohorts, evidence freshness, facts/scores/matches/outreach counts, and known gaps | Complete: PR #97 + #98; baseline workflow run `30734899137` succeeded, no DB/storage mutation, no provider calls. | WP2 Evidence Value Assessment; stale-roadmap reconciliation; safer SPRINT-017 implementation choices |
 | SPRINT-017-WP2 | Codex | COMPLETE | Evidence Value Assessment: rank remaining Hillsborough evidence opportunities using the approved rubric after WP1 | Complete: public source probe run `30734939428`; assessment in `docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md`. | DATA-020A selected as first WP3 implementation source |
 | FACT-LIVE-001 | Codex | OPEN — HIGH PRIORITY / RCA COMPLETE | Determine why current Railway production reports `canonical_facts=0` and reconcile production reality with historical SPRINT-006 documentation | RCA: likely INFRA-001 blank-slate Railway migration plus no post-migration canonical-fact rebuild. No live API/scoring/matching consumer dependency found; current usage is fidelity/audit/parity/tooling. See `docs/audits/FACT_LIVE_001_ROOT_CAUSE.md`. | Follow-up FACT-LIVE-002 decision before SPRINT-018 if fact-backed consumers should become live |
@@ -1019,6 +1022,14 @@ Registry reconciliation during DATA-020A implementation:
 - Confirmed scope boundaries: no Asset, Transaction, Signal, Score, Match,
   contact, outreach, paid-provider, fuzzy-linking, or schedule changes.
 - Bounded production validation remains pending after merge.
+
+Registry reconciliation after DATA-020A operational verification:
+- Closed `DATA-020A` as COMPLETE / OPERATIONALLY VERIFIED after post-merge
+  workflow dry-run `30735401548` and bounded production write `30735475109`.
+- Added `DATA-020B` as NEXT: Hillsborough Clerk Civil Bulk Historical Evidence.
+- Preserved SPRINT-017 as CURRENT because WP3/WP4/WP5 remain incomplete.
+- Preserved FACT-LIVE-001 open/high-priority and SKIP-PILOT-001 deferred to
+  SPRINT-018; no paid action or outreach occurred.
 
 ### Discovered / Unscoped
 
