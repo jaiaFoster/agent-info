@@ -197,12 +197,13 @@ current_priority: >
   Assessment is complete (public source probe run 30734939428 and
   docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md). DATA-020A Clerk Civil
   Daily Evidence is complete/operationally verified (dry-run 30735401548,
-  production write 30735475109). Production truth before DATA-020A:
-  fidelity OK, raw archive verified, 531975 Assets, 4/40 Transactions linked
-  to Assets, 14112 owner-asset evidence links, 15312 seller-pressure rows,
-  0 buyer-intelligence rows, 0 persisted matches, 0 outreach drafts, and
-  0 canonical facts. Next implementation slice is DATA-020B — Hillsborough
-  Clerk Civil Bulk Historical Evidence. SKIP-PILOT-001 is deferred to SPRINT-018 and
+  production write 30735475109). DATA-020B Clerk Civil Bulk Historical
+  Evidence implementation is current: live source directory verified, bounded
+  parser/ingestion/manual workflow added, local dry-run succeeded. Production
+  truth before DATA-020A: fidelity OK, raw archive verified, 531975 Assets,
+  4/40 Transactions linked to Assets, 14112 owner-asset evidence links, 15312
+  seller-pressure rows, 0 buyer-intelligence rows, 0 persisted matches, 0
+  outreach drafts, and 0 canonical facts. SKIP-PILOT-001 is deferred to SPRINT-018 and
   remains blocked from live paid write by PROVIDER-DNC-001 plus founder spend
   approval.
 
