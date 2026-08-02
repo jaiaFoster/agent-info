@@ -8,8 +8,8 @@
 # changes.
 
 schema_version: 1
-last_updated_utc: "2026-08-01T00:00:00Z"
-last_updated_by: "DATA-020B operational verification"
+last_updated_utc: "2026-08-02T00:00:00Z"
+last_updated_by: "DATA-020C tax deed / excess proceeds source verification"
 
 active_program:
   id: "MVP-001"
@@ -61,6 +61,20 @@ project:
   repository: "fsassaman-commits/lux-core"
 
 current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion"
+
+sprint_017_current_slice:
+  current_ticket: "DATA-020C — Tax Deed / Excess Proceeds Source Verification"
+  status: "SOURCE_VERIFIED_IN_PR"
+  verified_sources:
+    - "Official Clerk tax deed page"
+    - "Weekly Tax Deed Spreadsheet XLSX"
+    - "Claims/disbursement XLSX"
+    - "PublicAccess /TD/api query 285"
+    - "Reachable RealAuction calendar page"
+  production_writes: 0
+  storage_writes: 0
+  next_candidate: "DATA-020D — Tax Deed Excess Proceeds Canonical Ingestion"
+  next_candidate_gate: "Founder confirms this seller-side source is next highest-ROI evidence target; no paid providers or outreach authorized."
 
 current_milestone:
   name: "MVP-001 — First Dollar"

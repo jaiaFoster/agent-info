@@ -7,7 +7,7 @@
 # changes materially.
 
 schema_version: 1
-last_updated_utc: "2026-08-01T00:00:00Z"
+last_updated_utc: "2026-08-02T00:00:00Z"
 
 # Reconciled by SPRINT-005-GOV (2026-07-25). The prior infrastructure-era
 # north_star and phase list are preserved in AGENTS.md's "Current Project
@@ -64,6 +64,7 @@ first_revenue_program:
       title: "Hillsborough Evidence Completion"
       status: "CURRENT"
       mission: "Finish Hillsborough as the reference jurisdiction before geographic expansion."
+      current_slice: "DATA-020C verified official Hillsborough tax deed / excess proceeds sources without production writes; DATA-020D canonical ingestion is next only if founder confirms this is the next highest-ROI evidence source."
     - id: "SPRINT-018"
       title: "Revenue Readiness"
       status: "PLANNED"
