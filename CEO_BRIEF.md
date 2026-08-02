@@ -1,6 +1,6 @@
 # CEO Brief — LUX
 
-*Last updated: 2026-07-25 (SPRINT-005-GOV governance reconciliation). Derived from AGENTS.md; regenerate whenever the Ticket Registry's Current Project Status changes.*
+*Last updated: 2026-08-01 (MVP-001 First Revenue Program / SPRINT-016 kickoff). Derived from AGENTS.md; regenerate whenever the Ticket Registry's Current Project Status changes.*
 
 *For a visual, diagrams-first snapshot (geography, roadmap, engine/intelligence maturity, current milestone), see [`PROJECT_PROGRESS.md`](PROJECT_PROGRESS.md). This document remains the narrative brief and decision log.*
 
@@ -22,11 +22,12 @@ queries are all live. Seller-pressure and buyer-demand scoring (INTEL-001,
 INTEL-002) are live and generating ranked, persisted matches (MATCH-001).
 Human-reviewed outreach drafting (OUTREACH-001) shipped 2026-07-22.
 
-**The current bottleneck is not intelligence — it's real, compliant
-contacts.** Outreach is currently running against mock contact providers.
-The path to real contacts is the Lead Engine go-live sequence
-(LEADGEN-002 through LEADGEN-005), which is the direct blocker on this
-company's one named milestone.
+**The current program is MVP-001 — First Revenue Program.** Before spending
+more money or expanding production evidence writes, SPRINT-016 verifies
+database/storage fidelity: what exists in PostgreSQL, what exists in Railway
+Storage, how provenance chains line up, and which root causes need repair.
+Revenue readiness remains the target, but contact spend belongs to SPRINT-018
+after fidelity and Hillsborough evidence gates are clean.
 
 ## The one milestone that matters: MVP-001 — First Dollar
 
@@ -37,17 +38,13 @@ does this move LUX closer to that first real transaction?
 
 ## What's next, in order
 
-1. **LEADGEN-002** — run the production database migration (unblocks
-   everything else in this list).
-2. **LEADGEN-003** — record the lawful-use attestation (skip-trace is
-   hard-blocked without it).
-3. **LEADGEN-004** — provision paid skip-trace/DNC-scrub provider accounts
-   and keys.
-4. **LEADGEN-005** — activate live providers, run the first bounded live
-   skip-trace batch.
-5. **OUTREACH-003** — feed real, compliant contacts into the existing
-   OUTREACH-001 approval queue.
-6. **MVP-001** — the first actual closed transaction.
+1. **SPRINT-016** — run a read-only production database/storage fidelity
+   census, then repair measured storage or lineage root causes.
+2. **SPRINT-017** — complete Hillsborough as the reference jurisdiction:
+   source coverage, deterministic evidence, linking, and observability.
+3. **SPRINT-018** — revenue readiness: DNC validation, bounded skip trace,
+   contact-quality measurement, and human-reviewed outreach packets.
+4. **MVP-001** — the first actual closed transaction.
 
 ## Geographic expansion (SPRINT-001 findings, 2026-07-24)
 

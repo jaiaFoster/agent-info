@@ -337,43 +337,25 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-006C final closeout, 2026-07-26):
-Canonical Fact Engine validated; bounded paid-contact pilot requires separate
-approval
+Current Phase (reconciled by MVP-001 / SPRINT-016 kickoff, 2026-08-01):
+MVP-001 First Revenue Program — SPRINT-016 Database Fidelity & Evidence
+Integrity
 
-Both market sides are scored from canonical evidence (INTEL-001 seller
-pressure, INTEL-002 buyer demand), reconnected APIs (DATA-009), 200
-persisted candidate matches with outcome tracking (MATCH-001), and (as of
-SPRINT-004) continuous evidence scheduling plus a versioned confidence
-layer distinct from opportunity strength. Per the new operating-philosophy
-sequence (Evidence -> Intelligence -> Confidence -> Decision -> Paid
-Identification -> Outreach -> Revenue), the current gap is not outreach
-mechanics (OUTREACH-001 already ships human-reviewed drafts) — it's
-calibrating intelligence/confidence and defining an explicit decision
-policy for when a bounded cohort is actually ready for paid identification.
-SPRINT-005 began that calibration path. SPRINT-006 now adds the reusable fact
-layer underneath it: deterministic knowledge should be extracted once from
-proven evidence, persisted with provenance, and reused by buyer intelligence,
-confidence, matching, graph, and future verticals.
+Both market sides are scored from canonical evidence and the graph/intelligence
+pipeline is live. The approved MVP-001 program now narrows execution to three
+revenue-path sprints: SPRINT-016 production database/storage fidelity,
+SPRINT-017 Hillsborough evidence completion, and SPRINT-018 revenue readiness.
+Before more paid or production-expansion work, SPRINT-016 must prove exactly
+what exists in PostgreSQL and Railway Storage, then repair root causes with
+provenance and replayability preserved.
 
 Current Milestone:
-Canonical Fact Engine expansion (SPRINT-006): foundation, derived/profile
-follow-up, consumer-shadow bridge, first-write review packet builder, and
-manual review workflow are merged. The canonical facts migration has now been
-applied in production and the credentialed review workflow produced a
-read-only packet successfully. The first bounded production fact write has
-also completed through a manual workflow with live schema check, pre-write
-review, explicit `write_enabled=true`, and post-write audit/shadow artifacts.
-BLOCKER-001 derived-fact lifecycle has been operationally validated in
-production across 100 -> 250 -> 500 bounded writes plus a same-batch 500 replay:
-derived facts supersede cleanly, replay creates zero new active facts, asserted
-fact behavior remains unchanged, and shadow parity was re-measured. SPRINT-006C
-then resolved the confidence divergence by separating legacy-equivalent buyer
-confidence from enriched canonical confidence. Production read-only audit
-confirmed unexplained confidence delta rate `0.0`; the legacy-equivalent
-fact-backed confidence contract is parity-safe, while enriched canonical
-confidence remains separately named and shadow-only until calibrated.
-Infrastructure correctness wins over coverage expansion.
+SPRINT-016 — Database Fidelity & Evidence Integrity. First implementation
+slice adds a read-only fidelity census, `/api/ops/fidelity`, and a manual
+GitHub workflow that records database row inventory, evidence funnel metrics,
+raw archive state, storage URI tiers, lineage integrity, graph FK integrity,
+canonical fact duplicate risk, and Railway bucket preflight status. Repair
+patches follow measured blockers; no data writes happen in this census patch.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -452,13 +434,15 @@ Completed:
   1.0 against the legacy-equivalent contract.
 
 Current Priority:
-- SKIP-PILOT-001 — Bounded Paid Skip-Trace Validation. Approved by Jaia.
-  Implementation now has a bounded buyer-cohort runner and manual dry-run
-  workflow, but live paid purchase is blocked until the real BatchData
-  skip-trace adapter and DNC.com scrub adapter are implemented, tested, and
-  configured. No automatic outreach is authorized.
+- SPRINT-016 — Database Fidelity & Evidence Integrity. Current first slice:
+  read-only production fidelity census plus API/workflow/artifact. No repair
+  write, paid enrichment, or outreach in this patch.
 
 Next:
+- SPRINT-016 repair follow-up — migrate/fix any measured archive or lineage
+  defects without deleting canonical evidence.
+- SPRINT-017 — Hillsborough Evidence Completion.
+- SPRINT-018 — Revenue Readiness, including SKIP-PILOT-001 after DNC gate.
 - PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter against current
   official API docs. (PROVIDER-BATCHDATA-001 is done as of 2026-07-26 — see
   Completed.)
@@ -663,9 +647,17 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SKIP-PILOT-001 | Jaia/Codex | CURRENT — APPROVED / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. | Validated contact source path for MVP-001 |
+| SPRINT-016 | Codex | CURRENT — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | None for read-only census. Repair write scope depends on census findings. | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
+| SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
 | PROVIDER-DNC-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement DNC.com/DNCScrub phone scrub adapter against current official API docs, with mocked HTTP tests, sanitized errors, fail-closed statuses, and `live_ready=true` only when configured | Requires DNC.com account/API key/SAN and current API contract. | Callable-contact validation for paid pilot |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
+
+### Planned — MVP-001 Program
+
+| Ticket | Owner | Status | Goal | Dependencies / Blockers | Unlocks |
+|---|---|---|---|---|---|
+| SPRINT-017 | Codex | PLANNED | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known source, observe every live source, and improve deterministic evidence/linking coverage | SPRINT-016 fidelity census and root-cause repairs | Stronger reference county before geographic expansion |
+| SPRINT-018 | Codex/Jaia | PLANNED | Revenue Readiness: bounded human-reviewed revenue experiment with BatchData, DNC validation, skip-trace quality measurement, and outreach packets only | SPRINT-016/SPRINT-017 evidence gates; PROVIDER-DNC-001; founder approval for paid action | First paid experiment readiness |
 
 ### Open — Committed
 
@@ -879,6 +871,17 @@ Historical ticket-note:
   in a handoff, then renamed here to API-METRIC-001 to preserve DATA-006B for
   Clerk Instrument Detail Investigation. DATA-006D remains complete as source
   inventory/scaffold; DATA-006D1 is the probe-reliability follow-up.
+
+Registry reconciliation after MVP-001 / SPRINT-016 kickoff:
+- Promoted SPRINT-016 — Database Fidelity & Evidence Integrity to Current.
+- Added MVP-001 First Revenue Program docs and roadmap mirror state.
+- Preserved SKIP-PILOT-001 as approved but deferred to SPRINT-018 Revenue
+  Readiness; live paid purchase remains blocked by PROVIDER-DNC-001.
+- Added read-only fidelity census scope: `/api/ops/fidelity`,
+  `scripts/audit_database_fidelity.py`, and the manual SPRINT-016 Database
+  Fidelity Census workflow.
+- No paid provider call, outreach, production data repair, schema migration, or
+  storage mutation is authorized by this first census patch.
 
 ### Discovered / Unscoped
 

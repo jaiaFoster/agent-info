@@ -7,7 +7,7 @@
 # changes materially.
 
 schema_version: 1
-last_updated_utc: "2026-07-27T20:48:00Z"
+last_updated_utc: "2026-08-01T00:00:00Z"
 
 # Reconciled by SPRINT-005-GOV (2026-07-25). The prior infrastructure-era
 # north_star and phase list are preserved in AGENTS.md's "Current Project
@@ -42,8 +42,30 @@ next_priority_order:
 
 strategic_objective:
   id: "MVP-001"
-  name: "First Dollar"
-  definition: "Close one real wholesale transaction entirely sourced and matched through LUX."
+  name: "First Revenue Program"
+  definition: "Produce the shortest defensible path from public evidence to first revenue while strengthening LUX as a reusable intelligence platform."
+
+first_revenue_program:
+  id: "MVP-001"
+  status: "APPROVED"
+  priority: "CRITICAL"
+  implementation_merge_authority: "AUTO when validation passes, CI is green, and no blocker exists"
+  final_program_merge_authority: "Founder review required"
+  current_sprint: "SPRINT-016"
+  sprints:
+    - id: "SPRINT-016"
+      title: "Database Fidelity & Evidence Integrity"
+      status: "CURRENT"
+      mission: "Understand production data exactly, repair storage root causes, and ensure PostgreSQL contains canonical knowledge while Railway Storage contains immutable raw evidence."
+      first_slice: "Read-only fidelity census, /api/ops/fidelity, and manual census workflow."
+    - id: "SPRINT-017"
+      title: "Hillsborough Evidence Completion"
+      status: "PLANNED"
+      mission: "Finish Hillsborough as the reference jurisdiction before geographic expansion."
+    - id: "SPRINT-018"
+      title: "Revenue Readiness"
+      status: "PLANNED"
+      mission: "Prepare the first bounded, human-reviewed revenue experiment."
 
 path_to_first_dollar:
   - step: 1

@@ -8,8 +8,19 @@
 # changes.
 
 schema_version: 1
-last_updated_utc: "2026-07-27T20:48:00Z"
-last_updated_by: "Registry reconciliation pass (SPRINT-006/SPRINT-006C, PROVIDER-BATCHDATA-001, DATA-014, SPRINT-005, DATA-015 marked complete)"
+last_updated_utc: "2026-08-01T00:00:00Z"
+last_updated_by: "MVP-001 First Revenue Program / SPRINT-016 fidelity kickoff"
+
+active_program:
+  id: "MVP-001"
+  title: "First Revenue Program"
+  status: "APPROVED"
+  priority: "CRITICAL"
+  current_sprint: "SPRINT-016 — Database Fidelity & Evidence Integrity"
+  next_sprints:
+    - "SPRINT-017 — Hillsborough Evidence Completion"
+    - "SPRINT-018 — Revenue Readiness"
+  merge_policy: "Implementation PRs may auto-merge when validation passes; founder approval required after full program validation."
 
 active_expansion_work:
   ticket: "SKIP-PILOT-001"
@@ -50,7 +61,7 @@ project:
     County). Core is intentionally market-agnostic.
   repository: "fsassaman-commits/lux-core"
 
-current_phase: "Canonical Fact Engine Validated — Bounded Paid-Contact Pilot (SKIP-PILOT-001) Next, Blocked on PROVIDER-DNC-001"
+current_phase: "MVP-001 First Revenue Program — SPRINT-016 Database Fidelity & Evidence Integrity"
 
 current_milestone:
   name: "MVP-001 — First Dollar"
@@ -130,8 +141,8 @@ completed_intelligence_tickets:
   - "PROVIDER-BATCHDATA-001 — BatchData Skip-Trace Provider Adapter (done 2026-07-26)"
   - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27)"
 
-current_priority_ticket: "SKIP-PILOT-001 — Bounded Paid Skip-Trace Validation"
-current_priority_status: "CURRENT — APPROVED / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY (SPRINT-006 is COMPLETE, see completed_intelligence_tickets)"
+current_priority_ticket: "SPRINT-016 — Database Fidelity & Evidence Integrity"
+current_priority_status: "CURRENT — first slice is read-only production fidelity census, /api/ops/fidelity, and manual census workflow. SKIP-PILOT-001 is approved but deferred to SPRINT-018 and remains live-purchase blocked by PROVIDER-DNC-001."
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."
