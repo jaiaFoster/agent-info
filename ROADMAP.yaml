@@ -64,7 +64,7 @@ first_revenue_program:
       title: "Hillsborough Evidence Completion"
       status: "CURRENT"
       mission: "Finish Hillsborough as the reference jurisdiction before geographic expansion."
-      current_slice: "DATA-020E is current after DATA-020D operational verification: expose source-backed financial-opportunity observations through read-only ops APIs for revenue-readiness review; no paid providers/outreach/recovery workflow."
+      current_slice: "SPRINT-017-WP5A is next after DATA-020E operational verification: produce a read-only revenue qualification packet for founder review; no paid providers/outreach/recovery workflow."
     - id: "SPRINT-018"
       title: "Revenue Readiness"
       status: "PLANNED"
@@ -209,7 +209,7 @@ current_priority: >
   approval.
 
 next_up:
-  - "DATA-020E — Financial Opportunity Evidence Surface"
+  - "SPRINT-017-WP5A — Revenue Qualification Packet v1"
   - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter before any SPRINT-018 paid skip-trace live-write"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"

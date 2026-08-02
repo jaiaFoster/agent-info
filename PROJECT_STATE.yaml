@@ -63,8 +63,8 @@ project:
 current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion"
 
 sprint_017_current_slice:
-  current_ticket: "DATA-020E — Financial Opportunity Evidence Surface"
-  status: "IMPLEMENTATION_PR"
+  current_ticket: "SPRINT-017-WP5A — Revenue Qualification Packet v1"
+  status: "NEXT_READ_ONLY_PACKET"
   verified_sources:
     - "Official Clerk tax deed page"
     - "Weekly Tax Deed Spreadsheet XLSX"
@@ -73,7 +73,7 @@ sprint_017_current_slice:
     - "Reachable RealAuction calendar page"
   production_writes: 1
   storage_writes: 1
-  approved_scope: "Read-only exposure of canonical financial-opportunity observations with Asset attachment and provenance ids; no paid providers, outreach, notifications, recovery workflows, or new writes."
+  approved_scope: "Read-only founder revenue-qualification packet using production evidence; no paid providers, outreach, notifications, recovery workflows, or new writes."
 
 current_milestone:
   name: "MVP-001 — First Dollar"
