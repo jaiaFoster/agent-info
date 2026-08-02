@@ -902,6 +902,16 @@ Registry reconciliation after SPRINT-016 production-state verification:
 - No ticket deleted or renumbered; SKIP-PILOT-001 remains deferred to SPRINT-018
   and blocked by PROVIDER-DNC-001.
 
+Registry reconciliation after SPRINT-016B dry-run:
+- Dry-run `30729751580` proved 7 storage-backed rows and 2 source-URI fallback
+  rows were safely classifiable, but also exposed a stale repair assumption:
+  legacy rows use the old `lux-raw-files` bucket label while current Railway
+  credentials expose a different bucket name. The URI parser must strip any
+  legacy bucket label for `supabase://`, `railway://`, or `s3://` wrappers
+  before the write-mode repair is safe to run.
+- SPRINT-016B remains current; production write intentionally not run until the
+  parser hotfix lands and a new dry-run confirms all legacy rows are classified.
+
 ### Discovered / Unscoped
 
 | Item | Evidence | Needs Decision |
