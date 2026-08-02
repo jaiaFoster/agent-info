@@ -927,6 +927,13 @@ Registry reconciliation after SPRINT-016B operational write:
   `rows_missing_archive_status=0`, `archived_rows=21/23`,
   `source_uri_only_rows=2`, and no lineage/FK defects.
 
+Registry reconciliation during SPRINT-016C implementation:
+- Added hash-verified source-URI backfill script and manual workflow. Dry-run
+  fetches public source bytes and compares SHA-256 to existing
+  `RawEvidence.content_hash`; write mode uploads only matching bytes and updates
+  DB metadata. Hash mismatch remains a blocker, not a guessed archive.
+- No paid provider call, outreach, row deletion, or destructive action.
+
 ### Discovered / Unscoped
 
 | Item | Evidence | Needs Decision |
