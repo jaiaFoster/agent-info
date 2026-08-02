@@ -355,9 +355,13 @@ slice added a read-only fidelity census, `/api/ops/fidelity`, and a manual
 GitHub workflow. Production census run `30727525246` proved lineage and FK
 integrity are clean (`source_records_without_raw_evidence=0`,
 `observations_without_source_record=0`, `invalid_transaction_asset_fk=0`) but
-found RawEvidence archive fidelity blockers: 17 rows missing `archive_status`
-and 20 legacy `supabase://` storage URI rows. SPRINT-016B is current to repair
-that metadata/URI root cause without deleting rows or raw objects.
+found RawEvidence archive fidelity blockers. SPRINT-016B then repaired the
+metadata/URI root cause operationally: write run `30729864174` updated 23
+RawEvidence rows, normalized 20 legacy `supabase://` rows to Railway
+bucket-relative paths, added 17 missing `archive_status` values, verified 21
+objects in Railway Storage, and performed zero storage mutations. Remaining
+blocker is precise: 2 source-URI-only RawEvidence rows need SPRINT-016C
+archive backfill if source bytes are still retrievable and hash-verifiable.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -436,11 +440,10 @@ Completed:
   1.0 against the legacy-equivalent contract.
 
 Current Priority:
-- SPRINT-016B — RawEvidence archive metadata repair. Fix future writers to
-  persist Railway bucket-relative object paths, normalize verified legacy
-  `supabase://` rows, add truthful `archive_status` metadata, and keep repair
-  workflow dry-run by default with explicit `write_enabled=true` for DB
-  metadata updates only.
+- SPRINT-016C — Source-URI-only RawEvidence archive backfill. Remaining
+  production fidelity blocker: 2 RawEvidence rows are explicitly
+  `source_uri_fallback`; determine whether their source bytes can be safely
+  retrieved, hash-verified, uploaded to Railway Storage, and normalized.
 
 Next:
 - SPRINT-016C — archive any remaining source-URI-only RawEvidence rows when
@@ -651,8 +654,9 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-016B | Codex | CURRENT — RAW EVIDENCE ARCHIVE METADATA REPAIR | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Production census `30727525246`; write workflow is dry-run by default and requires explicit `write_enabled=true`. No deletion, storage write, paid call, or outreach. | Clean SPRINT-016 storage tier separation |
-| SPRINT-016 | Codex | IN PROGRESS — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | SPRINT-016B, then any remaining source-URI archive backfill if rows cannot be verified from Railway Storage | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
+| SPRINT-016C | Codex | CURRENT — SOURCE-URI-ONLY ARCHIVE BACKFILL | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | SPRINT-016B write run `30729864174`; no deletion, paid call, or outreach. Storage upload allowed only for hash-verified raw evidence. | Clean SPRINT-016 storage tier separation |
+| SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
+| SPRINT-016 | Codex | IN PROGRESS — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | SPRINT-016C source-URI-only archive backfill | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
 | SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
 | PROVIDER-DNC-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement DNC.com/DNCScrub phone scrub adapter against current official API docs, with mocked HTTP tests, sanitized errors, fail-closed statuses, and `live_ready=true` only when configured | Requires DNC.com account/API key/SAN and current API contract. | Callable-contact validation for paid pilot |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
@@ -911,6 +915,17 @@ Registry reconciliation after SPRINT-016B dry-run:
   before the write-mode repair is safe to run.
 - SPRINT-016B remains current; production write intentionally not run until the
   parser hotfix lands and a new dry-run confirms all legacy rows are classified.
+
+Registry reconciliation after SPRINT-016B operational write:
+- Closed SPRINT-016B as COMPLETE / OPERATIONALLY VERIFIED. Production write
+  run `30729864174` succeeded: 23 rows examined/updated, 20 legacy URI
+  normalizations, 17 archive statuses added, 21 Railway objects verified, 2
+  source URI fallback rows marked, 0 errors, 0 storage mutations.
+- Promoted SPRINT-016C to Current for the only remaining fidelity blocker:
+  `source_uri_only_raw_evidence_rows=2`.
+- Production `/api/ops/fidelity` now shows `supabase_uri_rows=0`,
+  `rows_missing_archive_status=0`, `archived_rows=21/23`,
+  `source_uri_only_rows=2`, and no lineage/FK defects.
 
 ### Discovered / Unscoped
 
