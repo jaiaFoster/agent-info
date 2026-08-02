@@ -457,6 +457,14 @@ Current Priority:
 - SPRINT-017 — Hillsborough Evidence Completion. Finish Hillsborough as the
   reference jurisdiction, classify live sources, expand deterministic evidence,
   and improve observed source coverage now that SPRINT-016 fidelity is clean.
+  Execution starts with WP1 Production Evidence Baseline: verify live
+  production truth before source ranking or implementation. Initial live
+  endpoint checks on 2026-08-02 show fidelity is clean, raw archive remains
+  verified, Assets total `531975`, Transactions linked `4/40` (10.0%),
+  seller-pressure rows `15312`, buyer-intelligence rows `0`, and matches
+  currently consider `0` buyers. Source ranking (WP2), implementation (WP3),
+  and paid/revenue decisions remain blocked until the WP1 baseline artifact is
+  generated and reviewed.
 
 Next:
 - SPRINT-018 — Revenue Readiness, including SKIP-PILOT-001 after DNC gate.
@@ -666,7 +674,8 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-017 | Codex | CURRENT | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; FACT-LIVE-001 remains open but does not block evidence completion | Stronger reference county before SPRINT-018 revenue readiness |
+| SPRINT-017 | Codex | CURRENT | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; WP1 production baseline must complete before source ranking/implementation; FACT-LIVE-001 remains open and does not block evidence completion unless a live Sprint-017 consumer needs canonical facts | Stronger reference county before SPRINT-018 revenue readiness |
+| SPRINT-017-WP1 | Codex | CURRENT / TOOLING ADDED | Production Evidence Baseline: generate a read-only production artifact covering external source inventory, source-to-canonical funnel, parcel coverage, Transaction→Asset linkage, owner resolution/ambiguity, buyer/seller cohorts, evidence freshness, facts/scores/matches/outreach counts, and known gaps | Manual workflow `SPRINT-017 production evidence baseline` must run against production `DATABASE_URL`; no source may be selected or ranked before this artifact is reviewed | WP2 Evidence Value Assessment; stale-roadmap reconciliation; safer SPRINT-017 implementation choices |
 | FACT-LIVE-001 | Codex | OPEN — HIGH PRIORITY / RCA COMPLETE | Determine why current Railway production reports `canonical_facts=0` and reconcile production reality with historical SPRINT-006 documentation | RCA: likely INFRA-001 blank-slate Railway migration plus no post-migration canonical-fact rebuild. No live API/scoring/matching consumer dependency found; current usage is fidelity/audit/parity/tooling. See `docs/audits/FACT_LIVE_001_ROOT_CAUSE.md`. | Follow-up FACT-LIVE-002 decision before SPRINT-018 if fact-backed consumers should become live |
 | SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
 | SPRINT-016 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | Complete: final live `/api/ops/fidelity` returned `FIDELITY_OK`, no blockers, `archived_rows=22/23`, one visible non-blocking `LEGACY-HCPA-001` exception, no lineage/FK defects. | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
@@ -968,6 +977,21 @@ Registry reconciliation after PR #93 HCPA postback dry-run:
   blank-slate INFRA-001 migration, contradicting older SPRINT-006 production
   fact-write narrative for current production. Added FACT-LIVE-001 as
   Discovered/Unscoped; not blocking raw archive repair.
+
+Registry reconciliation during SPRINT-017 WP1 baseline tooling:
+- Preserved SPRINT-017 as Current and added `SPRINT-017-WP1` as the active
+  execution slice.
+- Recorded live production pre-checks: `/api/ops/fidelity=FIDELITY_OK`,
+  raw archive verified, `531975` Assets, `4/40` linked Transactions,
+  `15312` seller-pressure rows, `0` buyer-intelligence rows, and matches
+  currently considering `0` buyers.
+- Added the read-only baseline script/workflow and baseline doc as the gate
+  before WP2 source ranking or WP3 implementation.
+- Preserved FACT-LIVE-001 as open/high-priority; it remains non-blocking for
+  WP1 evidence measurement unless a live Sprint-017 consumer requires
+  canonical facts.
+- No paid action, outreach, provider call, source selection, source ranking,
+  database write, or storage mutation authorized or performed.
 
 ### Discovered / Unscoped
 

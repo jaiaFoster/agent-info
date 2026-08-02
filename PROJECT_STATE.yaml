@@ -9,7 +9,7 @@
 
 schema_version: 1
 last_updated_utc: "2026-08-01T00:00:00Z"
-last_updated_by: "MVP-001 First Revenue Program / SPRINT-016 fidelity kickoff"
+last_updated_by: "SPRINT-017 WP1 production baseline tooling"
 
 active_program:
   id: "MVP-001"
@@ -60,7 +60,7 @@ project:
     County). Core is intentionally market-agnostic.
   repository: "fsassaman-commits/lux-core"
 
-current_phase: "MVP-001 First Revenue Program — SPRINT-016 Database Fidelity & Evidence Integrity"
+current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion"
 
 current_milestone:
   name: "MVP-001 — First Dollar"
@@ -141,7 +141,7 @@ completed_intelligence_tickets:
   - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27)"
 
 current_priority_ticket: "SPRINT-017 — Hillsborough Evidence Completion"
-current_priority_status: "CURRENT — SPRINT-016 complete. Final live fidelity reports FIDELITY_OK, no blockers, archived_rows 22/23, one non-blocking LEGACY-HCPA-001 source-only exception, and clean storage/lineage/FK checks. FACT-LIVE-001 remains open/high-priority as RCA complete; likely needs FACT-LIVE-002 before SPRINT-018 if fact-backed consumers should become live. SKIP-PILOT-001 remains deferred to SPRINT-018 and live-purchase blocked by PROVIDER-DNC-001."
+current_priority_status: "CURRENT — WP1 Production Evidence Baseline first. Initial live checks: /api/ops/fidelity reports FIDELITY_OK with one non-blocking LEGACY-HCPA-001 source-only exception; /api/data/readiness is partial with raw archive verified, assets_total=531975, transactions_with_asset=4/40, seller_pressure_rows=15312, buyer_intelligence_rows=0, and matches currently considering 0 buyers. Source ranking/implementation waits for the SPRINT-017 production baseline artifact. FACT-LIVE-001 remains open/high-priority; SKIP-PILOT-001 remains deferred to SPRINT-018 and live-purchase blocked by PROVIDER-DNC-001."
 
 known_constraints:
   - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."

@@ -192,19 +192,20 @@ market_discovery:
 ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
 
 current_priority: >
-  SPRINT-006 — Canonical Fact Engine is now COMPLETE: the canonical_facts
-  production migration was applied 2026-07-26, bounded fact writes were
-  verified at 100 -> 250 -> 500 records plus a same-batch 500 replay, and
-  SPRINT-006C (PR #73) verified exact legacy-equivalent confidence parity
-  (1.0 match rate, 0.0 unexplained delta). That unblocked the current
-  priority, SKIP-PILOT-001 — a bounded, confidence-gated paid skip-trace
-  validation pilot over ~25 buyers, approved by Jaia. PROVIDER-BATCHDATA-001
-  (real BatchData adapter) shipped 2026-07-26. The only remaining blocker to
-  a live-write pilot run is PROVIDER-DNC-001 (DNC.com scrub adapter, still a
-  stub) — the compliance scrub is a hard gate, not optional.
+  SPRINT-017 — Hillsborough Evidence Completion is CURRENT. First slice is
+  WP1 Production Evidence Baseline: generate a read-only production artifact
+  before ranking or implementing more sources. Initial live checks show
+  fidelity OK, raw archive verified, 531975 Assets, 4/40 Transactions linked
+  to Assets, 15312 seller-pressure rows, 0 buyer-intelligence rows, and
+  matches currently considering 0 buyers. WP2 source-value ranking and WP3
+  source implementation are gated on the baseline artifact. SKIP-PILOT-001 is
+  deferred to SPRINT-018 and remains blocked from live paid write by
+  PROVIDER-DNC-001 plus founder spend approval.
 
 next_up:
-  - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter (only remaining SKIP-PILOT-001 live-write blocker)"
+  - "SPRINT-017-WP1 — run and review production evidence baseline artifact"
+  - "SPRINT-017-WP2 — rank remaining Hillsborough source opportunities using the approved rubric after WP1"
+  - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter before any SPRINT-018 paid skip-trace live-write"
   - "OUTREACH-002 — Response capture after OUTREACH-001"
   - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
   - "VAL-001 — Valuation once Asset price context deepens"
