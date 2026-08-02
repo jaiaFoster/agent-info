@@ -9,7 +9,7 @@
 
 schema_version: 1
 last_updated_utc: "2026-08-02T00:00:00Z"
-last_updated_by: "DATA-020E financial opportunity evidence surface"
+last_updated_by: "SPRINT-017-WP5A revenue qualification packet"
 
 active_program:
   id: "MVP-001"
@@ -64,7 +64,7 @@ current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Eviden
 
 sprint_017_current_slice:
   current_ticket: "SPRINT-017-WP5A — Revenue Qualification Packet v1"
-  status: "NEXT_READ_ONLY_PACKET"
+  status: "IMPLEMENTATION_PR"
   verified_sources:
     - "Official Clerk tax deed page"
     - "Weekly Tax Deed Spreadsheet XLSX"
