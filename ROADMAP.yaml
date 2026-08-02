@@ -64,7 +64,7 @@ first_revenue_program:
       title: "Hillsborough Evidence Completion"
       status: "CURRENT"
       mission: "Finish Hillsborough as the reference jurisdiction before geographic expansion."
-      current_slice: "DATA-020C verified official Hillsborough tax deed / excess proceeds sources without production writes; DATA-020D canonical ingestion is next only if founder confirms this is the next highest-ROI evidence source."
+      current_slice: "DATA-020D is current after founder ROI approval: archive-first canonical ingestion of official tax deed excess-proceeds evidence as reusable financial-opportunity observations, with exact-folio-only Asset linkage and no outreach/paid providers."
     - id: "SPRINT-018"
       title: "Revenue Readiness"
       status: "PLANNED"

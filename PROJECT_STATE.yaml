@@ -63,8 +63,8 @@ project:
 current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion"
 
 sprint_017_current_slice:
-  current_ticket: "DATA-020C — Tax Deed / Excess Proceeds Source Verification"
-  status: "SOURCE_VERIFIED_IN_PR"
+  current_ticket: "DATA-020D — Tax Deed Excess Proceeds Canonical Ingestion"
+  status: "IMPLEMENTATION_PR"
   verified_sources:
     - "Official Clerk tax deed page"
     - "Weekly Tax Deed Spreadsheet XLSX"
@@ -73,8 +73,7 @@ sprint_017_current_slice:
     - "Reachable RealAuction calendar page"
   production_writes: 0
   storage_writes: 0
-  next_candidate: "DATA-020D — Tax Deed Excess Proceeds Canonical Ingestion"
-  next_candidate_gate: "Founder confirms this seller-side source is next highest-ROI evidence target; no paid providers or outreach authorized."
+  approved_scope: "Archive-first canonical ingestion of general financial-opportunity observations; exact-folio Asset linkage only; no paid providers, outreach, notifications, or recovery workflows."
 
 current_milestone:
   name: "MVP-001 — First Dollar"
