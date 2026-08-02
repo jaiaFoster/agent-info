@@ -363,7 +363,10 @@ objects in Railway Storage, and performed zero storage mutations. Remaining
 blocker is precise: 2 source-URI-only RawEvidence rows need SPRINT-016C
 archive backfill. Founder approval is granted for the required full HCPA
 `PARCEL_SPREADSHEET.xls` postback download/upload path, with dry-run hash
-validation before any production write.
+validation before any production write. Operational dry-run `30731067131`
+proved the write is not yet safe: one row still matches the current HCPA DBF
+header surrogate, but one row's stored surrogate hash mismatches the current
+file. Write mode was not run.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -447,9 +450,10 @@ Current Priority:
   `source_uri_fallback`; dry-run `30730053522` proved both are HCPA
   `PARCEL_SPREADSHEET.xls` rows with annotated, non-fetchable source URIs and
   surrogate/header-derived hashes, not full-file content hashes. Founder
-  approval is now granted for a full HCPA portal postback download/upload
-  backfill if dry-run confirms the current DBF header surrogate hash still
-  matches each stored RawEvidence row.
+  approval is granted for a full HCPA portal postback download/upload
+  backfill, but dry-run `30731067131` found only one of the two rows still
+  matches the current DBF header surrogate hash. The other row is a true hash
+  mismatch and must not be promoted without a separate evidence policy.
 
 Next:
 - SPRINT-016C — archive any remaining source-URI-only RawEvidence rows when
@@ -660,7 +664,7 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-016C | Codex | CURRENT — FOUNDER APPROVED / IMPLEMENTING | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | Dry-run `30730053522` found both rows are HCPA `PARCEL_SPREADSHEET.xls`; `source_uri` is an annotation (`https://downloads.hcpafl.org/ (PARCEL_SPREADSHEET.xls, ASP.NET postback download)`), not a direct fetch URL, and existing `content_hash` is a DBF-header surrogate rather than a full-file SHA-256. Founder approval is granted for full HCPA portal postback download/upload of the ~563MB raw file, guarded by dry-run surrogate-hash validation before write mode. | Clean SPRINT-016 storage tier separation |
+| SPRINT-016C | Codex | BLOCKED — HASH MISMATCH FOUND / NO WRITE RUN | Repair the final measured archive fidelity blocker: 2 RawEvidence rows marked `source_uri_fallback`; archive them only if source bytes are safely retrievable and content-hash-verifiable, otherwise document why they remain source-only | Dry-run `30731067131` on PR #93/main downloaded the current HCPA `PARCEL_SPREADSHEET.xls` via the verified ASP.NET postback path. Row `0293f541-b1ae-5397-a2e5-6359f91e6844` matched the current DBF-header surrogate (`HCPA_SURROGATE_HASH_MATCH`); row `37753be3-598d-559d-b785-a97a5634edf0` mismatched (`HASH_MISMATCH`). No DB/storage mutations occurred and write mode was not run. Need policy: archive only the matching row, preserve the mismatched row as source-only, or locate historical source bytes for the mismatched surrogate. | Clean SPRINT-016 storage tier separation once policy is chosen |
 | SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
 | SPRINT-016 | Codex | IN PROGRESS — MVP-001 FIRST REVENUE PROGRAM / DATABASE FIDELITY | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | SPRINT-016C source-URI-only archive backfill | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
 | SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
@@ -949,6 +953,18 @@ Registry reconciliation after SPRINT-016C dry-run:
   hashes, not verified full-file raw bytes.
 - No write-mode backfill was run. Production remains clean except
   `source_uri_only_raw_evidence_rows=2`.
+
+Registry reconciliation after PR #93 HCPA postback dry-run:
+- Founder approval enabled the full-file HCPA postback archive path, and PR #93
+  added that implementation. Operational dry-run `30731067131` succeeded but
+  did not satisfy write gates: row `0293f541-b1ae-5397-a2e5-6359f91e6844`
+  matched the current DBF-header surrogate and row
+  `37753be3-598d-559d-b785-a97a5634edf0` mismatched it. No write mode was run.
+  SPRINT-016C remains blocked on policy for the mismatched historical row.
+- Live Railway `/api/ops/fidelity` also showed `canonical_facts=0` after the
+  blank-slate INFRA-001 migration, contradicting older SPRINT-006 production
+  fact-write narrative for current production. Added FACT-LIVE-001 as
+  Discovered/Unscoped; not blocking raw archive repair.
 
 ### Discovered / Unscoped
 
