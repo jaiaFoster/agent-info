@@ -63,8 +63,8 @@ project:
 current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion"
 
 sprint_017_current_slice:
-  current_ticket: "SPRINT-017-WP5A — Revenue Qualification Packet v1"
-  status: "IMPLEMENTATION_PR"
+  current_ticket: "BUYER-LIVE-001 — Restore Buyer Intelligence Projection"
+  status: "NEXT_BLOCKER_REPAIR"
   verified_sources:
     - "Official Clerk tax deed page"
     - "Weekly Tax Deed Spreadsheet XLSX"
@@ -73,7 +73,7 @@ sprint_017_current_slice:
     - "Reachable RealAuction calendar page"
   production_writes: 1
   storage_writes: 1
-  approved_scope: "Read-only founder revenue-qualification packet using production evidence; no paid providers, outreach, notifications, recovery workflows, or new writes."
+  approved_scope: "Restore deterministic buyer intelligence projection after WP5A found buyer_scores=0 and candidate_matches=0; no paid providers, outreach, notifications, or recovery workflows."
 
 current_milestone:
   name: "MVP-001 — First Dollar"
