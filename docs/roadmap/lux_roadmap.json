@@ -1,12 +1,12 @@
 {
   "status": "success",
-  "updated_at": "2026-08-12T20:44:33Z",
+  "updated_at": "2026-08-12T20:52:34Z",
   "last_updated_by": "SPRINT-020",
   "current_phase": "MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate",
   "current_milestone": "MVP-001 First Dollar. Production has live seller evidence, buyer intelligence, explainable matches, candidate ranking, revenue qualification, and skip-trace shadow validation. Paid identification and outreach remain blocked by compliance/founder gates.",
   "latest_completed_milestone": "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet",
   "current_ticket": "SPRINT-020 — Technical Pilot Readiness",
-  "next_ticket": "REVENUE-QUALIFICATION-004 — Revenue Qualification Refresh",
+  "next_ticket": "PROVIDER-DNC-001 — DNC.com/DNCScrub Adapter",
   "planned_milestone": "MVP-001 — First Dollar",
   "source_commit": "f5be8a6ee35a7a706bb8bc5e6c2153d75c83a099",
   "first_revenue_program": {
@@ -60,6 +60,10 @@
     "graph_classification": "GRAPH_PARTIAL_LINK_COVERAGE",
     "fidelity_classification": "FIDELITY_OK",
     "revenue_recommendation": "repair_specific_issue_first",
+    "revenue_remaining_blockers": [
+      "SCORING_STATISTICAL_SAMPLE_NOT_READY",
+      "PROVIDER_DNC_001"
+    ],
     "paid_action_authorized": false,
     "paid_provider_calls_triggered": false,
     "outreach_triggered": false
@@ -81,7 +85,7 @@
         {
           "id": "SPRINT-020",
           "title": "Technical Pilot Readiness",
-          "status": "CURRENT / WP4 REVENUE-QUALIFICATION-004",
+          "status": "COMPLETE_TECHNICAL",
           "purpose": "Clear fidelity, BatchData resilience, scoring-readiness, and revenue-qualification blockers before SKIP-PILOT-002 founder review.",
           "dependencies": []
         }
@@ -152,6 +156,14 @@
           "purpose": "Separate data-integrity readiness from statistical/sample readiness without lowering transaction-linkage thresholds.",
           "dependencies": [],
           "evidence": "PR #132 merged at f5be8a6; live readiness reports data_integrity_ready=true and statistical_sample_ready=false."
+        },
+        {
+          "id": "REVENUE-QUALIFICATION-004",
+          "title": "Revenue Qualification Refresh",
+          "status": "COMPLETE",
+          "purpose": "Expose the post-SPRINT-020 technical pilot readiness surface.",
+          "dependencies": [],
+          "evidence": "PR #133 merged at 930ba61; hotfix PR #134 merged at 4d7078d; live v4 endpoint returns repair_specific_issue_first with no paid provider calls or outreach."
         }
       ]
     }
@@ -159,24 +171,18 @@
   "next_priority_order": [
     {
       "rank": 1,
-      "ticket": "REVENUE-QUALIFICATION-004",
-      "title": "Revenue qualification refresh",
-      "reason": "Refresh founder decision surface after fidelity, BatchData, and scoring policy are integrated."
-    },
-    {
-      "rank": 2,
       "ticket": "PROVIDER-DNC-001",
       "title": "DNC.com/DNCScrub adapter",
       "reason": "Hard compliance gate before any paid pilot or callable-contact flow."
     },
     {
-      "rank": 3,
+      "rank": 2,
       "ticket": "SKIP-PILOT-002",
       "title": "Bounded paid skip-trace pilot authorization",
       "reason": "Founder authorization required after provider/compliance blockers clear."
     },
     {
-      "rank": 4,
+      "rank": 3,
       "ticket": "OUTREACH-PREP-001",
       "title": "Human outreach preparation",
       "reason": "Queue/draft mechanics exist; no send until callable contacts and founder authorization exist."

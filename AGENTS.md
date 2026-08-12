@@ -400,11 +400,10 @@ outreach → contacted, closed deal. A qualified lead and an approved outreach
 packet are steps on this path, not the milestone itself.
 
 Current Priority:
-- SPRINT-020 — Technical Pilot Readiness. Clear the remaining technical
-  blockers between the current production opportunity set and founder review
-  of SKIP-PILOT-002. Fidelity and BatchData resilience are production-verified;
-  scoring-readiness semantics are now auditable without lowering thresholds;
-  current work refreshes the final read-only revenue qualification surface.
+- PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter before
+  any paid skip-trace or callable-contact flow. SPRINT-020 technical work is
+  complete and production-verified; SKIP-PILOT-002 remains blocked by this
+  compliance/provider gate plus founder authorization.
 
 Next / Unresolved:
 - PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter; this
@@ -431,8 +430,9 @@ Next / Unresolved:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-020 | Codex | CURRENT / WP4 REVENUE-QUALIFICATION-004 IN PROGRESS | Technical Pilot Readiness: restore fidelity, harden BatchData, make scoring-readiness auditable/defensible, then refresh revenue qualification for SKIP-PILOT-002 founder review | Paid provider calls, outreach, destructive actions, legal/compliance judgments, and material business-risk policy choices remain founder-gated | Founder-ready technical answer to whether SKIP-PILOT-002 can be presented for approval |
-| REVENUE-QUALIFICATION-004 | Codex | CURRENT / IMPLEMENTATION PR | Revenue Qualification Refresh: expose the post-SPRINT-020 decision surface with current counts, fidelity, scoring policy, match quality, candidate cohorts, BatchData readiness, DNC status, blockers, and recommendation | PROVIDER-DNC-001 remains hard compliance blocker; founder authorization required for any paid action | SKIP-PILOT-002 founder review packet can be evaluated from current production truth |
+| PROVIDER-DNC-001 | Codex/founder | OPEN — HARD COMPLIANCE BLOCKER | Implement and validate the DNC.com/DNCScrub adapter before paid pilot/live callable-contact flow | Requires real provider contract/account details; founder approval required before any compliance policy or paid/live use | SKIP-PILOT-002 can be presented for bounded paid authorization after validation |
+| SPRINT-020 | Codex | COMPLETE / TECHNICALLY VERIFIED | Technical Pilot Readiness: restore fidelity, harden BatchData, make scoring-readiness auditable/defensible, then refresh revenue qualification for SKIP-PILOT-002 founder review | Paid provider calls, outreach, destructive actions, legal/compliance judgments, and material business-risk policy choices remain founder-gated | Answer delivered: technically not ready for paid pilot until PROVIDER-DNC-001 clears; data/match decision surface is live |
+| REVENUE-QUALIFICATION-004 | Codex | COMPLETE / PRODUCTION VERIFIED | Revenue Qualification Refresh: expose the post-SPRINT-020 decision surface with current counts, fidelity, scoring policy, match quality, candidate cohorts, BatchData readiness, DNC status, blockers, and recommendation | PR #133 merged at `930ba61`; hotfix PR #134 merged at `4d7078d`; live `/api/ops/revenue-qualification-v4` returns recommendation `repair_specific_issue_first`, blockers `SCORING_STATISTICAL_SAMPLE_NOT_READY` and `PROVIDER_DNC_001`, paid_provider_calls=false, outreach_triggered=false | SKIP-PILOT-002 founder review can evaluate current production truth, but paid execution remains blocked |
 | SCORING-POLICY-001 | Codex | COMPLETE / PRODUCTION VERIFIED | Scoring Readiness Policy: separate data-integrity readiness from transaction-linkage statistical/sample readiness, expose raw metrics, and evaluate current production without silently lowering thresholds | PR #132 merged at `f5be8a6`; live `/api/data/readiness` reports `data_integrity_ready=true`, `statistical_sample_ready=false`, blocker `insufficient_asset_coverage`, and unchanged thresholds `25` linked transactions / `0.60` coverage | Auditable scoring-readiness input for revenue qualification refresh |
 | BATCHDATA-RESILIENCE-001 | Codex | COMPLETE / PRODUCTION VERIFIED | BatchData Production Hardening: add bounded transient retry/backoff, timeout/rate-limit handling, deterministic request identity, sanitized errors, and observable retry metrics without making paid provider calls | PR #131 merged at `c3bbab4`; live `/api/ops/skip-trace-shadow?cohort_size=10` returned retry policy `implemented`, `max_attempts=3`, `paid_provider_calls=false`, and `live_provider_instantiated=false`. DNC.com provider remains a separate hard compliance blocker. | Robust unattended provider path for future founder-authorized bounded pilot |
 | FIDELITY-CHECK-002 | Codex | COMPLETE / PRODUCTION VERIFIED | Restore Production Fidelity: root-cause `/api/ops/fidelity` returning `FIDELITY_AUDIT_REQUIRED` and repair without deleting evidence or weakening hash verification | Root cause: HCPA public downloads TLS certificate expired 2026-08-12; PR #130 added HTTPS-first/expired-cert-only HTTP fallback plus better diagnostic reason. Production write run `31637380974` updated 1 row, uploaded 1 archive object, preserved `LEGACY-HCPA-001`, and live `/api/ops/fidelity` returned `FIDELITY_OK` with no blockers. | BATCHDATA-RESILIENCE-001 and later SPRINT-020 work can proceed |

@@ -27,8 +27,8 @@ Live production verified on 2026-08-12:
 - Buyer intelligence: 57 scored buyers.
 - Matching: 957 persisted/quality-analyzed matches.
 - Candidate ranking: 957 candidate matches surfaced for bounded review.
-- Revenue packet: SPRINT-020 v4 decision surface is being refreshed after
-  fidelity, BatchData resilience, and scoring policy work.
+- Revenue packet: SPRINT-020 v4 decision surface is live; recommendation is
+  `repair_specific_issue_first`.
 - Skip-trace shadow: validated read-only with mock providers; no paid provider
   calls and no outreach.
 - Fidelity: restored to `FIDELITY_OK` after SPRINT-020 repair.
@@ -60,9 +60,8 @@ milestone is a closed transaction.
 
 ## Recommended next technical roadmap
 
-1. Complete `REVENUE-QUALIFICATION-004` v4 packet and production smoke.
-2. Implement `PROVIDER-DNC-001`.
-3. If authorized after blocker clearance, run `SKIP-PILOT-002` as a bounded paid pilot; no automated
+1. Implement `PROVIDER-DNC-001`.
+2. If authorized after blocker clearance, run `SKIP-PILOT-002` as a bounded paid pilot; no automated
    outreach.
 
 ## Non-negotiables

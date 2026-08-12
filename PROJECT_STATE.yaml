@@ -5,7 +5,7 @@
 # executives, and the AI-state mirror.
 
 schema_version: 2
-last_updated_utc: "2026-08-12T20:44:33Z"
+last_updated_utc: "2026-08-12T20:52:34Z"
 last_updated_by: "SPRINT-020"
 
 project:
@@ -21,7 +21,7 @@ active_program:
   priority: "CRITICAL"
   current_sprint: "SPRINT-020 — Technical Pilot Readiness"
   current_phase: "Revenue Qualification / Compliance Gate"
-  current_state: "SPRINT-016/017/018/019 complete as technical workstreams; paid pilot and sprint/program completion remain founder-gated where applicable."
+  current_state: "SPRINT-016/017/018/019 complete as technical workstreams; SPRINT-020 complete as technical readiness work; paid pilot and program completion remain founder-gated."
   merge_policy: "Implementation PRs may auto-merge when validation passes, CI is green, no blocker exists, and scope is non-consequential. Founder approval required for paid spend, outreach, destructive actions, policy changes, and final program completion."
 
 verified_baseline:
@@ -52,6 +52,7 @@ verified_baseline:
   revenue:
     qualification_endpoint: "/api/ops/revenue-qualification-v4"
     recommendation: "repair_specific_issue_first"
+    remaining_blockers: ["SCORING_STATISTICAL_SAMPLE_NOT_READY", "PROVIDER_DNC_001"]
     paid_action_authorized: false
     paid_provider_calls_triggered: false
     outreach_triggered: false
@@ -95,12 +96,10 @@ live_capabilities:
   - "property_graph_partial_linkage"
 
 current_priority:
-  ticket: "SPRINT-020"
-  status: "CURRENT / WP4 REVENUE-QUALIFICATION-004"
-  objective: "Clear fidelity, BatchData resilience, scoring-readiness, and revenue-qualification blockers before SKIP-PILOT-002 founder review."
+  ticket: "PROVIDER-DNC-001"
+  status: "OPEN_HARD_COMPLIANCE_BLOCKER"
+  objective: "Implement and validate the DNC.com/DNCScrub adapter before paid pilot/live callable-contact flow."
   after_merge_next:
-    - "REVENUE-QUALIFICATION-004 — refresh revenue qualification after technical blockers are integrated"
-    - "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter; hard compliance gate before paid pilot/live contact flow"
     - "SKIP-PILOT-002 — founder authorization decision after compliance/provider blockers clear"
     - "Human outreach preparation — no send until DNC/compliance and founder approval"
 
@@ -148,5 +147,8 @@ recently_completed_sprint_020:
   - id: "SCORING-POLICY-001"
     status: "COMPLETE"
     evidence: "PR #132 merged at f5be8a6; live readiness exposes policy SPRINT_020_SCORING_POLICY_V1 with data_integrity_ready=true and statistical_sample_ready=false."
+  - id: "REVENUE-QUALIFICATION-004"
+    status: "COMPLETE"
+    evidence: "PR #133 merged at 930ba61; PR #134 hotfix merged at 4d7078d; live /api/ops/revenue-qualification-v4 returns repair_specific_issue_first with no paid provider calls or outreach."
 
 full_detail: "See AGENTS.md, docs/research/SPRINT-018-REVIEW-PACKET.md, docs/research/SPRINT-019-REVIEW-PACKET.md, and ROADMAP.yaml."

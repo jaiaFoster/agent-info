@@ -71,6 +71,7 @@ outreach sends.
 | Match-quality analysis | Live |
 | Candidate ranking | Live |
 | Revenue qualification packet | Live |
+| SPRINT-020 v4 decision packet | Live, read-only |
 | Skip-trace/DNC shadow validation | Live, read-only |
 | Fidelity | FIDELITY_OK |
 | BatchData retry/backoff | Complete, no-paid-call shadow verified |
@@ -91,11 +92,10 @@ outreach sends.
 
 ```mermaid
 flowchart TD
-    p1[REVENUE-QUALIFICATION-004]
-    p1 --> p2[PROVIDER-DNC-001]
-    p2 --> p3[SKIP-PILOT-002 founder authorization]
-    p3 --> p4[Human outreach preparation]
-    p4 --> p5[MVP-001 First Dollar]
+    p1[PROVIDER-DNC-001]
+    p1 --> p2[SKIP-PILOT-002 founder authorization]
+    p2 --> p3[Human outreach preparation]
+    p3 --> p4[MVP-001 First Dollar]
 ```
 
 Nothing in this file is a second source of truth. `AGENTS.md` remains
