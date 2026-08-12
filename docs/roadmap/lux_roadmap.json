@@ -1,0 +1,196 @@
+{
+  "status": "success",
+  "updated_at": "2026-08-12T18:20:00Z",
+  "last_updated_by": "STATE-RECONCILE-001",
+  "current_phase": "MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate",
+  "current_milestone": "MVP-001 First Dollar. Production has live seller evidence, buyer intelligence, explainable matches, candidate ranking, revenue qualification, and skip-trace shadow validation. Paid identification and outreach remain blocked by compliance/founder gates.",
+  "latest_completed_milestone": "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet",
+  "current_ticket": "STATE-RECONCILE-001 — Project State & Mirror Reconciliation",
+  "next_ticket": "PROVIDER-DNC-001 — DNC.com/DNCScrub adapter",
+  "planned_milestone": "MVP-001 — First Dollar",
+  "source_commit": "d497c007adbe4c49d9593dfb83dc61688c2c5c6b",
+  "first_revenue_program": {
+    "id": "MVP-001",
+    "status": "APPROVED",
+    "priority": "CRITICAL",
+    "implementation_merge_authority": "AUTO when validation passes and no blocker exists",
+    "final_program_approval": "founder required",
+    "sprints": [
+      {
+        "id": "SPRINT-016",
+        "title": "Database Fidelity & Evidence Integrity",
+        "status": "COMPLETE"
+      },
+      {
+        "id": "SPRINT-017",
+        "title": "Hillsborough Evidence Completion",
+        "status": "COMPLETE"
+      },
+      {
+        "id": "SPRINT-018",
+        "title": "Revenue Readiness Implementation",
+        "status": "COMPLETE_TECHNICAL"
+      },
+      {
+        "id": "SPRINT-019",
+        "title": "Match Quality, Scoring Readiness & Revenue Packet",
+        "status": "COMPLETE_TECHNICAL"
+      }
+    ]
+  },
+  "production_snapshot": {
+    "verified_at": "2026-08-12T18:20:00Z",
+    "health": "ok",
+    "assets": 532451,
+    "transactions_total": 159,
+    "transactions_with_asset": 34,
+    "transactions_without_asset": 125,
+    "transaction_asset_coverage_pct": 21.38,
+    "source_records": 560102,
+    "observations": 11255764,
+    "raw_evidence": 53,
+    "pipeline_runs": 82,
+    "scored_buyers": 57,
+    "persisted_matches": 957,
+    "candidate_matches": 957,
+    "financial_opportunity_subjects": 69,
+    "financial_opportunity_observations": 821,
+    "asset_linked_financial_observations": 28,
+    "canonical_facts": 0,
+    "graph_classification": "GRAPH_PARTIAL_LINK_COVERAGE",
+    "revenue_recommendation": "proceed_with_smaller_pilot_after_blockers_cleared",
+    "paid_action_authorized": false,
+    "paid_provider_calls_triggered": false,
+    "outreach_triggered": false
+  },
+  "live_capabilities": [
+    "buyer_intelligence",
+    "asset_scoped_seller_opportunities",
+    "explainable_buyer_seller_matching",
+    "match_quality_analysis",
+    "candidate_ranking",
+    "revenue_qualification",
+    "skip_trace_shadow_validation",
+    "property_graph_partial_linkage"
+  ],
+  "sections": [
+    {
+      "name": "Current",
+      "tickets": [
+        {
+          "id": "STATE-RECONCILE-001",
+          "title": "Project State & Mirror Reconciliation",
+          "status": "CURRENT",
+          "purpose": "Reconcile project-state artifacts and mirror publication with current main and production truth.",
+          "dependencies": []
+        }
+      ]
+    },
+    {
+      "name": "Next",
+      "tickets": [
+        {
+          "id": "PROVIDER-DNC-001",
+          "title": "DNC.com/DNCScrub adapter",
+          "status": "OPEN_HARD_BLOCKER",
+          "purpose": "Implement DNC scrub adapter before paid pilot/live contact flow.",
+          "dependencies": ["founder/provider account decision"]
+        },
+        {
+          "id": "BATCHDATA-RESILIENCE-001",
+          "title": "BatchData retry/backoff",
+          "status": "OPEN",
+          "purpose": "Add transient-failure and 429 resilience before unattended provider reliance.",
+          "dependencies": []
+        },
+        {
+          "id": "SCORING-READINESS-POLICY-001",
+          "title": "Scoring-readiness threshold decision",
+          "status": "OPEN_FOUNDER_DECISION",
+          "purpose": "Decide whether current graph coverage should remain below scoring-safe threshold or change policy explicitly.",
+          "dependencies": ["founder policy decision"]
+        },
+        {
+          "id": "SKIP-PILOT-002",
+          "title": "Bounded paid skip-trace pilot authorization",
+          "status": "BLOCKED",
+          "purpose": "Authorize/defer/redirect a small paid pilot after compliance/provider blockers clear.",
+          "dependencies": ["PROVIDER-DNC-001", "founder authorization"]
+        }
+      ]
+    },
+    {
+      "name": "Completed",
+      "tickets": [
+        {
+          "id": "SPRINT-016",
+          "title": "Database Fidelity & Evidence Integrity",
+          "status": "COMPLETE",
+          "purpose": "Production fidelity and raw archive closeout.",
+          "dependencies": []
+        },
+        {
+          "id": "SPRINT-017",
+          "title": "Hillsborough Evidence Completion",
+          "status": "COMPLETE",
+          "purpose": "Hillsborough evidence baseline, source assessment, and high-value source ingestion.",
+          "dependencies": []
+        },
+        {
+          "id": "SPRINT-018",
+          "title": "Revenue Readiness Implementation",
+          "status": "COMPLETE_TECHNICAL",
+          "purpose": "Buyer restoration, asset-scoped seller opportunities, match scale, and revenue qualification v2.",
+          "dependencies": []
+        },
+        {
+          "id": "SPRINT-019",
+          "title": "Match Quality, Scoring Readiness & Revenue Packet",
+          "status": "COMPLETE_TECHNICAL",
+          "purpose": "Match-quality analysis, candidate ranking, revenue packet, and skip-trace shadow validation.",
+          "dependencies": []
+        }
+      ]
+    }
+  ],
+  "next_priority_order": [
+    {
+      "rank": 1,
+      "ticket": "PROVIDER-DNC-001",
+      "title": "DNC.com/DNCScrub adapter",
+      "reason": "Hard compliance gate before any paid pilot or callable-contact flow."
+    },
+    {
+      "rank": 2,
+      "ticket": "BATCHDATA-RESILIENCE-001",
+      "title": "BatchData retry/backoff",
+      "reason": "Shadow validation found no retry/backoff for transient provider failure or HTTP 429."
+    },
+    {
+      "rank": 3,
+      "ticket": "SCORING-READINESS-POLICY-001",
+      "title": "Scoring-readiness threshold decision",
+      "reason": "Current graph coverage is 34/159 linked Transactions (21.38%), below the existing scoring-safe threshold."
+    },
+    {
+      "rank": 4,
+      "ticket": "SKIP-PILOT-002",
+      "title": "Bounded paid skip-trace pilot authorization",
+      "reason": "Founder authorization required after provider/compliance blockers clear."
+    },
+    {
+      "rank": 5,
+      "ticket": "OUTREACH-PREP-001",
+      "title": "Human outreach preparation",
+      "reason": "Queue/draft mechanics exist; no send until callable contacts and founder authorization exist."
+    }
+  ],
+  "open_blockers": [
+    "PROVIDER-DNC-001",
+    "BATCHDATA-RESILIENCE-001",
+    "SCORING-READINESS-POLICY-001",
+    "SKIP-PILOT-002 founder authorization",
+    "FACT-LIVE-001/002"
+  ],
+  "ticket_registry_pointer": "AGENTS.md — Ticket Registry"
+}

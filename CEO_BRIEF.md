@@ -1,181 +1,71 @@
 # CEO Brief — LUX
 
-*Last updated: 2026-08-01 (MVP-001 First Revenue Program / SPRINT-016 kickoff). Derived from AGENTS.md; regenerate whenever the Ticket Registry's Current Project Status changes.*
-
-*For a visual, diagrams-first snapshot (geography, roadmap, engine/intelligence maturity, current milestone), see [`PROJECT_PROGRESS.md`](PROJECT_PROGRESS.md). This document remains the narrative brief and decision log.*
+*Last updated: 2026-08-12 (STATE-RECONCILE-001). Derived from AGENTS.md and verified against live Railway production.*
 
 ## What LUX is
 
-LUX (Linked Unified Exchange) is a market-intelligence platform: it turns
-scattered public records into canonical evidence, scores that evidence into
-seller and buyer intelligence, ranks buyer↔seller matches, and routes the
-best matches into a human-reviewed outreach queue. Residential real estate
-(Tampa Bay, FL) is the first validation vertical — **this is not a real
-estate app**; real estate proves out a market-agnostic intelligence engine.
+LUX turns fragmented public evidence into explainable market decisions:
+canonical evidence, seller/buyer intelligence, ranked matches, and
+human-reviewed outreach preparation. Residential real estate in Hillsborough
+County remains the reference vertical for a reusable market-intelligence core.
 
-## Where we are
+## Current verified state
 
-The infrastructure phase is complete and has been operationally proven in
-production: canonical data model, public-record ingestion, immutable
-provenance, deterministic Transaction→Asset linking, and read-only graph
-queries are all live. Seller-pressure and buyer-demand scoring (INTEL-001,
-INTEL-002) are live and generating ranked, persisted matches (MATCH-001).
-Human-reviewed outreach drafting (OUTREACH-001) shipped 2026-07-22.
+SPRINT-016, SPRINT-017, SPRINT-018, and SPRINT-019 are complete as technical
+workstreams. Production is no longer in the stale “buyer intelligence empty /
+zero matches” state that older roadmap files described.
 
-**The current program is MVP-001 — First Revenue Program.** Before spending
-more money or expanding production evidence writes, SPRINT-016 verifies
-database/storage fidelity: what exists in PostgreSQL, what exists in Railway
-Storage, how provenance chains line up, and which root causes need repair.
-Revenue readiness remains the target, but contact spend belongs to SPRINT-018
-after fidelity and Hillsborough evidence gates are clean.
+Live production verified on 2026-08-12:
 
-## The one milestone that matters: MVP-001 — First Dollar
+- Health: `/api/health` returned `ok`.
+- Graph: 34/159 Transactions linked to Assets (21.38%), classification
+  `GRAPH_PARTIAL_LINK_COVERAGE`.
+- Evidence: 560,102 SourceRecords, 11,255,764 Observations, 53 RawEvidence
+  rows, 82 PipelineRuns.
+- Seller opportunity evidence: 69 financial-opportunity subjects, 821
+  financial-opportunity observations, 28 Asset-linked financial observations.
+- Buyer intelligence: 57 scored buyers.
+- Matching: 957 persisted/quality-analyzed matches.
+- Candidate ranking: 957 candidate matches surfaced for bounded review.
+- Revenue packet: recommendation is
+  `proceed_with_smaller_pilot_after_blockers_cleared`.
+- Skip-trace shadow: validated read-only with mock providers; no paid provider
+  calls and no outreach.
+- Canonical facts: current Railway production reports `canonical_facts=0`;
+  this remains an audit/follow-up item, not an active consumer blocker unless a
+  live consumer is moved back to persisted facts.
 
-Close one real wholesale transaction entirely sourced and matched through
-LUX. A qualified lead and an approved outreach packet are steps on this
-path, not the milestone itself. Every ticket should be evaluated against:
-does this move LUX closer to that first real transaction?
+## The milestone that matters
 
-## What's next, in order
+MVP-001 — First Dollar: close one wholesale transaction sourced and matched
+through LUX. A qualified lead or outreach packet is an intermediate step; the
+milestone is a closed transaction.
 
-1. **SPRINT-016** — run a read-only production database/storage fidelity
-   census, then repair measured storage or lineage root causes.
-2. **SPRINT-017** — complete Hillsborough as the reference jurisdiction:
-   source coverage, deterministic evidence, linking, and observability.
-3. **SPRINT-018** — revenue readiness: DNC validation, bounded skip trace,
-   contact-quality measurement, and human-reviewed outreach packets.
-4. **MVP-001** — the first actual closed transaction.
+## Current blockers
 
-## Geographic expansion (SPRINT-001 findings, 2026-07-24)
+1. `PROVIDER-DNC-001`: DNC.com/DNCScrub adapter is still the hard compliance
+   blocker before any paid skip-trace or callable-contact flow.
+2. BatchData resilience: shadow validation found no retry/backoff path for
+   transient provider failures or HTTP 429.
+3. Scoring-readiness policy: production graph coverage is real but still below
+   the existing threshold (34/159 linked Transactions, 21.38%).
+4. `SKIP-PILOT-002`: founder authorization is required before any paid
+   provider purchase.
+5. `FACT-LIVE-001/002`: canonical facts are absent in current Railway
+   production and need a separate architecture decision if persisted facts
+   should become a live consumer path again.
 
-Research validated the existing plan rather than changing it, and added
-execution detail:
-- **Florida**: keep expanding. Evidence-ranked next counties: Pinellas
-  (already in progress), Orange, Pasco, Duval.
-- **Phoenix (Maricopa County, AZ)**: keep as the first out-of-state
-  architecture-validation target — evidence fully supports the original
-  rationale.
-- **Troy (Rensselaer County, NY)**: keep, but with an honest risk note —
-  population has been declining since 2020 and it has the weakest data
-  access (permits, probate) of any market researched. Frame it explicitly
-  as a non-revenue architecture-validation bet, which is how the project
-  already treats it.
-- Deprioritized: Austin, TX and Salt Lake County, UT — both are
-  non-disclosure states, which breaks LUX's evidence-based model
-  regardless of their macro appeal.
+## Recommended next technical roadmap
 
-**Update 2026-07-26:** Phoenix and Troy now have formal tickets —
-`AZ-ADAPTER-001` and `NY-ADAPTER-001` (the latter's scope extended to
-Albany County at Tim's request). Neither authorizes adapter code yet; both
-are blocked on the same shared asset-linker identity-vocabulary decision
-(Maricopa uses APN, NY uses Section-Block-Lot, and the shared linker has
-no slot for either). Also added `MARKET-001`, a new, independent, unblocked
-ticket for a national investor-purchase heatmap (free Redfin Data Center
-quarterly data) to help prioritize which market to evaluate next.
+1. Implement `PROVIDER-DNC-001`.
+2. Add BatchData retry/backoff resilience.
+3. Resolve the scoring-readiness threshold decision with founder input.
+4. Re-run the bounded revenue-pilot decision packet with fresh metrics.
+5. If authorized, run `SKIP-PILOT-002` as a bounded paid pilot; no automated
+   outreach.
 
-## Pinellas expansion progress (SPRINT-002, 2026-07-25)
+## Non-negotiables
 
-Built the first repeatable jurisdiction-onboarding framework and a full
-Pinellas County parcel/assessor adapter (source-side only — production
-ingestion not yet approved, zero `core/` changes, 450 tests passing with
-zero Hillsborough regressions). **One thing needs your attention before
-this goes further**: a Pinellas adapter stub already existed in the repo,
-plausibly Kyle's own placeholder for his in-progress `INGEST-002` ticket
-(same goal). This patch built a working implementation without knowing
-whether Kyle has independent progress — that's a call for you and Kyle,
-not something to resolve unilaterally. See `OPEN_DECISIONS.yaml`.
-
-## Pinellas production validation (SPRINT-003, 2026-07-25)
-
-Proved the framework against real, live Pinellas data instead of
-assumptions. Corrected a real schema mistake from SPRINT-002 (the actual
-join only needs 3 tables, not the 6 assumed before real data was
-downloaded), fixed several real-world data defects (ZIP-wrapped responses,
-malformed JSON, a required HTTP header the site silently 403s without), and
-ran a real 200-parcel ingestion end-to-end in an isolated database — zero
-integrity failures, verified idempotent on rerun. 464 tests passing, zero
-`core/` changes, zero Hillsborough regressions. **No production database
-write occurred** — `database_write_allowed`/`ingest_supported` remain
-`false`, exactly as the ticket required, pending your explicit approval.
-Also added a **Merge Authority** section to `AGENTS.md`: you are the sole
-merge authority, and no ticket, agent, or automation can grant itself
-merge rights, regardless of what its own fields claim. Produced a Maricopa
-County readiness assessment (research only, no code) — see
-`docs/research/MARICOPA_READINESS_ASSESSMENT.md` and the new decisions
-below. Full packet: `docs/research/SPRINT-003-SUMMARY.md`.
-
-## Continuous intelligence automation (SPRINT-004, 2026-07-25)
-
-Built the automation layer that lets LUX keep itself current instead of
-being manually re-run: a generic scheduler that decides when each source
-should run (no per-county special-casing), safe incremental/full-export
-ingestion with checkpoints, deterministic evidence events, targeted
-rescoring (only affected sellers/buyers/matches recompute, not everything),
-a versioned confidence layer kept explicitly separate from opportunity
-strength, continuous re-ranking with preserved history, and a read-only
-simulator that estimates how many opportunities would qualify for skip
-tracing — and what it would cost — at different confidence thresholds,
-**without ever calling a paid provider**. Proven against real, live
-Hillsborough and Pinellas data end-to-end into an isolated database (no
-production write). **This sprint also changed governance**: the prior
-"only Jaia merges, ever" rule became a quality-gated, per-sprint auto-merge
-policy, with paid/destructive/external actions still hard-gated on your
-explicit approval regardless. You reviewed PR #55 manually and merged it
-(2026-07-25) — the worker paused rather than unilaterally flipping GitHub's
-branch-protection/auto-merge settings for a first-time governance change,
-consistent with "default is manual merge unless explicitly granted."
-
-## Governance & state reconciliation (SPRINT-005-GOV, 2026-07-25)
-
-A documentation/governance-only sprint (no product or database changes):
-removed several leftover contradictory "Jaia merges, never self-merge"
-statements scattered across `AGENTS.md` that predated the SPRINT-004
-policy change and were never cleaned up; restated the merge policy in one
-clean, current form; updated the North Star and operating philosophy to
-**Evidence → Intelligence → Confidence → Decision → Paid Identification →
-Outreach → Revenue**, reflecting that infrastructure is done and the
-current gap is intelligence/confidence calibration, not outreach
-mechanics; reconciled stale state (SPRINT-004 shown as "PR open" when it
-had already merged, a resolved `jurisdiction_code` decision still marked
-"awaiting"); and added `PROJECT_PROGRESS.md`, a diagrams-first executive
-dashboard. This sprint's own PR carries the same explicit,
-self-scoped auto-merge grant SPRINT-004 introduced — see its ticket for
-the exact conditions.
-
-## What needs a decision from you right now
-
-See `OPEN_DECISIONS.yaml` for the full, structured list. Highlights:
-- Three new proposals from SPRINT-001's research (a cheap new vacancy
-  signal, a heir/inherited-property signal) are still sitting unscoped.
-- **Pinellas production approval**: schema verification is done and a
-  real bounded ingestion succeeded cleanly (SPRINT-003) — the only thing
-  blocking a real production ingestion run is your explicit go-ahead, plus
-  the still-open (no longer blocking, but still undecided) Kyle/INGEST-002
-  question below.
-- **Kyle/INGEST-002**: the ownership-overlap question is no longer treated
-  as a blocker on Pinellas work (SPRINT-004), but which implementation Kyle
-  actually intended is still genuinely undecided whenever you two want to
-  look at it.
-- **Two Maricopa decisions** (SPRINT-003 readiness assessment, no code
-  written yet): (1) Maricopa identifies parcels by APN, not FOLIO/PIN/STRAP
-  — the shared linker code needs a decision on how to extend for that before
-  any Maricopa adapter work starts; (2) Maricopa's recorder/deed data is a
-  paid purchase, unlike every free recorder source used so far — decide
-  whether to fund it or scope Maricopa's first pass as parcel-only.
-- **This mirror repository itself (OPS-SYNC-001)**: live and auto-syncing;
-  no action needed.
-
-## Standing rules that changed, and what didn't
-
-Default merge authority is yours; a sprint may explicitly grant a worker
-quality-gated autonomous merge for itself (SPRINT-004, then restated
-cleanly by SPRINT-005-GOV) — see AGENTS.md's Merge Authority section for
-the exact conditions. What did **not** change: paid actions (skip tracing,
-contact purchases, any provider spend), outreach/contact, production-
-ingestion approval, destructive production database operations, and
-identity-resolution-policy changes still always require your explicit
-approval in chat, no matter what a sprint ticket's merge policy claims.
-This mirror repository (`jaiaFoster/agent-info`) is a read-only,
-automatically generated snapshot for AI/executive inspection; it is not a
-place for direct development, and nothing here is a substitute for reading
-`AGENTS.md` in the canonical repository when precision matters.
+No paid provider spend, outreach/contact action, destructive production
+operation, identity-policy change, or scoring-policy change proceeds without
+founder approval.

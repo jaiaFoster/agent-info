@@ -337,42 +337,59 @@ wrong person and erodes trust in every recommendation after it.
 
 ## Current Project Status
 
-Current Phase (reconciled by SPRINT-016 closeout, 2026-08-02):
-MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion
+Current Phase (reconciled by STATE-RECONCILE-001, 2026-08-12):
+MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate
 
-Both market sides are scored from canonical evidence and the graph/intelligence
-pipeline is live. The approved MVP-001 program now narrows execution to three
-revenue-path sprints: SPRINT-016 production database/storage fidelity,
-SPRINT-017 Hillsborough evidence completion, and SPRINT-018 revenue readiness.
-SPRINT-016 is complete: PostgreSQL/Railway Storage fidelity is measured,
-production-safe storage defects are repaired, and the one unsafe historical
-archive case is explicit as `LEGACY-HCPA-001`.
+Production truth now supersedes older SPRINT-017/018/019 roadmap snapshots.
+SPRINT-016, SPRINT-017, SPRINT-018, and SPRINT-019 are complete as
+technical/operational workstreams. SPRINT-019's own closeout packet still
+correctly records that final sprint closure and paid-pilot authorization are
+founder decisions; this reconciliation treats Jaia's STATE-RECONCILE-001
+frame plus live production evidence as the current operating state.
 
-Completed Milestone:
-SPRINT-016 — Database Fidelity & Evidence Integrity. First implementation
-slice added a read-only fidelity census, `/api/ops/fidelity`, and a manual
-GitHub workflow. Production census run `30727525246` proved lineage and FK
-integrity are clean (`source_records_without_raw_evidence=0`,
-`observations_without_source_record=0`, `invalid_transaction_asset_fk=0`) but
-found RawEvidence archive fidelity blockers. SPRINT-016B then repaired the
-metadata/URI root cause operationally: write run `30729864174` updated 23
-RawEvidence rows, normalized 20 legacy `supabase://` rows to Railway
-bucket-relative paths, added 17 missing `archive_status` values, verified 21
-objects in Railway Storage, and performed zero storage mutations. Remaining
-blocker is precise: 2 source-URI-only RawEvidence rows need SPRINT-016C
-archive backfill. Founder approval is granted for the required full HCPA
-`PARCEL_SPREADSHEET.xls` postback download/upload path, with dry-run hash
-validation before any production write. Operational dry-run `30731067131`
-proved the write is not yet safe: one row still matches the current HCPA DBF
-header surrogate, but one row's stored surrogate hash mismatches the current
-file. Write run `30732166959` archived the single verified row
-(`0293f541-b1ae-5397-a2e5-6359f91e6844`) to Railway Storage and left the
-mismatched row (`37753be3-598d-559d-b785-a97a5634edf0`) as
-`LEGACY-HCPA-001`. Final production `/api/ops/fidelity` reports
-`FIDELITY_OK`, `fidelity_blockers=[]`, `archived_rows=22/23`,
-`source_uri_legacy_exception_rows=1`, `blocking_source_uri_only_rows=0`,
-`source_records_without_raw_evidence=0`, `observations_without_source_record=0`,
-and `invalid_transaction_asset_fk=0`.
+Verified production baseline (2026-08-12, Railway):
+- `main` SHA verified before this patch: `d497c007adbe4c49d9593dfb83dc61688c2c5c6b`.
+- `/api/health` returned `status=ok`.
+- `/api/ops/summary` returned database-connected production counts: 532,451
+  Assets, 159 Transactions, 34 Transactions with Asset links, 125 without,
+  560,102 SourceRecords, 11,255,764 Observations, 53 RawEvidence rows, and
+  82 PipelineRuns.
+- Graph state is `GRAPH_PARTIAL_LINK_COVERAGE`: 34/159 linked Transactions
+  (21.38%), 31 unique linked Assets, and 2 Assets with multiple Transactions.
+- Financial-opportunity evidence remains live: 69 opportunity subjects, 149
+  SourceRecords, 821 Observations, and 28 Asset-linked observations.
+- Buyer intelligence is restored and live: `/api/intel/buyers` reports 57
+  scored buyers.
+- Matching is restored and live: `/api/matches` considers 57 buyers and
+  returns matches; `/api/ops/match-quality` reports 957 persisted matches.
+- Candidate ranking is live: `/api/ops/candidate-ranking` reports 957 total
+  candidate matches and a top bounded cohort for review.
+- Revenue qualification v2 is live: `/api/ops/revenue-qualification-v2`
+  recommends `proceed_with_smaller_pilot_after_blockers_cleared`; paid action
+  remains unauthorized.
+- Skip-trace shadow validation is live and read-only: `/api/ops/skip-trace-shadow`
+  reports `paid_provider_calls=false`, `live_provider_instantiated=false`,
+  `outreach_triggered=false`, and validates mock-provider/DNC handoff behavior.
+- Fidelity requires an audit follow-up, not product work: `/api/ops/fidelity`
+  returned `FIDELITY_AUDIT_REQUIRED` with `canonical_facts.facts_total=0`,
+  `provider_calls_triggered=false`, `database_mutated=false`, and
+  `storage_mutated=false`. FACT-LIVE-001/002 remain the tracked follow-up
+  path.
+
+Completed Milestones:
+- SPRINT-016 — Database Fidelity & Evidence Integrity: complete; one
+  documented non-blocking legacy exception remains (`LEGACY-HCPA-001`).
+- SPRINT-017 — Hillsborough Evidence Completion: complete; production evidence
+  baseline, source value assessment, Civil daily/bulk evidence, and tax-deed
+  excess-proceeds canonical ingestion/surface were operationally verified.
+- SPRINT-018 — Revenue Readiness implementation: complete; buyer intelligence
+  was restored, asset-scoped seller opportunities were promoted, match scale
+  was repaired, and revenue qualification v2 was delivered. No paid provider
+  call or outreach occurred.
+- SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet: complete;
+  match quality analysis, candidate ranking, founder revenue packet v3, and
+  skip-trace shadow validation were delivered and live. No paid provider call,
+  DNC attestation, outreach, or CRM activation occurred.
 
 Product Milestone:
 MVP-001 — First Dollar. Close the first wholesale transaction entirely
@@ -380,296 +397,32 @@ sourced and matched through LUX: canonical public evidence → linked
 Transaction → Asset → property timeline → seller-side Participant/Entity
 evidence → buyer-side evidence → opportunity qualification → human-reviewed
 outreach → contacted, closed deal. A qualified lead and an approved outreach
-packet are steps on this path, not the milestone itself — see "Current
-Strategic Objective" above.
-
-Completed:
-- DATA-001 — Repository & Data Flow Audit
-- ARCH-001 — Canonical Domain Model Consolidation
-- DATA-002 — Schema Migration Foundation + Production Migration
-- DATA-003 — First Production Hillsborough Ingestion
-- DATA-004A — Production Migration Hotfix for Transaction Asset Nullability
-- DATA-004 — Production Migration + Bounded Ingestion Integrity Verification
-- DATA-005 — Hillsborough Asset Resolution Classification + Raw Archive Closeout Patch
-- DATA-006 — Hillsborough deed-field correction (property/parcel phase remains open)
-- DATA-007 — Hillsborough Distress Signal Mining
-- DATA-008 — Hillsborough Code Enforcement Integration
-- MATCH-002 — Asset Scoring + Price-Fit Matching
-- DATA-006A — Supabase Raw Archive Upload Diagnostics + Fix
-- OPS-RAW-001 — Production Raw Archive Verification
-- INGEST-CORE-002 — Bounded Ingestion Workflow Reliability
-- OBS-001 — Ingestion Integrity Counters and Diagnostics
-- API-READINESS-001 — Data Readiness + Query API
-- API-READY-002 — Readiness Contract Hardening
-- DATA-006B — Clerk Instrument Detail Investigation + Evidence Enrichment Infrastructure
-- DATA-006C — HCPA Parcel Crosswalk (implemented, not yet wired to live evidence)
-- UI-DATA-001 — Dashboard Data Visibility
-- DATA-006D — Clerk/HCPA Source Verification + Asset Resolution Unblocker
-- OPS-NET-001 — Agent Network Egress Source Verification
-- API-METRIC-001 — Fix Misleading Asset Resolution Metric
-- DATA-006D — Public Source Inventory + Connector Scaffold
-- DATA-006D1 — Source Probe Reliability + Registry Cleanup
-- DATA-006E — Hillsborough Public Parcel/HCPA Ingestion
-- UI-002 / OPS-002 — Operations & Market Graph Dashboard Rebuild (2026-07-18 closeout)
-- INGEST-LINK-001 — Daily re-ingestion no longer wipes committed asset links (2026-07-18)
-- LINK-RESTORE-001 — 2 wiped deterministic links restored; graph back to 8 links (2026-07-18)
-- INTEL-001 — Seller Pressure / Transaction Readiness Engine v1 (2026-07-18)
-- INGEST-DISTRESS-001 — Bounded ingestion distress mining fixed; daily cron mines full day (2026-07-18)
-- INTEL-002 — Buyer Intelligence Engine v1 (2026-07-18)
-- DATA-009 — Scoring/Matching Reconnection v1 (2026-07-18)
-- MATCH-001 — Matching hardening: buy boxes, persisted matches, outcome tracking (2026-07-18)
-- SPRINT-006 foundation — Canonical Fact Engine foundation PR #58 merged 2026-07-26
-- SPRINT-006 follow-up — Derived facts, profiles, and read-only parity audit PR #59 merged 2026-07-26
-- SPRINT-006 follow-up — Fact-backed confidence bridge and buyer shadow report PR #60 merged 2026-07-26
-- SPRINT-006 follow-up — First-write fact review packet builder PR #61 merged 2026-07-26
-- SPRINT-006 follow-up — Manual credentialed fact review workflow PR #62 merged 2026-07-26
-- SPRINT-006 follow-up — Fact review bulk preflight optimization + standing
-  non-consequential auto-merge policy PR #65 merged 2026-07-26
-- SPRINT-006 follow-up — Production schema readiness workflow pipefail guard
-  PR #66 merged 2026-07-26
-- SPRINT-006 operational step — Production canonical facts migration applied
-  2026-07-26: Alembic `f2a8c913d5b6 -> 6d3f8b2a1c90`.
-- SPRINT-006 follow-up — Manual migration workflow live-schema closeout guard
-  PR #67 merged 2026-07-26.
-- SPRINT-006 follow-up — Manual bounded canonical fact write workflow PR #68
-  merged 2026-07-26.
-- SPRINT-006 operational step — First bounded canonical fact write run
-  `30216145191` completed 2026-07-26: 740 asserted facts created, 691 derived
-  facts created, 1,431 active canonical facts total, 0 orphan asserted facts.
-- BLOCKER-001 — Derived Fact Supersession resolved and operationally verified
-  2026-07-26: PR #71 merged, 250-record write run `30217860756` succeeded with
-  23 derived supersessions / 0 rejected facts, 500-record write run
-  `30218371159` succeeded with 87 derived supersessions / 0 rejected facts, and
-  500-record replay run `30218699070` created 0 asserted facts, 0 derived facts,
-  and 0 supersessions with active inventory unchanged at 5,316 facts.
-- SPRINT-006C — Confidence Parity Calibration & Cutover Decision complete:
-  PR #73 merged at `921ece2468a31fd0cb5688bfc6402fc1c7bf362e`; confidence
-  audit run `30220188229` verified exact legacy-equivalent match rate 1.0,
-  unexplained delta rate 0.0, no duplicate active facts, and no paid/contact/
-  outreach/consumer-cutover side effects; canonical fact review run
-  `30220240383` verified buyer intelligence parity 1.0 and confidence parity
-  1.0 against the legacy-equivalent contract.
-- SPRINT-016 — Database Fidelity & Evidence Integrity complete 2026-08-02:
-  final write run `30732166959` archived the single hash-verified HCPA row,
-  preserved `LEGACY-HCPA-001`, and final live fidelity returned `FIDELITY_OK`.
+packet are steps on this path, not the milestone itself.
 
 Current Priority:
-- SPRINT-017 — Hillsborough Evidence Completion. Finish Hillsborough as the
-  reference jurisdiction, classify live sources, expand deterministic evidence,
-  and improve observed source coverage now that SPRINT-016 fidelity is clean.
-  WP1 Production Evidence Baseline is complete: workflow run `30734899137`
-  produced the read-only production baseline artifact. WP2 Source Value
-  Assessment is complete in `docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md`:
-  Clerk Civil daily filings ranked first for WP3 implementation and DATA-020A
-  is now operationally verified. Initial live
-  checks on 2026-08-02 show fidelity is clean, raw archive remains verified,
-  Assets total `531975`, Transactions linked `4/40` (10.0%), seller-pressure
-  rows `15312`, buyer-intelligence rows `0`, persisted matches `0`, and
-  outreach drafts `0`.
+- STATE-RECONCILE-001 — Project State & Mirror Reconciliation during this
+  documentation-only patch. After merge and mirror publication, the next
+  technical roadmap returns to the revenue gate: PROVIDER-DNC-001, BatchData
+  retry/backoff resilience, scoring-readiness policy decision, SKIP-PILOT-002
+  founder authorization, and human outreach preparation.
 
-Next:
-- DATA-020C — Tax Deed / Excess Proceeds Source Verification: verify the next
-  high-value WP2 source before any ingestion.
-- SPRINT-018 — Revenue Readiness, including SKIP-PILOT-001 after DNC gate.
-- FACT-LIVE-001/002 — decide whether to rebuild canonical facts on Railway
-  production before revenue-readiness cutover work.
-- PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter against current
-  official API docs. (PROVIDER-BATCHDATA-001 is done as of 2026-07-26 — see
-  Completed.)
-- OUTREACH-002 — Response capture after OUTREACH-001.
-- SKIP-001 / ENRICH-001 — compliance-approved contact source decision (hard dependency for outreach delivery).
-- VAL-001 — Valuation once Asset price context deepens via parcel/linker coverage.
-- DATA-016 — bulk HCPA parcel-catalog ingestion (downloads.hcpafl.org),
-  scoped 2026-07-28 per DATA-015D's ~1.41% coverage finding. Parser/adapter/
-  scheduled-automation all shipped; real coverage at 50,950/531,201 (~9.6%)
-  as of 2026-07-29, currently **blocked** on a Supabase free-tier disk-quota
-  read-only lockout — needs Tim's decision (upgrade/prune/pause), see the
-  new Discovered/Unscoped entry and DATA-017's run #9 note. DATA-018
-  (reliability fixes surfaced by that same incident) is shipped and does
-  not by itself unblock the quota issue.
-
-Production status snapshot (2026-07-26):
-- transactions 446, transactions_with_asset 45, coverage 10.09%, invalid_asset_fk 0
-- assets 6,729 (targeted HCPA parcels; growing daily via OPS-AUTO-002), signals 12,555
-- scores: 7,208 seller pressure, 226 buyer demand; matches 370 persisted candidates
-- all 45 links are DETERMINISTIC_NORMALIZED_LEGAL_DESCRIPTION; coverage climbing ~28 links/day unattended
-- service status: online (dashboard); GRAPH_PARTIAL_LINK_COVERAGE
-
-Production status snapshot (2026-07-18, post-MATCH-001):
-- transactions 223, transactions_with_asset 8, coverage 3.59%, invalid FK 0
-- scores: 1,397 seller pressure (1 CRITICAL / 13 HIGH / 201 ELEVATED), 226 buyer demand (13 ACTIVE)
-- matches: 200 persisted candidates (run match-snapshot-24b03e4e)
-- daily cron now mines distress signals continuously (INGEST-DISTRESS-001)
-- schema head: a1c4e9d27b31 (matches table)
-
-First successful Hillsborough production ingestion:
-- run_id: `9df53f8a-e733-44b6-97a2-9d44c9cb897d`
-- raw_rows: 8426
-- source_records: 8349
-- events: 2245
-- observations: 18915
-- errors: 0
-
-Latest bounded ingestion / integrity status:
-- Production schema head verified: `9b81c2d4e6f0`
-- M-file classification: `DOCUMENT_TYPE_LOOKUP`
-- Asset classification: `PARCEL_EVIDENCE_NO_MATCH` for current linker evidence: Clerk legal descriptions exist, but current parcel coverage has no deterministic match.
-- Assets resolved/created: `0/0`
-- Transactions safely unresolved: `20`
-- Invalid Asset FK: `0`
-- Dry-run runtime: `4.05s`
-- Errors: none
-- Raw archive production run `ae735048-5217-42ed-872f-2b53fedf5f5d`: 3/3 uploads verified, 0 fallbacks, 0 failures
-- Parcel ingestion production run `d9021414-a9b5-4d70-9e86-b3801764bd37`: 50 Assets, 50 SourceRecords, 300 Observations, raw archive `ARCHIVE_VERIFIED`, transaction linking intentionally 0
-- Canceled 2,500-record parcel write uploaded 25 raw pages but did not improve DB coverage: `asset_legal_descriptions_seen` stayed 168, parcel-side PIN/STRAP stayed 500, `candidate_links` stayed 0, `transactions_linked` stayed 0, errors empty. Treat as timeout before DB commit; do not rerun same job.
-
-Confirmed open ingestion-integrity gaps:
-- Current Hillsborough D/P/M index files lack property evidence.
-- Clerk instrument property data plus HCPA parcel/property data is required for real asset resolution.
-- Raw archive is production-verified as `ARCHIVE_VERIFIED`; private bucket preflight and all three content-addressed uploads passed.
-- Current runtime directly verified Clerk detail, HCPA exact-folio, and Clerk daily-index access. Clerk detail JSON supplies legal description but no parcel/folio/strap/site address. DATA-006E must inspect HCPA bulk parcel/legal data before deterministic Asset linkage.
-- API/dashboard must distinguish total canonical Assets from transaction-linked
-  Asset resolution. `assets_resolved` is a compatibility alias for
-  transaction-linked transactions, not `assets_total`.
-- New public sources must pass the non-mutating source-probe workflow and
-  checklist before any production ingestion workflow is clicked.
-- Exact parcel source confirmed for DATA-006E:
-  `https://maps.hillsboroughcounty.org/arcgis/rest/services/InfoLayers/HC_ParcelsPublic/FeatureServer/0`
-  (`dbo.PARCEL_PUBLIC`). Parcel ingestion creates canonical Assets and
-  Observations only; Clerk transaction linking remains DATA-006I.
-- DATA-006I is the first replayable transaction-to-Asset linker. It may link
-  only exact folio/PIN/STRAP, unique deterministic legal description, or exact
-  property-address evidence. Document number, owner name, party name, price,
-  date, fuzzy legal/address, and guesses are forbidden.
-- DATA-006I3 operational verification on main produced targeted candidates
-  (`projected_exact_candidates=6`) and proved targeted lookup can fetch 1,163
-  parcel records from 25 queries. The follow-up 25-subdivision write timed out
-  at the workflow boundary and lost the final result artifact. Do not rerun the
-  same 25-subdivision write. DATA-006I4 must process 3-5 subdivisions per run,
-  commit per subdivision, persist progress after each subdivision, and resume
-  from checkpoint.
-- DATA-006I4 operational execution completed targeted parcel writes in chunks:
-  0-4, 5-9, 10-14, 15-19, and 20-24. Final linker dry-run with 50 transactions
-  produced 8 deterministic candidates, `normalized_legal_ambiguous=0`,
-  `transactions_linked=0`, `invalid_asset_fk=0`, and candidate-set hash
-  `7eba7828161b7bc77b2fe03ffd7faef4f432f9e270be6b97b0a0db9e036d306d`.
-  DATA-006K must commit only bounded reviewed candidates, default 2 links per
-  run, with review packet, graph delta, progress checkpoint, rollback metadata,
-  and no fuzzy/name/price/date matching.
-- DATA-006K operational execution committed all 8 reviewed deterministic links
-  in bounded pairs. Final production state: `transactions_with_asset=8`,
-  `transactions_without_asset=135`, linkage coverage `5.59%`,
-  `invalid_asset_fk=0`, readiness `GRAPH_PARTIALLY_LINKED`. Future writes must
-  use immutable reviewed candidate artifacts; shrinking offset semantics are
-  deprecated and blocked in production write mode unless explicitly overridden.
-- GRAPH-001 must use computed read-only graph queries from canonical tables for
-  v1. Do not introduce Neo4j or duplicate canonical data into a second truth
-  store.
-- Parcel ingestion must run in chunked page ranges after DATA-006J1. **Stale
-  guidance corrected 2026-07-26 (SPRINT-005 WP1)**: this used to read "pages
-  0-4 already exist; next preferred ranges are pages 5-9, 10-14, 15-19, and
-  20-24" — that was written when total ingested coverage was much smaller.
-  Real production state as of 2026-07-26: `assets_total=5859`, and dry-run
-  page requests for both 5-9 and 10-14 (page_size=100, i.e. positions
-  500-1500) resolved to 100% already-existing assets (0 created in write
-  mode for either range) — meaning coverage already extends well past page
-  14. Before requesting any further page range, check current
-  `assets_total` via `/api/ops/summary` and dry-run near
-  `assets_total / page_size` rather than assuming a small sequential range
-  is still novel.
-
-North Star (current, reconciled by SPRINT-005-GOV, 2026-07-25):
-Continuously transform public evidence into explainable, high-confidence
-market decisions before spending money on customer acquisition.
-
-(Historical note: the original North Star here — "Build a durable,
-reusable data engine before implementing intelligence" — described the
-infrastructure-construction era and is superseded now that infrastructure
-is complete and SPRINT-004 shipped continuous evidence/confidence
-automation. Not deleted from project memory; see the Ticket Registry's
-SPRINT-001 through SPRINT-004 history for how that era played out.)
-
-Operating philosophy (current phase sequence):
-Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification
--> Outreach -> Revenue.
-
-Each phase gates the next: intelligence is only as good as the evidence
-feeding it; a decision to spend money identifying a contact (paid
-identification) should follow an explicit, versioned confidence judgment,
-not just a raw opportunity score; outreach follows identification, and
-revenue (MVP-001, First Dollar) follows a completed outreach-to-close
-loop. This does not change engineering priority ordering by itself — see
-ROADMAP.yaml's `next_priority_order` for the current sequencing of actual
-work.
-
-Development Philosophy (methodological, within any given ticket):
-1. Understand
-2. Normalize
-3. Store
-4. Query
-5. Visualize
-6. Score
-7. Match
-8. Automate
-9. Learn
-
-Investigation always precedes implementation. No implementation ticket should begin until the relevant investigation ticket is complete.
-
----
-
-## Approved Provisional Decisions
-
-- Participant evolves toward Entity.
-- Transaction remains first-class.
-- Transaction references Event.
-- Observation is first-class and represents sourced claims/facts.
-- SourceRecord is first-class and represents source-faithful upstream records.
-- Incremental migration is preferred; coherent larger patches are allowed because current data volume is limited.
-- PostgreSQL remains the system of record.
-- Railway Storage Buckets are the raw evidence store (migrated off Supabase
-  Storage under INFRA-001, 2026-07-30).
-- Ingestion remains batch-first and replayable.
-- BuyerProfile and SellerCandidate are projections, not canonical truth.
-- No graph database or heavy streaming stack without demonstrated need.
-- Unresolved is preferable to false resolution.
-- County document numbers are not canonical Asset identity.
-- Hillsborough M files must not be treated as property mappings unless actual evidence proves that variant.
-
-Approved Architecture Scaffold:
-1. PostgreSQL is the system of record.
-2. Railway Storage Buckets hold raw evidence.
-3. Raw evidence is immutable and content-addressable by hash.
-4. Every ingestion belongs to a PipelineRun.
-5. Every canonical record retains source-evidence provenance.
-6. Adapters parse source-specific data; canonical truth remains in Core.
-7. Preferred canonical concepts are Entity, Asset, Event, Transaction, Participation, Relationship, Observation, and SourceRecord.
-8. Signal, Score, Prediction, Match, and Opportunity are derived intelligence.
-9. BuyerProfile and SellerCandidate are projections.
-10. PostgreSQL remains sufficient until relationship-query evidence proves otherwise.
-11. No Kafka, Spark, Flink, Airflow, or microservice split at current scale.
-12. Ingestion is batch-first with replayable boundaries.
-13. Adapter-to-canonical contracts are versioned.
-14. Derived outputs retain algorithm/model version and input lineage.
-15. Liveness, readiness, pipeline health, and data freshness are separate.
-
-Runtime Separation Rule:
-- Frontend displays data.
-- API exposes endpoints and may trigger jobs.
-- Workers and CLI perform ingestion, scraping, parsing, scoring, matching, and heavy analysis.
-- Core ingestion services must not depend on the API hosting layer (Railway), React, or dashboard code.
-- Any scheduled runtime must call the same ingestion service used by CLI.
-
-Pre-Ingestion Source Rule:
-- Every new public source must exist in the machine-readable source registry.
-- Every new public source must have a prose inventory entry.
-- Probe workflows are non-mutating and must not require `DATABASE_URL` or
-  Railway Bucket secrets.
-- Production ingestion requires source probe artifact review, raw archive plan,
-  canonical projection plan, bounded limits, idempotency plan, and Jaia approval.
-- Registry flags `database_write_allowed` and `ingest_supported` must both be
-  true before a workflow may write a new source to production.
-
----
+Next / Unresolved:
+- PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter; this
+  is the hard compliance blocker for paid skip-trace/live contact work.
+- BatchData resilience / retry-backoff — shadow validation found the provider
+  adapter fails a whole trace job on transient/429 failure rather than retrying.
+- Scoring-readiness policy decision — production graph coverage is real but
+  below the current scoring-safe threshold (34/159 linked Transactions,
+  21.38%). Threshold change requires founder/policy decision; do not weaken it
+  silently.
+- SKIP-PILOT-002 — founder authorization required before paid skip-trace
+  purchase. Current recommendation is smaller pilot only after blockers clear.
+- Human outreach preparation — drafting/queue mechanics exist, but no outreach
+  send is authorized and no live contacts are callable until DNC compliance is
+  complete.
+- FACT-LIVE-001/002 — canonical facts are absent in current Railway production
+  (`canonical_facts=0`). Current live consumers use scores/matches directly;
+  do not interrupt revenue work unless a live consumer needs persisted facts.
 
 ## Ticket Registry — Source of Truth
 
@@ -677,9 +430,12 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-017 | Codex | CURRENT / WP1-WP3 IN PROGRESS | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known live source, improve deterministic evidence/linking coverage, and keep source observability clear | SPRINT-016 complete; WP1 baseline run `30734899137` complete; WP2 assessment complete; DATA-020A/DATA-020B operationally verified; DATA-020C source verification complete; DATA-020D and DATA-020E operationally verified; FACT-LIVE-001 remains open and does not block evidence completion unless a live Sprint-017 consumer needs canonical facts | SPRINT-017-WP5A revenue qualification packet; founder-reviewed skip-trace go/no-go evidence before SPRINT-018 |
-| BUYER-LIVE-001 | Codex | NEXT / BLOCKER REPAIR | Restore Buyer Intelligence Projection: production revenue packet shows `intel_buyer_intelligence` has 0 scored buyers, so matches have buyers_considered=0 despite 15,312 seller scores | SPRINT-017-WP5A live packet. Must not trigger paid providers/outreach; repair deterministic buyer projection first. | Explainable buyer-seller matches and founder skip-trace decision become possible |
-| SPRINT-017-WP5A | Codex | COMPLETE / OPERATIONALLY VERIFIED | Revenue Qualification Packet v1: summarize production evidence, coverage, financial opportunities, buyer/seller cohorts, provider blockers, and proposed skip-trace thresholds for founder review | PR #109 merged at `731d3f9`; PR #110 merged at `f3bcc9a`; live `/api/ops/revenue-qualification` returned 200 with 69 opportunity subjects, 821 financial-opportunity observations, 28 Asset-linked financial observations, 15,312 seller scores, 0 buyer scores, 0 candidate matches, and recommendation `defer_and_repair_named_data_issue`. Paid action remains unauthorized. | BUYER-LIVE-001 blocker repair before paid skip-trace decision |
+| STATE-RECONCILE-001 | Codex | CURRENT / DOCS + MIRROR ONLY | Reconcile AGENTS.md, machine-readable state, roadmap, executive brief/progress, API roadmap JSON, and AI-state mirror against verified `main` and live Railway production truth | Scope must remain state/governance/mirror only: no product logic, DB writes, provider calls, scoring-policy changes, skip tracing, or outreach | Future agents and dashboards scope from current truth instead of stale SPRINT-017/018 assumptions |
+| SPRINT-019 | Codex/Jaia | COMPLETE / TECHNICALLY VERIFIED; FOUNDER PAID-ACTION DECISION STILL REQUIRED | Match Quality, Scoring Readiness & Revenue Packet: fix readiness integrity false positive, analyze match quality, expose candidate ranking, produce founder revenue packet, and validate skip-trace/DNC workflow in shadow mode | `docs/research/SPRINT-019-REVIEW-PACKET.md`; live ops endpoints verified 2026-08-12. Remaining blockers: DNC provider stub, BatchData retry/backoff gap, scoring-readiness policy decision. No paid provider call/outreach/CRM activation. | PROVIDER-DNC-001, BatchData resilience, SKIP-PILOT-002 founder decision |
+| SPRINT-018 | Codex/Jaia | COMPLETE / TECHNICALLY VERIFIED; PAID PILOT NOT AUTHORIZED | Revenue Readiness implementation: restored buyer intelligence, promoted asset-scoped seller opportunities, repaired match-scale persistence, and delivered revenue qualification v2 | `docs/research/SPRINT-018-REVIEW-PACKET.md`; live production now shows 57 scored buyers and persisted/explainable matches. Paid action remained out of scope. | SPRINT-019 quality/ranking/shadow validation; SKIP-PILOT-002 decision packet |
+| SPRINT-017 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Hillsborough Evidence Completion: production baseline, source value assessment, Civil daily/bulk evidence, and tax-deed excess-proceeds canonical ingestion/evidence surface | SPRINT-016 complete; WP1 baseline run `30734899137`; WP2 source assessment; DATA-020A/B/C/D/E operationally verified; FACT-LIVE-001 remains open but does not block current score/match consumers | Revenue qualification and skip-trace readiness work |
+| BUYER-LIVE-001 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Restore Buyer Intelligence Projection: buyer-intelligence workflow was stale rather than broken; dispatch/write restored deterministic buyer projection | SPRINT-018 review packet documents root cause; live `/api/intel/buyers` verified 2026-08-12 with 57 scored buyers | Explainable buyer-seller matches and founder skip-trace decision are possible |
+| SPRINT-017-WP5A | Codex | COMPLETE / SUPERSEDED BY SPRINT-018/019 PACKETS | Revenue Qualification Packet v1: summarized production evidence and identified buyer-intelligence-empty blocker | PR #109 merged at `731d3f9`; PR #110 merged at `f3bcc9a`; historical packet correctly showed 0 buyers/0 matches at that time. Superseded by SPRINT-018/019 production state: 57 scored buyers and 957 quality-analyzed matches. | Historical evidence for BUYER-LIVE-001 root cause |
 | DATA-020E | Codex | COMPLETE / OPERATIONALLY VERIFIED | Financial Opportunity Evidence Surface: expose DATA-020D canonical `financial_opportunity.*` observations through read-only ops APIs with Asset attachment, amount/status/claim evidence, and provenance ids | PR #106 merged at `0fa0fe0`; route hotfix PR #107 merged at `e20ca31`; live `/api/ops/financial-opportunities?limit=10` returned 200 with 69 opportunity subjects, 149 source records, 821 observations, 28 Asset-linked observations, paid_provider_calls=false, outreach_triggered=false; `/api/ops/fidelity` remained `FIDELITY_OK`. | Revenue-readiness review can inspect source-backed seller opportunity evidence instead of aggregate observation counts |
 | DATA-020D | Codex | COMPLETE / OPERATIONALLY VERIFIED | Tax Deed Excess Proceeds Canonical Ingestion: archive and parse official Clerk weekly excess-proceeds XLSX, claims/disbursement XLSX, and bounded PublicAccess O&E/DR513 rows; emit general financial-opportunity SourceRecords/Observations/Events and link to Asset only by exact folio/HCPA evidence | PR #105 merged at `fd25f23`; production dry-run `30762521240` succeeded; production write `30762571249` succeeded with 3 RawEvidence, 149 SourceRecords, 118 Events, 821 Observations, 28 exact-folio Asset-linked observations, archive `ARCHIVE_VERIFIED`, 0 fallbacks/failures, errors/warnings empty. No paid providers/outreach/recovery workflow. | DATA-020E financial-opportunity evidence surface; high-confidence surplus/excess-proceeds seller evidence and revenue-readiness review candidates |
 | DATA-020C | Codex | COMPLETE / SOURCE VERIFIED | Tax Deed / Excess Proceeds Source Verification: verify exact public source, access contract, fields, legal/operational constraints, and ingestion feasibility before implementation | PR #104 merged at `4fbf3dd`; workflow `30759625063` verified official Clerk page, direct Weekly Tax Deed Spreadsheet XLSX (79 rows), direct claims/disbursement XLSX (335 rows), PublicAccess JSON query 285, and reachable RealAuction sale calendar; no DB writes, no storage writes, no outreach. | DATA-020D |
@@ -689,8 +445,8 @@ Pre-Ingestion Source Rule:
 | SPRINT-017-WP2 | Codex | COMPLETE | Evidence Value Assessment: rank remaining Hillsborough evidence opportunities using the approved rubric after WP1 | Complete: public source probe run `30734939428`; assessment in `docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md`. | DATA-020A selected as first WP3 implementation source |
 | FACT-LIVE-001 | Codex | OPEN — HIGH PRIORITY / RCA COMPLETE | Determine why current Railway production reports `canonical_facts=0` and reconcile production reality with historical SPRINT-006 documentation | RCA: likely INFRA-001 blank-slate Railway migration plus no post-migration canonical-fact rebuild. No live API/scoring/matching consumer dependency found; current usage is fidelity/audit/parity/tooling. See `docs/audits/FACT_LIVE_001_ROOT_CAUSE.md`. | Follow-up FACT-LIVE-002 decision before SPRINT-018 if fact-backed consumers should become live |
 | SPRINT-016B | Codex | COMPLETE / OPERATIONALLY VERIFIED | Repair measured production RawEvidence fidelity defects: normalize verified legacy `supabase://` object pointers to Railway bucket-relative paths, add truthful `archive_status` metadata, and stop future writers from emitting stale Supabase URI wrappers | Complete: PR #88 + #89 merged; dry-run `30729822101` classified all 23 rows; write run `30729864174` updated 23 rows, 21 storage-backed, 2 source fallback, 0 errors, 0 storage mutations. | SPRINT-016C |
-| SPRINT-016 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | Complete: final live `/api/ops/fidelity` returned `FIDELITY_OK`, no blockers, `archived_rows=22/23`, one visible non-blocking `LEGACY-HCPA-001` exception, no lineage/FK defects. | SPRINT-017 Hillsborough Evidence Completion; safer SPRINT-018 revenue readiness |
-| SKIP-PILOT-001 | Jaia/Codex | APPROVED — DEFERRED TO SPRINT-018 / LIVE PURCHASE BLOCKED BY PROVIDER-DNC-001 ONLY | Bounded paid skip-trace validation pilot over a decision-ready buyer cohort using production gates plus legacy-equivalent confidence only; freeze ~25 buyers, purchase one bounded provider batch, measure quality/cost, generate human-review outreach packets, send nothing | Jaia approved the sprint. This patch added runner/workflow/guardrails; both BatchData and DNC.com adapters were explicit stubs with `live_ready=false`. **Update 2026-07-26: PROVIDER-BATCHDATA-001 is done** (see its own row) — BatchData is real and `live_ready=true` when `SKIPTRACE_API_KEY` is configured (Tim has added a sandbox token). Live paid mode still fails closed on the DNC.com side until PROVIDER-DNC-001 is implemented — the compliance scrub is a hard gate (spec 6.3), not optional, so SKIP-PILOT-001 cannot go live-write with one real provider and one stub. Under the approved MVP-001 program, this belongs to SPRINT-018 Revenue Readiness after SPRINT-016/017 evidence gates. | Validated contact source path for MVP-001 |
+| SPRINT-016 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Understand production database and raw archive state exactly, expose evidence-funnel/fidelity metrics, then repair measured root causes while preserving provenance and replayability | Complete with `LEGACY-HCPA-001` documented. 2026-08-12 compact `/api/ops/fidelity` now reports `FIDELITY_AUDIT_REQUIRED` and `canonical_facts=0`; tracked under FACT-LIVE-001/002, not a storage-regression proof by itself. | SPRINT-017/018/019 completed on current score/match consumer path; FACT follow-up remains open |
+| SKIP-PILOT-001 | Jaia/Codex | APPROVED — NOT RUN; SUPERSEDED BY SKIP-PILOT-002 DECISION PATH | Bounded paid skip-trace validation pilot concept: freeze a small cohort, buy one bounded provider batch, measure quality/cost, generate human-review packets, send nothing | BatchData adapter exists, but DNC.com remains a hard compliance stub and paid action still needs founder authorization. SPRINT-019 shadow validation proved the workflow with mock providers and no live calls. | SKIP-PILOT-002 after PROVIDER-DNC-001 and founder authorization |
 | PROVIDER-DNC-001 | Codex/Kyle | OPEN — BLOCKS SKIP-PILOT-001 LIVE WRITE | Implement DNC.com/DNCScrub phone scrub adapter against current official API docs, with mocked HTTP tests, sanitized errors, fail-closed statuses, and `live_ready=true` only when configured | Requires DNC.com account/API key/SAN and current API contract. | Callable-contact validation for paid pilot |
 | OUTREACH-001 | Jaia/Codex | IN PROGRESS / v1 SHIPPED 2026-07-22 | Human-reviewed outreach drafts + approval queue over persisted matches | v1 built: match->lead bridge, templated multi-channel drafts (SMS/email/mail), approval lifecycle, compliance-gated to leadgen callable contacts, OutreachModel logging. Contact source now LEADGEN-001 (Option A). Real contacts need leadgen go-live (migration run + attestation + provider keys) | MVP-001 |
 
@@ -698,8 +454,9 @@ Pre-Ingestion Source Rule:
 
 | Ticket | Owner | Status | Goal | Dependencies / Blockers | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-017 | Codex | MOVED TO CURRENT | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known source, observe every live source, and improve deterministic evidence/linking coverage | SPRINT-016 complete | Stronger reference county before geographic expansion |
-| SPRINT-018 | Codex/Jaia | PLANNED | Revenue Readiness: bounded human-reviewed revenue experiment with BatchData, DNC validation, skip-trace quality measurement, and outreach packets only | SPRINT-016/SPRINT-017 evidence gates; PROVIDER-DNC-001; founder approval for paid action | First paid experiment readiness |
+| SPRINT-017 | Codex | COMPLETE / SEE CURRENT TABLE | Hillsborough Evidence Completion: finish Hillsborough as the reference jurisdiction, classify every known source, observe every live source, and improve deterministic evidence/linking coverage | Completed by DATA-020A/B/C/D/E plus WP5A | Stronger reference county before revenue-readiness work |
+| SPRINT-018 | Codex/Jaia | COMPLETE / SEE CURRENT TABLE | Revenue Readiness implementation: buyer restoration, asset-scoped seller opportunities, match scale repair, revenue qualification v2 | Paid pilot still blocked by DNC/founder authorization | SPRINT-019 quality/ranking/shadow validation |
+| SPRINT-019 | Codex/Jaia | COMPLETE / SEE CURRENT TABLE | Match quality, scoring-readiness, candidate ranking, revenue packet, and skip-trace shadow validation | Paid provider/outreach still blocked by DNC/founder authorization | PROVIDER-DNC-001 and SKIP-PILOT-002 decision path |
 
 ### Open — Committed
 
@@ -2235,6 +1992,29 @@ Registry reconciliation after SKIP-PILOT-001 guarded implementation patch
 - No paid provider call, skip-trace purchase, contact enrichment, outreach
   sending, CRM activation, scoring write, matching write, schema migration, or
   destructive operation occurred in this patch.
+- No existing ticket was deleted, renumbered, or silently overwritten.
+
+Registry reconciliation after STATE-RECONCILE-001 (2026-08-12):
+- Fast-forwarded local `main` to `d497c007adbe4c49d9593dfb83dc61688c2c5c6b`
+  before editing, then treated live Railway production as authoritative over
+  stale roadmap assumptions.
+- Corrected the active state: SPRINT-016/017/018/019 are complete as
+  technical/operational workstreams; SPRINT-019's paid-pilot decision remains
+  founder-gated.
+- Corrected the stale BUYER-LIVE-001 blocker: live `/api/intel/buyers` now
+  reports 57 scored buyers and `/api/matches` considers 57 buyers.
+- Corrected the stale zero-match roadmap: live `/api/ops/match-quality`
+  reports 957 persisted/quality-analyzed matches, and `/api/ops/candidate-ranking`
+  reports 957 candidate matches.
+- Preserved the real blockers: PROVIDER-DNC-001, BatchData retry/backoff,
+  scoring-readiness policy, SKIP-PILOT-002 founder authorization, and FACT
+  follow-up for current Railway `canonical_facts=0`.
+- Updated `PROJECT_STATE.yaml`, `ROADMAP.yaml`, `CEO_BRIEF.md`,
+  `PROJECT_PROGRESS.md`, and `docs/roadmap/lux_roadmap.json` to match this
+  production-verified frame so `/api/roadmap` and the AI-state mirror stop
+  publishing stale SPRINT-017/BUYER-LIVE claims.
+- No product logic, database write, schema change, provider call, skip trace,
+  outreach, scoring-policy change, ingestion, or destructive operation occurred.
 - No existing ticket was deleted, renumbered, or silently overwritten.
 
 This AGENTS.md intentionally keeps the useful generic governance from the second uploaded agent proposal:

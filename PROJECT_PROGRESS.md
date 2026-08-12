@@ -1,119 +1,100 @@
 # LUX — Executive Progress Dashboard
 
-*Diagrams first. Full narrative and open decisions: [`CEO_BRIEF.md`](CEO_BRIEF.md). Authoritative detail: [`AGENTS.md`](AGENTS.md). Generated/reconciled by SPRINT-005-GOV, 2026-07-25.*
+*Diagrams first. Full narrative: [`CEO_BRIEF.md`](CEO_BRIEF.md). Authoritative detail: [`AGENTS.md`](AGENTS.md). Reconciled by STATE-RECONCILE-001, 2026-08-12.*
 
-## Where LUX is on its own roadmap
+## Roadmap position
 
 ```mermaid
 flowchart LR
-    A[Evidence] --> B[Intelligence]
-    B --> C[Confidence]
-    C --> D[Decision]
-    D --> E[Paid Identification]
-    E --> F[Outreach]
-    F --> G[Revenue]
+    A[Evidence] --> B[Canonical Output]
+    B --> C[Scores]
+    C --> D[Matches]
+    D --> E[Revenue Qualification]
+    E --> F[Paid Identification]
+    F --> G[Human Outreach]
+    G --> H[First Dollar]
 
     style A fill:#2d6a4f,color:#fff
     style B fill:#2d6a4f,color:#fff
-    style C fill:#40916c,color:#fff
-    style D fill:#f4a261,color:#000
-    style E fill:#adb5bd,color:#000
-    style F fill:#adb5bd,color:#000
+    style C fill:#2d6a4f,color:#fff
+    style D fill:#2d6a4f,color:#fff
+    style E fill:#40916c,color:#fff
+    style F fill:#f4a261,color:#000
     style G fill:#adb5bd,color:#000
+    style H fill:#adb5bd,color:#000
 ```
 
-**Green = live. Orange = in progress now. Gray = not started.**
-Evidence and Intelligence are live and continuously automated (SPRINT-004).
-Confidence is live (v1, uncalibrated, versioned). **Decision policy —
-turning confidence into an explicit "ready for paid identification"
-threshold — is the current gap**, and is SPRINT-005's stated objective.
+Green = live. Orange = blocked/gated. Gray = not authorized.
 
-## Current milestone
+Current gap: compliance/provider gate before paid identification. No paid
+skip-trace or outreach is authorized.
+
+## MVP-001
 
 ```mermaid
 flowchart LR
-    subgraph MVP001["MVP-001 -- First Dollar"]
-        direction LR
-        m1[Motivated seller<br/>from evidence] --> m2[Compatible buyer<br/>from intelligence] --> m3[Closed<br/>transaction]
-    end
+    S[Motivated seller evidence] --> M[Explainable buyer/seller match]
+    M --> P[Founder-approved paid identification]
+    P --> O[Human-reviewed outreach]
+    O --> C[Closed transaction]
 ```
 
-Close one real wholesale transaction entirely sourced and matched through
-LUX. Not yet reached — blocked on the Lead Engine go-live sequence
-(LEADGEN-002 through 005) plus SPRINT-005's decision-policy work.
+Current production has seller evidence, buyer intelligence, and matches. It
+does not yet have founder-authorized paid identification, callable contacts, or
+outreach sends.
 
-## Current geography
+## Verified production metrics
 
-```mermaid
-flowchart TB
-    subgraph FL["Florida"]
-        H["Hillsborough County<br/>ACTIVE / production"]
-        P["Pinellas County<br/>schema-verified,<br/>pending production approval"]
-        O["Orange, Pasco, Duval<br/>planned (ranked 2-4)"]
-    end
-    subgraph OOS["Out-of-state (architecture validation)"]
-        M["Maricopa County, AZ<br/>planned -- readiness assessed,<br/>2 open decisions"]
-        R["Rensselaer County, NY<br/>planned -- non-revenue bet"]
-    end
-```
+| Metric | 2026-08-12 production |
+|---|---:|
+| Assets | 532,451 |
+| Transactions | 159 |
+| Transactions linked to Assets | 34 |
+| Transaction→Asset coverage | 21.38% |
+| SourceRecords | 560,102 |
+| Observations | 11,255,764 |
+| RawEvidence | 53 |
+| PipelineRuns | 82 |
+| Scored buyers | 57 |
+| Persisted/quality-analyzed matches | 957 |
+| Financial-opportunity observations | 821 |
+| Asset-linked financial observations | 28 |
+| Canonical facts | 0 |
 
-Hillsborough is the only jurisdiction with approved production writes.
-Pinellas is fully schema-verified against real live data (SPRINT-003) but
-`database_write_allowed`/`ingest_supported` remain `false` pending Jaia's
-explicit approval. Maricopa/Rensselaer have no adapter code yet.
+## Capability status
 
-## Engine maturity (infrastructure)
-
-| Component | Status |
+| Capability | Status |
 |---|---|
-| Canonical data model | Complete |
-| Public-record ingestion (Hillsborough) | Complete, production |
-| Immutable provenance (RawEvidence → SourceRecord → Observation) | Complete |
-| Deterministic Transaction→Asset linking | Complete |
-| Read-only computed graph queries | Complete |
-| Generic connector scheduling + checkpoints (SPRINT-004) | Complete |
-| Evidence events + targeted rescoring (SPRINT-004) | Complete |
+| Buyer intelligence | Live |
+| Asset-scoped seller opportunities | Live |
+| Explainable matching | Live |
+| Match-quality analysis | Live |
+| Candidate ranking | Live |
+| Revenue qualification packet | Live |
+| Skip-trace/DNC shadow validation | Live, read-only |
+| Paid provider call | Not authorized |
+| Outreach send | Not authorized |
 
-## Intelligence maturity
+## Current blockers
 
-| Component | Status |
+| Blocker | State |
 |---|---|
-| Seller pressure (INTEL-001) | v1 live |
-| Buyer demand (INTEL-002) | v1 live |
-| Ranked matching (DATA-009 + MATCH-001) | v1 live |
-| Confidence layer, separate from opportunity strength (SPRINT-004) | v1 live, **uncalibrated** |
-| Continuous prioritization + rank history (SPRINT-004) | v1 live |
-| Paid-action simulation, read-only (SPRINT-004) | v1 live |
-| Decision policy (explicit "ready for paid ID" threshold) | **not yet defined — SPRINT-005** |
-| Human-reviewed outreach (OUTREACH-001) | v1 live, mock contacts only |
+| PROVIDER-DNC-001 | Hard compliance blocker before paid pilot/live callable contacts |
+| BatchData retry/backoff | Open resilience gap before unattended provider reliance |
+| Scoring-readiness policy | Founder decision; current graph coverage is below existing threshold |
+| SKIP-PILOT-002 | Founder authorization required |
+| FACT-LIVE-001/002 | Canonical facts absent in Railway production; audit follow-up |
 
-## Next priorities (reconciled order)
+## Next priorities
 
 ```mermaid
 flowchart TD
-    p1["1. Intelligence Quality"] --> p2["2. Geographic Expansion"]
-    p2 --> p3["3. Evidence Freshness"]
-    p3 --> p4["4. Confidence"]
-    p4 --> p5["5. Decision Policy"]
-    p5 --> p6["6. Paid Identification"]
-    p6 --> p7["7. Outreach"]
-    p7 --> p8["8. First Dollar"]
+    p1[PROVIDER-DNC-001] --> p2[BatchData retry/backoff]
+    p2 --> p3[Scoring-readiness policy decision]
+    p3 --> p4[SKIP-PILOT-002 founder authorization]
+    p4 --> p5[Human outreach preparation]
+    p5 --> p6[MVP-001 First Dollar]
 ```
 
-Full detail: `ROADMAP.yaml`'s `next_priority_order`. Note this is a
-priority ranking, not a strict sequential gate — Outreach (OUTREACH-001)
-has already shipped mechanically; it ranks lower here because it isn't
-the current bottleneck, not because it's blocked.
-
-## What's actually open right now
-
-See `OPEN_DECISIONS.yaml` for the full list. In one line each:
-Pinellas production approval · Kyle/INGEST-002 ownership question ·
-2 Maricopa readiness decisions · VACANCY-001 / HEIR-001 signal proposals.
-
-## Reading this file
-
-This is the diagrams-first snapshot. Nothing here is a second source of
-truth — `AGENTS.md` is authoritative, `CEO_BRIEF.md` carries the narrative
-and full decision log, and this file is regenerated whenever either
-changes materially.
+Nothing in this file is a second source of truth. `AGENTS.md` remains
+authoritative; this is the compact executive/mirror view.

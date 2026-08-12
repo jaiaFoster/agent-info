@@ -1,183 +1,89 @@
 # OPEN_DECISIONS.yaml
 #
-# Structured, machine-readable list of decisions that need Jaia (or another
-# named owner) to make — derived from AGENTS.md's "Discovered / Unscoped"
-# table plus any other explicitly-flagged open questions in the registry.
-# This file exists so an AI assistant or executive can see, at a glance,
-# what's blocked on a human decision without reading the full Ticket
-# Registry.
+# Machine-readable founder/owner decision list. AGENTS.md remains
+# authoritative; this file is a compact mirror artifact.
 
-schema_version: 1
-last_updated_utc: "2026-07-25T00:00:00Z"
+schema_version: 2
+last_updated_utc: "2026-08-12T18:20:00Z"
+last_updated_by: "STATE-RECONCILE-001"
 
 decisions:
-  - id: "SPRINT-004-governance-flip-confirmation"
-    proposed_by: "SPRINT-004"
-    question: >
-      SPRINT-004 explicitly authorized a quality-gated auto-merge policy
-      and granted the worker authority to enable it and merge the sprint's
-      own PR autonomously once all gates pass. The worker paused before
-      doing either GitHub branch-protection/auto-merge configuration or
-      auto-merging, since main had zero branch protection and zero
-      required status checks at the time.
+  - id: "PROVIDER-DNC-001"
+    owner: "Founder / Engineering"
+    question: "Should LUX implement the DNC.com/DNCScrub adapter next, and with which account/API contract?"
     evidence: >
-      Jaia reviewed PR #55 manually and merged it (2026-07-25) rather than
-      having the worker configure GitHub-level auto-merge enforcement --
-      answering the question via the default "manual merge" path rather
-      than by explicitly authorizing the settings flip. Branch protection
-      on `main` remains unconfigured as of SPRINT-005-GOV; no agent has
-      been asked to configure it.
-    decision_needed: "None -- resolved by Jaia's manual merge of PR #55."
-    status: "resolved"
+      SPRINT-019 skip-trace shadow validation confirmed BatchData flow can be
+      simulated safely, but DNC.com remains `live_ready=false` and is a hard
+      compliance blocker before any paid pilot or callable-contact flow.
+    decision_needed: "Provide/approve DNC provider contract and credentials path, then scope implementation."
+    status: "open — hard compliance blocker"
+    blocks:
+      - "SKIP-PILOT-002"
+      - "live callable contacts"
+      - "outreach send"
 
-  - id: "VACANCY-001"
-    proposed_by: "SPRINT-001 / WP3 + WP5 research"
-    question: "Should LUX ingest HUD's free USPS address-vacancy dataset as a new seller-pressure signal?"
-    evidence: "Free, quarterly, tract-level, no source-probe friction; independently surfaced by two separate research passes as the highest-value not-yet-built signal."
-    decision_needed: "Scope as a ticket and prioritize, or decline."
-    status: "awaiting decision"
-
-  - id: "HEIR-001"
-    proposed_by: "SPRINT-001 / WP3 research"
-    question: "Should LUX build a heir/inherited-property signal, paired with the existing DATA-006P probate ingestion ticket?"
-    evidence: "Best-evidenced new signal researched (Fannie Mae/HAC national study, Urban Institute, NAR-backed UPHPA partition-action mechanism)."
-    decision_needed: "Approve scoping alongside DATA-006P, or decline/defer."
-    status: "awaiting decision"
-
-  - id: "jurisdiction_code-core-change"
-    proposed_by: "SPRINT-001 / WP4 architecture review"
-    question: >
-      Should core/models/entities.py and core/db/models.py generalize
-      source_county into a structured jurisdiction_code, and add
-      jurisdiction scoping to PipelineRun/RawEvidence/SourceRecord?
+  - id: "SCORING-READINESS-POLICY-001"
+    owner: "Founder"
+    question: "Should current scoring-readiness thresholds change now that production corpus/coverage changed?"
     evidence: >
-      Implemented by SPRINT-004 (2026-07-25, migration f2a8c913d5b6):
-      added nullable jurisdiction_code/connector_id columns to
-      pipeline_runs and events -- additive, backward-compatible, zero
-      backfill required. This was within SPRINT-004's own explicitly-
-      authorized scope ("jurisdiction-aware metadata and policy hooks"),
-      so no separate ADR process was needed for this specific, bounded
-      change. A broader jurisdiction_code migration onto RawEvidence/
-      SourceRecord/Asset (beyond pipeline_runs/events) remains
-      unimplemented and would still warrant its own sign-off if proposed.
-    decision_needed: "None for the change already made. A broader extension (RawEvidence/SourceRecord/Asset) would need its own proposal."
-    status: "resolved (bounded scope); broader extension not proposed"
+      Live production on 2026-08-12 has 34/159 linked Transactions (21.38%),
+      below the existing scoring-safe threshold. SPRINT-019 documented that
+      some match paths are explainable despite this threshold, but the policy
+      was not changed.
+    decision_needed: "Keep current threshold, lower it with explicit rationale, or require more deterministic linkage first."
+    status: "open — policy decision"
+    blocks:
+      - "scoring_ready=true"
+      - "paid-pilot confidence policy"
 
-  - id: "notion-roadmap-sync"
-    proposed_by: "historical (pre-dates SPRINT-001)"
-    question: "Should the AGENTS.md Ticket Registry sync to Notion, or remain manual?"
-    decision_needed: "Pick a sync strategy."
-    status: "awaiting decision"
-
-  - id: "ENRICH-001"
-    proposed_by: "historical (pre-dates SPRINT-001)"
-    question: "What contact-enrichment strategy (public/free, paid providers, waterfall, internal skip tracing) should LUX commit to?"
-    evidence: "Contact enrichment is described in AGENTS.md as 'a major commercial bottleneck.'"
-    decision_needed: "Decision matrix + selection."
-    status: "awaiting decision"
-
-  - id: "OPS-SYNC-001-pr-merge"
-    proposed_by: "OPS-SYNC-001 ticket"
-    question: >
-      Merge the OPS-SYNC-001 source-side PRs into fsassaman-commits/lux-core
-      main so the publish-ai-state workflow becomes active on real pushes.
+  - id: "SKIP-PILOT-002"
+    owner: "Founder"
+    question: "Authorize, defer, or redirect the first bounded paid skip-trace pilot?"
     evidence: >
-      Done: PRs #50, #51 (destination retarget fix), and #52 (idempotency
-      fix) all merged 2026-07-25. jaiaFoster/agent-info is live and
-      auto-syncing on every push to main. jaiaFoster/lux-core (the
-      originally-proposed destination) was reset by the workflow before the
-      retarget fix landed; Jaia reviewed and explicitly chose to leave it
-      as-is rather than revert.
-    decision_needed: "None — resolved."
-    status: "resolved"
+      Production has 57 scored buyers, 957 persisted/quality-analyzed matches,
+      candidate ranking, revenue qualification v2, and read-only skip-trace
+      shadow validation. Recommendation remains
+      `proceed_with_smaller_pilot_after_blockers_cleared`.
+    decision_needed: "Authorize only after DNC/compliance and any required scoring-readiness decision are resolved."
+    status: "blocked — founder authorization required after technical blockers clear"
+    blocks:
+      - "paid provider purchase"
+      - "contact enrichment"
 
-  - id: "SPRINT-002-ingest-002-ownership-overlap"
-    proposed_by: "SPRINT-002"
-    question: >
-      Reconcile SPRINT-002's new Pinellas parcel/assessor adapter against
-      Kyle's in-progress INGEST-002 ticket (same stated goal, "Pinellas
-      County pipeline"). A stub already existed at
-      adapters/real_estate/sources/pinellas.py before SPRINT-002 started,
-      plausibly Kyle's own placeholder — SPRINT-002 replaced it with a
-      working implementation without knowing Kyle's actual progress or
-      intended approach.
+  - id: "BATCHDATA-RESILIENCE-001"
+    owner: "Engineering"
+    question: "Should BatchData retry/backoff be implemented before relying on unattended provider jobs?"
     evidence: >
-      See AGENTS.md's SPRINT-002 and INGEST-002 registry rows (both now
-      cross-reference this) and docs/audits/SPRINT_002_PINELLAS_PARCEL_ADAPTER.md.
-    decision_needed: >
-      Jaia + Kyle decide: keep SPRINT-002's implementation, keep Kyle's
-      approach if it differs, or merge the two. Not a decision an agent
-      should make unilaterally.
-    status: >
-      no longer blocking (per SPRINT-004, 2026-07-25) -- the underlying
-      question is unchanged and still genuinely undecided between Jaia and
-      Kyle, but it no longer gates further Pinellas work. SPRINT-002/003's
-      Pinellas adapter is merged, schema-verified against real data, and in
-      active use regardless of how this resolves whenever Jaia/Kyle look at
-      it.
+      SPRINT-019 shadow validation found the BatchData adapter has no retry or
+      backoff path for transient provider failures or HTTP 429.
+    decision_needed: "Scope a small resilience patch or accept manual retry for the first bounded pilot."
+    status: "open"
 
-  - id: "SPRINT-002-pinellas-schema-verification"
-    proposed_by: "SPRINT-002"
-    question: >
-      Verify the unconfirmed column-name placeholders in
-      adapters/real_estate/parsing/pinellas_parcel_parser.py (Owner,
-      Property Value, Land, Legal, Sales tables) against real PCPAO sample
-      exports before enabling production ingestion.
+  - id: "FACT-LIVE-001/002"
+    owner: "Engineering / Founder if consumer policy changes"
+    question: "Should canonical facts be repopulated in Railway production or remain an inactive/parity path for now?"
     evidence: >
-      Resolved by SPRINT-003: downloaded and checksummed real samples of
-      RP_PROPERTY_INFO, RP_LEGAL, RP_SALES_HISTORY, RP_ALL_OWNERS, and
-      RP_ALL_SITE_ADDRESSES; rewrote the parser against real field names and
-      real join behavior (3-table join, not the assumed 6-table one). See
-      docs/research/PINELLAS_SOURCE_VALIDATION.md.
-    decision_needed: "None — resolved."
-    status: "resolved"
+      `/api/ops/fidelity` reports `canonical_facts=0` in current Railway
+      production. Current live endpoints use scores/matches directly; no live
+      consumer dependency on persisted facts was verified in this reconciliation.
+    decision_needed: "Decide only if a live consumer should depend on canonical_facts again."
+    status: "open audit follow-up"
 
   - id: "SPRINT-002-pinellas-production-approval"
-    proposed_by: "SPRINT-002"
-    question: >
-      Approve flipping database_write_allowed and ingest_supported to true
-      for pinellas_parcels_public now that schema verification is complete,
-      per the standing Pre-Ingestion Source Rule.
+    owner: "Founder"
+    question: "Approve production ingestion for the already-validated Pinellas parcel adapter?"
     evidence: >
-      Schema verification is done (see resolved item above) and a bounded
-      200-parcel real ingestion succeeded end-to-end in an isolated local
-      database with zero critical integrity failures and verified
-      idempotency (docs/audits/PINELLAS_DATA_QUALITY_REPORT.md,
-      docs/audits/PINELLAS_PERFORMANCE_BASELINE.md). No production write was
-      requested or performed this sprint.
-    decision_needed: "Explicit approval before any real production ingestion run."
-    status: "awaiting decision — blocked only on the ownership-overlap decision above and Jaia's explicit go-ahead"
+      Pinellas schema/live-data validation succeeded historically, but current
+      MVP-001 focus prioritizes Hillsborough revenue readiness over geographic
+      expansion.
+    decision_needed: "Approve production ingestion when expansion becomes the priority again, or leave deferred."
+    status: "deferred"
 
   - id: "SPRINT-003-maricopa-asset-linker-vocabulary"
-    proposed_by: "SPRINT-003 / WP7 Maricopa readiness assessment"
-    question: >
-      Maricopa County, AZ identifies parcels by APN, not FOLIO/PIN/STRAP.
-      adapters/real_estate/linking/asset_linker.py's shared field vocabulary
-      (folio/pin/strap/legal_description/address) has no APN slot. Should
-      this shared module gain an apn field, or should a jurisdiction-
-      identifier protocol be introduced (per expansion-review.md
-      Recommendation 1.1) before any Maricopa adapter code is written?
-    evidence: >
-      Flagged architecturally in docs/architecture/expansion-review.md
-      (Recommendation 1.1) and reaffirmed in
-      docs/research/MARICOPA_READINESS_ASSESSMENT.md. This module is shared
-      across all jurisdictions, not per-county code, so it is core-adjacent
-      shared machinery and should not be decided unilaterally by whichever
-      agent starts Maricopa work.
-    decision_needed: "Choose an approach before Maricopa adapter work starts."
-    status: "awaiting decision"
+    owner: "Founder / Architecture"
+    question: "How should shared linker identity vocabulary represent Maricopa APN and New York SBL identifiers?"
+    evidence: "Maricopa and NY expansion remain architecture-validation work, not current revenue-path work."
+    decision_needed: "Choose identifier protocol before out-of-state adapter work."
+    status: "deferred"
 
-  - id: "SPRINT-003-maricopa-recorder-paid-data"
-    proposed_by: "SPRINT-003 / WP7 Maricopa readiness assessment"
-    question: >
-      Maricopa County Recorder's bulk deed/document index and images are a
-      paid purchase per the county's recording-fee schedule, unlike every
-      recorder source LUX has used so far (all free). Should LUX budget for
-      this, or scope Maricopa's first onboarding pass as parcel/assessor-
-      only and defer recorder evidence, the way Pinellas's recorder adapter
-      was deferred?
-    evidence: "docs/research/data-source-inventory.md; docs/research/MARICOPA_READINESS_ASSESSMENT.md."
-    decision_needed: "Approve a purchase, or scope Maricopa parcel-only for its first pass."
-    status: "awaiting decision"
-
-full_detail: "See AGENTS.md 'Discovered / Unscoped' table in the source repository for the complete, authoritative list, including items not yet promoted to this structured file."
+full_detail: "See AGENTS.md Ticket Registry and sprint review packets for complete history."

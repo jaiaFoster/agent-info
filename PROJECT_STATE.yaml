@@ -1,166 +1,141 @@
 # PROJECT_STATE.yaml
 #
-# Canonical, machine-readable snapshot of LUX's current engineering state.
-# Source of truth for this file's content is AGENTS.md (the Ticket Registry
-# and "Current Project Status" section) — this file is a structured
-# derivative for AI/executive consumption, not a second source of truth.
-# Update this file whenever AGENTS.md's "Current Project Status" section
-# changes.
+# Machine-readable current-state snapshot. AGENTS.md remains the living source
+# of truth; this file is the compact mirror artifact consumed by agents,
+# executives, and the AI-state mirror.
 
-schema_version: 1
-last_updated_utc: "2026-08-02T00:00:00Z"
-last_updated_by: "SPRINT-017-WP5A revenue qualification packet"
+schema_version: 2
+last_updated_utc: "2026-08-12T18:20:00Z"
+last_updated_by: "STATE-RECONCILE-001"
+
+project:
+  name: "LUX"
+  full_name: "Linked Unified Exchange"
+  repository: "fsassaman-commits/lux-core"
+  production_base_url: "https://lux-core-production.up.railway.app"
 
 active_program:
   id: "MVP-001"
   title: "First Revenue Program"
   status: "APPROVED"
   priority: "CRITICAL"
-  current_sprint: "SPRINT-017 — Hillsborough Evidence Completion"
-  next_sprints:
-    - "SPRINT-018 — Revenue Readiness"
-  merge_policy: "Implementation PRs may auto-merge when validation passes; founder approval required after full program validation."
+  current_sprint: "STATE-RECONCILE-001 — Project State & Mirror Reconciliation"
+  current_phase: "Revenue Qualification / Compliance Gate"
+  current_state: "SPRINT-016/017/018/019 complete as technical workstreams; paid pilot and sprint/program completion remain founder-gated where applicable."
+  merge_policy: "Implementation PRs may auto-merge when validation passes, CI is green, no blocker exists, and scope is non-consequential. Founder approval required for paid spend, outreach, destructive actions, policy changes, and final program completion."
 
-active_expansion_work:
-  ticket: "SKIP-PILOT-001"
-  status: "Approved by Jaia; bounded buyer-cohort runner and manual dry-run workflow implemented. Live paid purchase blocked only on PROVIDER-DNC-001 (PROVIDER-BATCHDATA-001 is done, live_ready=true when SKIPTRACE_API_KEY is configured)."
-  summary: >
-    SPRINT-006 (Canonical Fact Engine) is now COMPLETE: the canonical_facts
-    production migration was applied 2026-07-26, bounded fact writes were
-    verified at 100 -> 250 -> 500 records plus a same-batch 500 replay with
-    zero rejected facts, and SPRINT-006C (PR #73) verified exact
-    legacy-equivalent confidence parity (1.0 match rate, 0.0 unexplained
-    delta). That work unblocked SKIP-PILOT-001, the current active priority:
-    a bounded, confidence-gated paid skip-trace validation pilot over ~25
-    buyers. PROVIDER-BATCHDATA-001 (real BatchData adapter) shipped
-    2026-07-26. The only remaining blocker to a live-write pilot run is
-    PROVIDER-DNC-001 (DNC.com scrub adapter), still a stub. In parallel,
-    DATA-014 (2026-07-27, entity classification + owner-to-parcel linking
-    evidence), SPRINT-005 (2026-07-27, intelligence calibration + buyer
-    validation cohort), and DATA-015 (2026-07-27, source registry
-    canonicalization + full Hillsborough source inventory + parcel coverage
-    audit) all landed. DATA-015D's parcel coverage audit is a significant new
-    finding: only ~1.41% of the 527,882-parcel Hillsborough catalog is
-    ingested (7,456 assets), and it recommends a bulk-file ingestion path
-    over continued page-at-a-time DATA-006L/OPS-AUTO-002 pagination.
-  known_issue: >
-    SKIP-PILOT-001 cannot go live-write with one real provider (BatchData)
-    and one stub (DNC.com) — the compliance scrub is a hard gate, not
-    optional. No paid purchase, contact enrichment, or outreach send has
-    occurred.
-  full_detail: "docs/architecture/CANONICAL_FACT_ENGINE.md, docs/operations/SPRINT_006_VALIDATION_PACKET.md, docs/operations/SPRINT_006C_FINAL_REPORT.md, docs/research/SPRINT-005-SUMMARY.md, docs/research/DATA-015-FINAL-REPORT.md, AGENTS.md"
+verified_baseline:
+  verified_at_utc: "2026-08-12T18:20:00Z"
+  main_sha_before_reconciliation: "d497c007adbe4c49d9593dfb83dc61688c2c5c6b"
+  production_health: "ok"
+  production_truth_overrides_stale_docs: true
+  counts:
+    assets: 532451
+    transactions_total: 159
+    transactions_with_asset: 34
+    transactions_without_asset: 125
+    transaction_asset_coverage_pct: 21.38
+    source_records: 560102
+    observations: 11255764
+    raw_evidence: 53
+    pipeline_runs: 82
+    scored_buyers: 57
+    persisted_matches: 957
+    financial_opportunity_subjects: 69
+    financial_opportunity_observations: 821
+    asset_linked_financial_observations: 28
+    canonical_facts: 0
+  graph:
+    classification: "GRAPH_PARTIAL_LINK_COVERAGE"
+    unique_linked_assets: 31
+    assets_with_multiple_transactions: 2
+  revenue:
+    qualification_endpoint: "/api/ops/revenue-qualification-v2"
+    recommendation: "proceed_with_smaller_pilot_after_blockers_cleared"
+    paid_action_authorized: false
+    paid_provider_calls_triggered: false
+    outreach_triggered: false
+  fidelity:
+    endpoint: "/api/ops/fidelity"
+    classification: "FIDELITY_AUDIT_REQUIRED"
+    canonical_facts_total: 0
+    database_mutated_by_check: false
+    storage_mutated_by_check: false
+    provider_calls_triggered_by_check: false
 
-project:
-  name: "LUX"
-  full_name: "Linked Unified Exchange"
-  description: >
-    Market-intelligence platform that discovers, scores, and matches
-    participants in fragmented markets. Adapter #1 (validation vertical) is
-    residential real estate wholesale deals, Tampa Bay FL (Hillsborough
-    County). Core is intentionally market-agnostic.
-  repository: "fsassaman-commits/lux-core"
+completed_sprints:
+  - id: "SPRINT-016"
+    title: "Database Fidelity & Evidence Integrity"
+    status: "COMPLETE"
+  - id: "SPRINT-017"
+    title: "Hillsborough Evidence Completion"
+    status: "COMPLETE"
+  - id: "SPRINT-018"
+    title: "Revenue Readiness Implementation"
+    status: "COMPLETE_TECHNICAL"
+    note: "No paid provider call or outreach occurred."
+  - id: "SPRINT-019"
+    title: "Match Quality, Scoring Readiness & Revenue Packet"
+    status: "COMPLETE_TECHNICAL"
+    note: "Founder decisions remain for DNC provider, scoring-readiness policy, and any paid pilot."
 
-current_phase: "MVP-001 First Revenue Program — SPRINT-017 Hillsborough Evidence Completion"
+live_capabilities:
+  - "buyer_intelligence"
+  - "asset_scoped_seller_opportunities"
+  - "explainable_buyer_seller_matching"
+  - "match_quality_analysis"
+  - "candidate_ranking"
+  - "revenue_qualification"
+  - "skip_trace_shadow_validation"
+  - "property_graph_partial_linkage"
 
-sprint_017_current_slice:
-  current_ticket: "BUYER-LIVE-001 — Restore Buyer Intelligence Projection"
-  status: "NEXT_BLOCKER_REPAIR"
-  verified_sources:
-    - "Official Clerk tax deed page"
-    - "Weekly Tax Deed Spreadsheet XLSX"
-    - "Claims/disbursement XLSX"
-    - "PublicAccess /TD/api query 285"
-    - "Reachable RealAuction calendar page"
-  production_writes: 1
-  storage_writes: 1
-  approved_scope: "Restore deterministic buyer intelligence projection after WP5A found buyer_scores=0 and candidate_matches=0; no paid providers, outreach, notifications, or recovery workflows."
+current_priority:
+  ticket: "STATE-RECONCILE-001"
+  status: "CURRENT_FOR_THIS_PATCH"
+  objective: "Reconcile project-state artifacts and AI-state mirror with current main and production truth."
+  after_merge_next:
+    - "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter before any paid pilot/live contact flow"
+    - "BatchData resilience / retry-backoff — add bounded retry/backoff before unattended provider reliance"
+    - "Scoring-readiness policy decision — current graph coverage is 34/159 (21.38%), below existing threshold"
+    - "SKIP-PILOT-002 — founder authorization decision after compliance/provider blockers clear"
+    - "Human outreach preparation — no send until DNC/compliance and founder approval"
 
-current_milestone:
-  name: "MVP-001 — First Dollar"
-  definition: >
-    Generate one successful wholesale transaction entirely through LUX
-    intelligence: identify a motivated seller from canonical public
-    evidence, identify a compatible buyer from buyer intelligence, and close
-    that match into an actual completed deal. A qualified lead and an
-    approved outreach packet are necessary steps, not the milestone itself.
-  status: "in progress"
-  blocking_path:
-    - "LEADGEN-002 (run production migration)"
-    - "LEADGEN-003 (lawful-use attestation)"
-    - "LEADGEN-004 (provider keys: BatchData, DNC.com)"
-    - "LEADGEN-005 (activate live providers, first bounded live skip-trace batch)"
-    - "OUTREACH-003 (opportunity->lead skip-trace loop into approval queue)"
+open_blockers:
+  - id: "PROVIDER-DNC-001"
+    title: "DNC.com/DNCScrub adapter"
+    status: "OPEN_HARD_COMPLIANCE_BLOCKER"
+    blocks: ["SKIP-PILOT-002", "live contact/callable status", "paid skip-trace outreach path"]
+  - id: "BATCHDATA-RESILIENCE-001"
+    title: "BatchData retry/backoff"
+    status: "OPEN"
+    blocks: ["robust unattended provider operation"]
+  - id: "SCORING-READINESS-POLICY-001"
+    title: "Scoring-readiness threshold decision"
+    status: "OPEN_FOUNDER_POLICY_DECISION"
+    evidence: "Current production graph coverage is 34/159 linked Transactions (21.38%)."
+  - id: "SKIP-PILOT-002"
+    title: "Bounded paid skip-trace pilot authorization"
+    status: "BLOCKED_BY_PROVIDER_DNC_AND_FOUNDER_AUTH"
+  - id: "FACT-LIVE-001/002"
+    title: "Canonical facts absent in current Railway production"
+    status: "OPEN_AUDIT_FOLLOW_UP"
+    evidence: "/api/ops/fidelity reports canonical_facts=0."
 
-infrastructure_status: "complete"
-infrastructure_summary: >
-  Canonical data model, public-record ingestion, immutable provenance
-  pipeline, deterministic normalization, targeted parcel enrichment,
-  deterministic Transaction->Asset linking, and read-only computed graph
-  queries (GRAPH-001) are all live in production. Engineering priority has
-  shifted from building ingestion infrastructure to improving derived
-  intelligence and closing the loop to a real transaction.
+state_reconciliation:
+  stale_claims_corrected:
+    - "SPRINT-017 no longer current."
+    - "SPRINT-018 no longer merely planned."
+    - "SPRINT-019 exists and is technically complete."
+    - "BUYER-LIVE-001 no longer blocks revenue qualification; production has 57 scored buyers."
+    - "Zero persisted matches is stale; production match-quality reports 957 matches."
+    - "/api/roadmap previously served stale BUYER-LIVE-001 as next_ticket."
+  out_of_scope_not_changed:
+    - "No product logic"
+    - "No database writes"
+    - "No schema changes"
+    - "No provider calls"
+    - "No skip tracing"
+    - "No outreach"
+    - "No scoring-policy changes"
 
-intelligence_status: "v1 live + continuous automation (SPRINT-004)"
-intelligence_summary: >
-  INTEL-001 (seller pressure) and INTEL-002 (buyer demand) v1 are live,
-  scoring canonical evidence into explainable, versioned projections.
-  DATA-009 reconnected /api/opportunities and /api/matches to those
-  projections. MATCH-001 persists ranked candidate matches with outcome
-  tracking. SPRINT-004 added continuous evidence scheduling, targeted (not
-  full-batch) rescoring, a versioned confidence layer distinct from
-  opportunity strength, continuous prioritization with rank history, and
-  read-only paid-action simulation (core/simulation/policy.py) -- all
-  strictly upstream of any paid action. OUTREACH-001 v1 ships
-  human-reviewed, compliance-gated outreach drafts, currently running
-  against mock contact providers pending Lead Engine go-live.
-
-production_snapshot:
-  as_of: "2026-07-18"
-  note: "See AGENTS.md 'Current Project Status' for the authoritative, most recent snapshot — this block is illustrative of the schema, not guaranteed current."
-  transactions_total: 223
-  transactions_with_asset: 8
-  asset_link_coverage_percent: 3.59
-  invalid_asset_fk: 0
-  seller_pressure_scores: 1397
-  seller_pressure_critical: 1
-  seller_pressure_high: 13
-  buyer_demand_scores: 226
-  buyer_demand_active: 13
-  persisted_matches: 200
-  schema_head: "matches table (a1c4e9d27b31)"
-
-completed_infrastructure_tickets:
-  - "ARCH-001 — Canonical Domain Model Consolidation"
-  - "DATA-002 — Schema Migration Foundation + Production Migration"
-  - "DATA-003 — First Production Hillsborough Ingestion"
-  - "DATA-006E — Hillsborough Public Parcel/HCPA Ingestion"
-  - "DATA-006I — Production Deterministic Linker"
-  - "DATA-006K / DATA-006K1 — Deterministic Link Commit Safety Framework"
-  - "GRAPH-001 — Property Graph v1"
-  - "UI-002 / OPS-002 — Operations & Market Graph Dashboard Rebuild (2 passes: 2026-07-18 + 2026-07-26 Properties/Owners/Buyers/Pairings views)"
-  - "DATA-014 — Entity Classification Fix & Owner-to-Parcel Linking Evidence (complete 2026-07-27)"
-  - "DATA-015 — Hillsborough Evidence Expansion & Source Canonicalization (complete 2026-07-27; found real parcel-catalog coverage is only ~1.41%)"
-
-completed_intelligence_tickets:
-  - "INTEL-001 — Seller Pressure / Transaction Readiness Engine v1"
-  - "INTEL-002 — Buyer Intelligence Engine v1"
-  - "DATA-009 — Scoring/Matching Reconnection v1"
-  - "MATCH-001 — Ranked Counterparty Matching Hardening"
-  - "LEADGEN-001 — Skip Tracing & Lead Management (runs on mocks until go-live)"
-  - "SPRINT-004 — Continuous Intelligence Automation (merged PR #55, 2026-07-25)"
-  - "SPRINT-006 — Canonical Fact Engine (complete, legacy-equivalent confidence ready, 2026-07-26)"
-  - "SPRINT-006C — Confidence Parity Calibration & Cutover Decision (complete 2026-07-26, PR #73)"
-  - "PROVIDER-BATCHDATA-001 — BatchData Skip-Trace Provider Adapter (done 2026-07-26)"
-  - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27)"
-
-current_priority_ticket: "SPRINT-017 — Hillsborough Evidence Completion"
-current_priority_status: "CURRENT — WP1 Production Evidence Baseline complete via workflow run 30734899137; WP2 Evidence Value Assessment complete via public-source probe run 30734939428 and docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md. DATA-020A Hillsborough Clerk Civil Daily Evidence is complete/operationally verified: dry-run 30735401548 and production write 30735475109 succeeded, creating 1 RawEvidence, 43 SourceRecords, 20 Events, and 129 Observations with ARCHIVE_VERIFIED and zero errors. DATA-020B Hillsborough Clerk Civil Bulk Historical Evidence is complete/operationally verified: dry-run 30758662800 and production write 30758705198 succeeded, creating 3 RawEvidence, 100 SourceRecords, 73 Events, 193 Observations, and 40 Participants with ARCHIVE_VERIFIED and zero errors. Next WP3 slice is DATA-020C Tax Deed / Excess Proceeds Source Verification. FACT-LIVE-001 remains open/high-priority; SKIP-PILOT-001 remains deferred to SPRINT-018 and live-purchase blocked by PROVIDER-DNC-001 plus founder approval."
-
-known_constraints:
-  - "Merge authority defaults to Jaia; a worker may merge autonomously only when its own sprint ticket explicitly grants quality-gated merge authority AND every required gate passes. Absent that explicit grant, merges remain manual — see AGENTS.md's Merge Authority section (reconciled by SPRINT-005-GOV, 2026-07-25)."
-  - "Paid actions, outreach/contact, production-ingestion approval, destructive production operations, and identity-resolution-policy changes always require Jaia's explicit approval regardless of any sprint's merge grant."
-  - "Codex/coding agents may run bounded dry-runs and evidence audits without additional approval; linker write mode, scoring/matching writes, outreach/contact actions, and destructive DB operations all require Jaia's explicit approval."
-  - "Core never imports from adapters/; adapters import Core schemas only."
-  - "Unresolved is preferable to false resolution — no fuzzy matching, no guessed Asset links."
-
-full_detail: "See AGENTS.md in the source repository for the complete, authoritative Ticket Registry, architecture rules, and operational policy."
+full_detail: "See AGENTS.md, docs/research/SPRINT-018-REVIEW-PACKET.md, docs/research/SPRINT-019-REVIEW-PACKET.md, and ROADMAP.yaml."

@@ -1,241 +1,136 @@
 # ROADMAP.yaml
 #
-# Structured, machine-readable roadmap derived from AGENTS.md's Ticket
-# Registry, Expansion Strategy, and Buyer Validation Strategy sections.
-# AGENTS.md remains the living source of truth; this file is a derived
-# summary for AI/executive consumption, regenerated whenever the registry
-# changes materially.
+# Compact machine-readable roadmap derived from AGENTS.md. Historical sprint
+# narrative remains in AGENTS.md and docs/research/*REVIEW-PACKET.md.
 
-schema_version: 1
-last_updated_utc: "2026-08-02T00:00:00Z"
+schema_version: 2
+last_updated_utc: "2026-08-12T18:20:00Z"
+last_updated_by: "STATE-RECONCILE-001"
 
-# Reconciled by SPRINT-005-GOV (2026-07-25). The prior infrastructure-era
-# north_star and phase list are preserved in AGENTS.md's "Current Project
-# Status" history, not deleted -- this file states only the current,
-# active version, per this sprint's "no contradictory governance" goal.
 north_star: >
   Continuously transform public evidence into explainable, high-confidence
   market decisions before spending money on customer acquisition.
 
 operating_philosophy: >
-  Evidence -> Intelligence -> Confidence -> Decision -> Paid Identification
-  -> Outreach -> Revenue. Each phase gates the next: a decision to spend
-  money identifying a contact should follow an explicit, versioned
-  confidence judgment (core/confidence/foundation.py), not just a raw
-  opportunity score. SPRINT-004 (2026-07-25) built the Evidence/
-  Intelligence/Confidence automation; SPRINT-005 targets Confidence
-  calibration and an explicit Decision policy before any Paid
-  Identification pilot.
-
-next_priority_order:
-  # WP3, SPRINT-005-GOV (2026-07-25). Supersedes any older, narrower
-  # "current_priority: OUTREACH-001" framing below -- OUTREACH-001's
-  # mechanics already shipped; it is no longer the top-ranked priority.
-  1: "Intelligence Quality"
-  2: "Geographic Expansion"
-  3: "Evidence Freshness"
-  4: "Confidence"
-  5: "Decision Policy"
-  6: "Paid Identification"
-  7: "Outreach"
-  8: "First Dollar"
+  Evidence -> Canonical Output -> Facts/Scores -> Matches -> Revenue
+  Qualification -> Paid Identification -> Human Outreach -> First Dollar.
+  Production truth overrides stale planning documents.
 
 strategic_objective:
   id: "MVP-001"
   name: "First Revenue Program"
   definition: "Produce the shortest defensible path from public evidence to first revenue while strengthening LUX as a reusable intelligence platform."
+  success_definition: "One closed wholesale transaction sourced and matched through LUX."
+  status: "IN_PROGRESS"
 
 first_revenue_program:
   id: "MVP-001"
   status: "APPROVED"
   priority: "CRITICAL"
-  implementation_merge_authority: "AUTO when validation passes, CI is green, and no blocker exists"
-  final_program_merge_authority: "Founder review required"
-  current_sprint: "SPRINT-017"
+  implementation_merge_authority: "AUTO when validation passes, CI is green, no blocker exists, and scope is non-consequential"
+  final_program_approval: "Founder required"
+  current_phase: "Revenue Qualification / Compliance Gate"
   sprints:
     - id: "SPRINT-016"
       title: "Database Fidelity & Evidence Integrity"
       status: "COMPLETE"
-      mission: "Understand production data exactly, repair storage root causes, and ensure PostgreSQL contains canonical knowledge while Railway Storage contains immutable raw evidence."
-      first_slice: "Read-only fidelity census, /api/ops/fidelity, and manual census workflow."
-      current_patch: "COMPLETE — final fidelity OK with LEGACY-HCPA-001 documented"
-      latest_verified_result: "SPRINT-016 closeout write run 30732166959 archived the single verified HCPA row. Final live fidelity: FIDELITY_OK, no blockers, archived_rows 22/23, source_uri_legacy_exception_rows 1, blocking_source_uri_only_rows 0, clean lineage/FK/storage checks."
     - id: "SPRINT-017"
       title: "Hillsborough Evidence Completion"
-      status: "CURRENT"
-      mission: "Finish Hillsborough as the reference jurisdiction before geographic expansion."
-      current_slice: "BUYER-LIVE-001 is next after WP5A found buyer intelligence empty in production; restore deterministic buyer projection before paid skip-trace review."
+      status: "COMPLETE"
     - id: "SPRINT-018"
-      title: "Revenue Readiness"
-      status: "PLANNED"
-      mission: "Prepare the first bounded, human-reviewed revenue experiment."
+      title: "Revenue Readiness Implementation"
+      status: "COMPLETE_TECHNICAL"
+    - id: "SPRINT-019"
+      title: "Match Quality, Scoring Readiness & Revenue Packet"
+      status: "COMPLETE_TECHNICAL"
+      note: "Paid provider calls, outreach, and final pilot authorization remain founder/compliance gated."
 
-path_to_first_dollar:
-  - step: 1
-    name: "Expand geographic coverage"
-    status: "in progress"
-  - step: 2
-    name: "Build richer buyer histories"
-    status: "in progress"
-  - step: 3
-    name: "Build seller intelligence (INTEL-001)"
-    status: "live"
-  - step: 4
-    name: "Build buyer intelligence (INTEL-002)"
-    status: "live"
-  - step: 5
-    name: "Generate buyer<->seller matches (DATA-009 + MATCH-001)"
-    status: "live"
-  - step: 6
-    name: "Human review (OUTREACH-001 approval queue)"
-    status: "live"
-    shipped: "2026-07-22"
-  - step: 7
-    name: "Continuous evidence + confidence-gated prioritization (SPRINT-004)"
-    status: "live"
-    shipped: "2026-07-25"
-    note: >
-      Generic connector scheduling, incremental/full-export ingestion,
-      evidence events, targeted rescoring, a confidence foundation,
-      continuous prioritization, and read-only paid-action simulation.
-      Merged (PR #55) by Jaia's manual review. Deliberately upstream of
-      skip tracing/outreach -- expands and qualifies evidence before
-      spending money identifying contacts.
-  - step: 8
-    name: "Skip trace highest-confidence matches (OUTREACH-003)"
-    status: "not yet live"
-    blocked_by: ["LEADGEN-002", "LEADGEN-003", "LEADGEN-004", "LEADGEN-005"]
-    note: "SPRINT-004's simulation layer can now estimate qualifying volume/cost at various confidence thresholds before this step is funded -- see core/simulation/policy.py."
-  - step: 9
-    name: "Contact both parties"
-    status: "not started"
-    depends_on: "step 8"
-  - step: 10
-    name: "Complete the first wholesale transaction (MVP-001)"
-    status: "not started"
+verified_production_snapshot:
+  as_of_utc: "2026-08-12T18:20:00Z"
+  source_main_sha: "d497c007adbe4c49d9593dfb83dc61688c2c5c6b"
+  health: "ok"
+  assets: 532451
+  transactions_total: 159
+  transactions_with_asset: 34
+  transactions_without_asset: 125
+  transaction_asset_coverage_pct: 21.38
+  source_records: 560102
+  observations: 11255764
+  raw_evidence: 53
+  pipeline_runs: 82
+  scored_buyers: 57
+  persisted_matches: 957
+  candidate_matches: 957
+  financial_opportunity_subjects: 69
+  financial_opportunity_observations: 821
+  asset_linked_financial_observations: 28
+  canonical_facts: 0
+  graph_classification: "GRAPH_PARTIAL_LINK_COVERAGE"
+  revenue_recommendation: "proceed_with_smaller_pilot_after_blockers_cleared"
+  paid_action_authorized: false
 
-expansion_strategy:
-  florida:
-    status: "continue expanding"
-    proven: "Hillsborough County (end to end: ingestion -> provenance -> canonical storage -> linking -> intelligence -> matching -> outreach)"
-    next_counties_ranked:
-      # Per SPRINT-001 / docs/research/market-ranking.md
-      - rank: 1
-        county: "Pinellas County, FL"
-        note: >
-          Parcel/assessor adapter (PCPAO bulk files) implemented under
-          SPRINT-002 and validated against real, checksummed live data
-          under SPRINT-003 (schemas verified, bounded ingestion succeeded
-          in an isolated database, zero critical integrity failures).
-          Production ingestion still not yet approved. Recorder (Clerk)
-          adapter deferred. Shared ownership context with Kyle's
-          INGEST-002 ticket noted but no longer treated as blocking (see
-          AGENTS.md registry reconciliation, SPRINT-004) — the underlying
-          question of which implementation Kyle intended is still
-          genuinely open whenever Jaia/Kyle want to look at it.
-      - rank: 2
-        county: "Orange County, FL"
-      - rank: 3
-        county: "Pasco County, FL"
-      - rank: 4
-        county: "Duval County, FL"
-    blocking_ticket: "FL-ADAPTER-001"
-  phoenix_arizona:
-    ticket: "AZ-ADAPTER-001"
-    county: "Maricopa County, AZ"
-    purpose: "first out-of-state architecture-validation target"
-    status: "OPEN — ticketed 2026-07-26, no ingestion/adapter work started"
-    confirmed_by: "SPRINT-001 market ranking — keep unmodified; ranked #1 of 13 candidates (score 20)"
-    readiness_assessment: >
-      SPRINT-003 produced a readiness assessment (not onboarding work):
-      primary assessor source is expected to be a proven ArcGIS FeatureServer
-      pattern (lower-risk than Pinellas's novel access mechanism), but two
-      decisions need Jaia's sign-off before adapter code starts — extending
-      the shared asset_linker.py identifier vocabulary for APN (Maricopa has
-      no FOLIO/PIN/STRAP equivalent), and whether to fund the Maricopa
-      Recorder's paid bulk deed data or scope the first pass as
-      parcel/assessor-only. See docs/research/MARICOPA_READINESS_ASSESSMENT.md.
-  troy_new_york:
-    ticket: "NY-ADAPTER-001"
-    county: "Rensselaer County (Troy), extended in scope to Albany County"
-    purpose: "second out-of-state architecture-validation target; Albany added per Tim's request 2026-07-26 (not part of SPRINT-001's evaluated candidate set — needs its own source-probe)"
-    status: "OPEN — ticketed 2026-07-26, no ingestion/adapter work started"
-    risk_note: >
-      SPRINT-001 found population declining since 2020 (-1,317 residents
-      2021-2023) and the weakest data access (permits, probate) of any
-      market researched. Recommendation: keep, but explicitly as a
-      non-revenue architecture-validation bet, not a market-opportunity one
-      — consistent with how AGENTS.md already frames it.
-    advantage: >
-      NYS GIS Clearinghouse publishes one free statewide parcel dataset
-      covering both Rensselaer and Albany, so one parcel adapter likely
-      serves both counties -- cheaper than Maricopa's or Florida's
-      county-by-county pattern. Deed/recorder side is still per-county
-      (Rensselaer County Clerk, Albany County Clerk).
+live_capabilities:
+  buyer_intelligence:
+    status: "LIVE"
+    evidence: "/api/intel/buyers reports 57 scored buyers."
+  asset_scoped_seller_opportunities:
+    status: "LIVE"
+    evidence: "/api/opportunities is backed by versioned INTEL-001 projections."
+  explainable_buyer_seller_matching:
+    status: "LIVE"
+    evidence: "/api/matches considers 57 buyers and returns matches."
+  match_quality_analysis:
+    status: "LIVE"
+    evidence: "/api/ops/match-quality reports 957 persisted matches."
+  candidate_ranking:
+    status: "LIVE"
+    evidence: "/api/ops/candidate-ranking reports 957 candidate matches."
+  revenue_qualification:
+    status: "LIVE"
+    evidence: "/api/ops/revenue-qualification-v2 returns founder-gated recommendation."
+  skip_trace_shadow_validation:
+    status: "LIVE_READ_ONLY"
+    evidence: "/api/ops/skip-trace-shadow validates mock-provider path with provider_calls=false."
 
-market_discovery:
-  ticket: "MARKET-001"
-  status: "OPEN — ticketed 2026-07-26"
-  purpose: >
-    National investor-purchase heatmap (Redfin Data Center free quarterly
-    metro data, Census ACS fallback) to help prioritize which markets LUX
-    evaluates next for expansion. Upstream of and distinct from the
-    per-jurisdiction adapter tickets above and from INTEL-*'s scoring of
-    LUX's own already-ingested evidence. Small, standalone scope -- new
-    ingestion job + one new lightweight table, no core/ or adapter-boundary
-    changes required.
-  deprioritized_candidates:
-    - name: "Austin (Travis County, TX)"
-      reason: "non-disclosure state — sale price isn't public record, breaks LUX's evidence-based deterministic model"
-    - name: "Salt Lake County, UT"
-      reason: "same non-disclosure-state issue"
+next_priority_order:
+  1: "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter; hard compliance gate before paid pilot/live contact flow"
+  2: "BATCHDATA-RESILIENCE-001 — add retry/backoff for transient/429 provider failures"
+  3: "SCORING-READINESS-POLICY-001 — founder decision on current scoring-readiness threshold after corpus/coverage changed"
+  4: "SKIP-PILOT-002 — founder-authorized bounded paid pilot only after compliance/provider blockers clear"
+  5: "Human outreach preparation — packets/queue only; no send without founder approval and callable contacts"
+  6: "Continue deterministic linkage/evidence work where it materially improves revenue decision quality"
+  7: "MVP-001 First Dollar execution"
 
-ticket_registry_pointer: "AGENTS.md — Ticket Registry (Current / Open — Committed / Planned / Blocked / Completed / Discovered-Unscoped)"
+open_blockers:
+  - id: "PROVIDER-DNC-001"
+    status: "OPEN_HARD_BLOCKER"
+    blocks: ["SKIP-PILOT-002", "live contact/callable status", "outreach send"]
+  - id: "BATCHDATA-RESILIENCE-001"
+    status: "OPEN"
+    blocks: ["robust unattended provider workflow"]
+  - id: "SCORING-READINESS-POLICY-001"
+    status: "OPEN_FOUNDER_DECISION"
+    evidence: "34/159 linked Transactions (21.38%), below current scoring-safe threshold."
+  - id: "FACT-LIVE-001/002"
+    status: "OPEN_AUDIT_FOLLOW_UP"
+    evidence: "Current Railway production reports canonical_facts=0; live consumers currently use scores/matches directly."
 
-current_priority: >
-  SPRINT-017 — Hillsborough Evidence Completion is CURRENT. WP1 Production
-  Evidence Baseline is complete (workflow run 30734899137). WP2 Evidence Value
-  Assessment is complete (public source probe run 30734939428 and
-  docs/audits/SPRINT_017_SOURCE_VALUE_ASSESSMENT.md). DATA-020A Clerk Civil
-  Daily Evidence is complete/operationally verified (dry-run 30735401548,
-  production write 30735475109). DATA-020B Clerk Civil Bulk Historical
-  Evidence is complete/operationally verified (dry-run 30758662800,
-  production write 30758705198). Production
-  truth before DATA-020A: fidelity OK, raw archive verified, 531975 Assets,
-  4/40 Transactions linked to Assets, 14112 owner-asset evidence links, 15312
-  seller-pressure rows, 0 buyer-intelligence rows, 0 persisted matches, 0
-  outreach drafts, and 0 canonical facts. SKIP-PILOT-001 is deferred to SPRINT-018 and
-  remains blocked from live paid write by PROVIDER-DNC-001 plus founder spend
-  approval.
+recently_completed:
+  - "SPRINT-017 — Hillsborough Evidence Completion"
+  - "SPRINT-018 — Revenue Readiness Implementation"
+  - "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet"
+  - "BUYER-LIVE-001 — buyer intelligence restored in production"
+  - "MATCH-QUALITY-001 — persisted match quality analysis live"
+  - "CANDIDATE-RANKING-001 — bounded, evidence-transparent candidate ranking live"
+  - "REVENUE-PACKET-003 — founder revenue decision packet live"
+  - "SKIP-SHADOW-001 — skip-trace/DNC shadow workflow validated read-only"
 
-next_up:
-  - "BUYER-LIVE-001 — Restore Buyer Intelligence Projection"
-  - "PROVIDER-DNC-001 — implement the DNC.com/DNCScrub adapter before any SPRINT-018 paid skip-trace live-write"
-  - "OUTREACH-002 — Response capture after OUTREACH-001"
-  - "SKIP-001 / ENRICH-001 — compliance-approved contact source decision"
-  - "VAL-001 — Valuation once Asset price context deepens"
-  - "DATA-016 — bulk HCPA parcel-catalog ingestion (downloads.hcpafl.org): first real bounded write verified 2026-07-28 (10 records). Scale-up to 5,000 records across runs #3-#5 (chunked commits + --start-offset resume) landed 4,000/531,201 records cleanly (0 errors). 2026-07-29: Tim asked for full automation instead of continuing manual per-run approval. Priced two speed options (~$120-240 total for a 2-4 week finish) and chose to stay inside GitHub Actions free tier (2,000 min/month) instead -- slower (many months) but $0 incremental cost. Shipped: --auto-resume (CLI computes start_offset itself from production source_records count) + scheduled-bulk-parcel-backfill.yml (daily, 05:00 UTC, 45min timeout, kill-switch repo variable DATA_016_BULK_BACKFILL_SCHEDULE_MODE). Documented as a new Authorized Exception in AGENTS.md, matching OPS-AUTO-002/MATCH-001s pattern. No further manual dispatch needed. 2026-07-29 sample-and-check (read-only probe, offset 265000/mid-file, 3000 records): absentee-owner rate came in at 27.5% (817/2973), 2.53x the small pre-existing 10.9% baseline (810/7456), not within the +/-2x tolerance -- rate did not hold, but came in higher not lower, strengthening rather than weakening the absentee-signal case for continuing the backfill, while showing the original 10.9% figure isn't a reliable file-wide estimate. Runs #2/#3 (offset 50000: 19.6%; offset 450000: 44.7%) confirm a monotonically increasing trend -- absentee rate rises steadily with folio/offset position through the file, not noise. Highest-value coverage is concentrated late in the file, which the current sequential --auto-resume will take longest to reach; a higher-offset-targeted second backfill lane is flagged as a future option, not yet built."
-  - "DATA-017 — DATA-016 bulk parcel write-path throughput optimization (2026-07-29): root cause of the ~1.1-1.3s/record throughput was ~22 individual DB round trips per record (get-or-create for source_record, Asset, every observation field), not the file transfer. Shipped a batched write path (_write_parcel_chunk): compute every deterministic id for a 250-record chunk in memory, 3 bulk WHERE id IN (...) existence checks instead of ~22 x 250 individual ones, build/merge in memory, one flush. Same idempotency, same Asset merge-on-conflict semantics, same per-field Observation granularity, same chunked-commit resilience -- only the round-trip count changed. 21 tests (was 17), full suite 878 passing (1 pre-existing unrelated failure). Validation caught a real bug (ForeignKeyViolation from cross-table flush ordering, zero production impact, chunk rolled back cleanly), fixed with an explicit session.flush(), test gap closed with PRAGMA foreign_keys=ON. Re-validated: 200 records in 7.5s (~0.038s/record, ~30-35x improvement), source_records now 4,200 with zero duplicates. Remaining ~527,000-record backfill now estimated at ~5.5 hours of actual write time (was ~190 hours) -- could finish in about a week on the existing free daily schedule instead of 6-14 months. Run #8 at scale (5,000 records, offset 4200): 30.3s real processing time (~0.006s/record, even faster than the 200-record test), source_records now 9,200 with zero duplicates. Remaining ~522,000 records now estimated at ~50-55 minutes of pure processing time -- the whole backfill could plausibly finish in days, not months."
-
-completed_since_last_roadmap:
-  - "DATA-015D checkpoint-persistence fix (2026-07-28) — the manual bounded parcel-ingestion script now writes ConnectorCheckpointModel on every successful run, matching the scheduler path"
-  # SPRINT-005 (proper, WP1-WP4) is complete and distinct from SPRINT-005-GOV
-  # (governance-only, already reflected below). DATA-014 and DATA-015 are new
-  # tickets that landed after this file's last update and were previously
-  # missing from both AGENTS.md's registry and this roadmap.
-  - "SPRINT-006 — Canonical Fact Engine (complete 2026-07-26)"
-  - "SPRINT-006C — Confidence Parity Calibration & Cutover Decision (complete 2026-07-26, PR #73)"
-  - "PROVIDER-BATCHDATA-001 — BatchData Skip-Trace Provider Adapter (done 2026-07-26)"
-  - "DATA-014 — Entity Classification Fix & Owner-to-Parcel Linking Evidence (complete 2026-07-27)"
-  - "SPRINT-005 — Intelligence Calibration & Buyer Validation (complete 2026-07-27, PRs #57/#76/#77)"
-  - "DATA-015 — Hillsborough Evidence Expansion & Source Canonicalization (complete 2026-07-27, PRs #78-#85)"
-
-recently_proposed_not_yet_approved:
-  # Discovered/Unscoped items from SPRINT-001, pending Jaia's decision
-  - "VACANCY-001 — HUD USPS vacancy data ingestion"
-  - "HEIR-001 — heir/inherited property signal (pair with DATA-006P)"
-  - "SPRINT-003-maricopa-asset-linker-vocabulary — extend shared linker for APN/SBL identity before Maricopa or Rensselaer/Albany adapter work; now tracked as a named dependency on AZ-ADAPTER-001 and NY-ADAPTER-001"
-  - "SPRINT-003-maricopa-recorder-paid-data — fund Maricopa Recorder's paid bulk data, or scope parcel-only; now tracked on AZ-ADAPTER-001"
-
-resolved_since_last_roadmap:
-  - "jurisdiction_code core/ schema change — SPRINT-004 added jurisdiction_code/connector_id columns to pipeline_runs and events (migration f2a8c913d5b6), additive and backward-compatible, within the sprint's own explicitly-authorized scope (see AGENTS.md SPRINT-004 row). No further ADR needed for this specific change."
+state_artifacts:
+  authoritative: "AGENTS.md"
+  derived:
+    - "PROJECT_STATE.yaml"
+    - "ROADMAP.yaml"
+    - "CEO_BRIEF.md"
+    - "PROJECT_PROGRESS.md"
+    - "docs/roadmap/lux_roadmap.json"
+  mirror: "jaiaFoster/agent-info via .github/workflows/publish-ai-state.yml"
