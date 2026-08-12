@@ -1,12 +1,12 @@
 {
   "status": "success",
   "updated_at": "2026-08-12T18:20:00Z",
-  "last_updated_by": "STATE-RECONCILE-001",
+  "last_updated_by": "SPRINT-020",
   "current_phase": "MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate",
   "current_milestone": "MVP-001 First Dollar. Production has live seller evidence, buyer intelligence, explainable matches, candidate ranking, revenue qualification, and skip-trace shadow validation. Paid identification and outreach remain blocked by compliance/founder gates.",
   "latest_completed_milestone": "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet",
-  "current_ticket": "STATE-RECONCILE-001 — Project State & Mirror Reconciliation",
-  "next_ticket": "PROVIDER-DNC-001 — DNC.com/DNCScrub adapter",
+  "current_ticket": "SPRINT-020 — Technical Pilot Readiness",
+  "next_ticket": "FIDELITY-CHECK-002 — Restore Production Fidelity",
   "planned_milestone": "MVP-001 — First Dollar",
   "source_commit": "d497c007adbe4c49d9593dfb83dc61688c2c5c6b",
   "first_revenue_program": {
@@ -78,10 +78,10 @@
       "name": "Current",
       "tickets": [
         {
-          "id": "STATE-RECONCILE-001",
-          "title": "Project State & Mirror Reconciliation",
+          "id": "SPRINT-020",
+          "title": "Technical Pilot Readiness",
           "status": "CURRENT",
-          "purpose": "Reconcile project-state artifacts and mirror publication with current main and production truth.",
+          "purpose": "Clear fidelity, BatchData resilience, scoring-readiness, and revenue-qualification blockers before SKIP-PILOT-002 founder review.",
           "dependencies": []
         }
       ]

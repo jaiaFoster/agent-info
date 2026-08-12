@@ -6,7 +6,7 @@
 
 schema_version: 2
 last_updated_utc: "2026-08-12T18:20:00Z"
-last_updated_by: "STATE-RECONCILE-001"
+last_updated_by: "SPRINT-020"
 
 project:
   name: "LUX"
@@ -19,7 +19,7 @@ active_program:
   title: "First Revenue Program"
   status: "APPROVED"
   priority: "CRITICAL"
-  current_sprint: "STATE-RECONCILE-001 — Project State & Mirror Reconciliation"
+  current_sprint: "SPRINT-020 — Technical Pilot Readiness"
   current_phase: "Revenue Qualification / Compliance Gate"
   current_state: "SPRINT-016/017/018/019 complete as technical workstreams; paid pilot and sprint/program completion remain founder-gated where applicable."
   merge_policy: "Implementation PRs may auto-merge when validation passes, CI is green, no blocker exists, and scope is non-consequential. Founder approval required for paid spend, outreach, destructive actions, policy changes, and final program completion."
@@ -90,11 +90,11 @@ live_capabilities:
   - "property_graph_partial_linkage"
 
 current_priority:
-  ticket: "STATE-RECONCILE-001"
+  ticket: "SPRINT-020"
   status: "CURRENT_FOR_THIS_PATCH"
-  objective: "Reconcile project-state artifacts and AI-state mirror with current main and production truth."
+  objective: "Clear fidelity, BatchData resilience, scoring-readiness, and revenue-qualification blockers before SKIP-PILOT-002 founder review."
   after_merge_next:
-    - "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter before any paid pilot/live contact flow"
+    - "FIDELITY-CHECK-002 — restore production fidelity"
     - "BatchData resilience / retry-backoff — add bounded retry/backoff before unattended provider reliance"
     - "Scoring-readiness policy decision — current graph coverage is 34/159 (21.38%), below existing threshold"
     - "SKIP-PILOT-002 — founder authorization decision after compliance/provider blockers clear"

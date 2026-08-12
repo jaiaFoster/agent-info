@@ -400,11 +400,11 @@ outreach → contacted, closed deal. A qualified lead and an approved outreach
 packet are steps on this path, not the milestone itself.
 
 Current Priority:
-- STATE-RECONCILE-001 — Project State & Mirror Reconciliation during this
-  documentation-only patch. After merge and mirror publication, the next
-  technical roadmap returns to the revenue gate: PROVIDER-DNC-001, BatchData
-  retry/backoff resilience, scoring-readiness policy decision, SKIP-PILOT-002
-  founder authorization, and human outreach preparation.
+- SPRINT-020 — Technical Pilot Readiness. Clear the remaining technical
+  blockers between the current production opportunity set and founder review
+  of SKIP-PILOT-002: restore fidelity, harden BatchData, establish defensible
+  scoring-readiness semantics, then refresh revenue qualification against
+  verified production truth.
 
 Next / Unresolved:
 - PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter; this
@@ -430,7 +430,9 @@ Next / Unresolved:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| STATE-RECONCILE-001 | Codex | CURRENT / DOCS + MIRROR ONLY | Reconcile AGENTS.md, machine-readable state, roadmap, executive brief/progress, API roadmap JSON, and AI-state mirror against verified `main` and live Railway production truth | Scope must remain state/governance/mirror only: no product logic, DB writes, provider calls, scoring-policy changes, skip tracing, or outreach | Future agents and dashboards scope from current truth instead of stale SPRINT-017/018 assumptions |
+| SPRINT-020 | Codex | CURRENT / WP1 FIDELITY-CHECK-002 IN PROGRESS | Technical Pilot Readiness: restore fidelity, harden BatchData, make scoring-readiness auditable/defensible, then refresh revenue qualification for SKIP-PILOT-002 founder review | Paid provider calls, outreach, destructive actions, legal/compliance judgments, and material business-risk policy choices remain founder-gated | Founder-ready technical answer to whether SKIP-PILOT-002 can be presented for approval |
+| FIDELITY-CHECK-002 | Codex | CURRENT / IMPLEMENTATION PR | Restore Production Fidelity: root-cause `/api/ops/fidelity` returning `FIDELITY_AUDIT_REQUIRED` and repair without deleting evidence or weakening hash verification | Root cause found: HCPA public downloads TLS certificate expired 2026-08-12; existing repair workflow could not fetch HCPA source-only rows. Patch adds HTTPS-first/expired-cert-only HTTP fallback plus better diagnostic reason; production write verification follows merge. | FIDELITY_OK restoration or precise external-source blocker |
+| STATE-RECONCILE-001 | Codex | COMPLETE / MERGED + MIRROR VERIFIED | Reconcile AGENTS.md, machine-readable state, roadmap, executive brief/progress, API roadmap JSON, and AI-state mirror against verified `main` and live Railway production truth | PR #129 merged at `90e7ddf`; mirror run `31627822108` verified manifest `source_commit=90e7ddf` and current sprint from `PROJECT_STATE.yaml` | Future agents and dashboards scope from current truth instead of stale SPRINT-017/018 assumptions |
 | SPRINT-019 | Codex/Jaia | COMPLETE / TECHNICALLY VERIFIED; FOUNDER PAID-ACTION DECISION STILL REQUIRED | Match Quality, Scoring Readiness & Revenue Packet: fix readiness integrity false positive, analyze match quality, expose candidate ranking, produce founder revenue packet, and validate skip-trace/DNC workflow in shadow mode | `docs/research/SPRINT-019-REVIEW-PACKET.md`; live ops endpoints verified 2026-08-12. Remaining blockers: DNC provider stub, BatchData retry/backoff gap, scoring-readiness policy decision. No paid provider call/outreach/CRM activation. | PROVIDER-DNC-001, BatchData resilience, SKIP-PILOT-002 founder decision |
 | SPRINT-018 | Codex/Jaia | COMPLETE / TECHNICALLY VERIFIED; PAID PILOT NOT AUTHORIZED | Revenue Readiness implementation: restored buyer intelligence, promoted asset-scoped seller opportunities, repaired match-scale persistence, and delivered revenue qualification v2 | `docs/research/SPRINT-018-REVIEW-PACKET.md`; live production now shows 57 scored buyers and persisted/explainable matches. Paid action remained out of scope. | SPRINT-019 quality/ranking/shadow validation; SKIP-PILOT-002 decision packet |
 | SPRINT-017 | Codex | COMPLETE / OPERATIONALLY VERIFIED | Hillsborough Evidence Completion: production baseline, source value assessment, Civil daily/bulk evidence, and tax-deed excess-proceeds canonical ingestion/evidence surface | SPRINT-016 complete; WP1 baseline run `30734899137`; WP2 source assessment; DATA-020A/B/C/D/E operationally verified; FACT-LIVE-001 remains open but does not block current score/match consumers | Revenue qualification and skip-trace readiness work |

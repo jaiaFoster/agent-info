@@ -5,7 +5,7 @@
 
 schema_version: 2
 last_updated_utc: "2026-08-12T18:20:00Z"
-last_updated_by: "STATE-RECONCILE-001"
+last_updated_by: "SPRINT-020"
 
 north_star: >
   Continuously transform public evidence into explainable, high-confidence
