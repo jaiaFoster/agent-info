@@ -4,7 +4,7 @@
 # narrative remains in AGENTS.md and docs/research/*REVIEW-PACKET.md.
 
 schema_version: 2
-last_updated_utc: "2026-08-12T20:28:57Z"
+last_updated_utc: "2026-08-12T20:34:00Z"
 last_updated_by: "SPRINT-020"
 
 north_star: >
@@ -94,30 +94,28 @@ live_capabilities:
     evidence: "/api/ops/skip-trace-shadow validates mock-provider path with provider_calls=false."
 
 next_priority_order:
-  1: "BATCHDATA-RESILIENCE-001 — add retry/backoff for transient/429 provider failures"
-  2: "SCORING-READINESS-POLICY-001 — analyze and document defensible scoring-readiness semantics"
-  3: "REVENUE-QUALIFICATION-004 — refresh revenue qualification after technical blockers are integrated"
-  4: "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter; hard compliance gate before paid pilot/live contact flow"
-  5: "SKIP-PILOT-002 — founder-authorized bounded paid pilot only after compliance/provider blockers clear"
-  6: "Human outreach preparation — packets/queue only; no send without founder approval and callable contacts"
-  7: "Continue deterministic linkage/evidence work where it materially improves revenue decision quality"
-  8: "MVP-001 First Dollar execution"
+  1: "SCORING-POLICY-001 — expose defensible scoring-readiness semantics without lowering thresholds"
+  2: "REVENUE-QUALIFICATION-004 — refresh revenue qualification after technical blockers are integrated"
+  3: "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter; hard compliance gate before paid pilot/live contact flow"
+  4: "SKIP-PILOT-002 — founder-authorized bounded paid pilot only after compliance/provider blockers clear"
+  5: "Human outreach preparation — packets/queue only; no send without founder approval and callable contacts"
+  6: "Continue deterministic linkage/evidence work where it materially improves revenue decision quality"
+  7: "MVP-001 First Dollar execution"
 
 open_blockers:
   - id: "PROVIDER-DNC-001"
     status: "OPEN_HARD_BLOCKER"
     blocks: ["SKIP-PILOT-002", "live contact/callable status", "outreach send"]
-  - id: "BATCHDATA-RESILIENCE-001"
-    status: "CURRENT"
-    blocks: ["robust unattended provider workflow"]
   - id: "SCORING-READINESS-POLICY-001"
-    status: "OPEN_FOUNDER_DECISION"
+    status: "CURRENT"
     evidence: "34/159 linked Transactions (21.38%), below current scoring-safe threshold."
   - id: "FACT-LIVE-001/002"
     status: "OPEN_AUDIT_FOLLOW_UP"
     evidence: "Current Railway production reports canonical_facts=0; live consumers currently use scores/matches directly."
 
 recently_completed:
+  - "FIDELITY-CHECK-002 — production fidelity restored to FIDELITY_OK"
+  - "BATCHDATA-RESILIENCE-001 — BatchData retry/backoff implemented and live shadow-validated"
   - "SPRINT-017 — Hillsborough Evidence Completion"
   - "SPRINT-018 — Revenue Readiness Implementation"
   - "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet"

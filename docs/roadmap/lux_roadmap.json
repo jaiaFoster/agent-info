@@ -1,12 +1,12 @@
 {
   "status": "success",
-  "updated_at": "2026-08-12T20:28:57Z",
+  "updated_at": "2026-08-12T20:34:00Z",
   "last_updated_by": "SPRINT-020",
   "current_phase": "MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate",
   "current_milestone": "MVP-001 First Dollar. Production has live seller evidence, buyer intelligence, explainable matches, candidate ranking, revenue qualification, and skip-trace shadow validation. Paid identification and outreach remain blocked by compliance/founder gates.",
   "latest_completed_milestone": "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet",
   "current_ticket": "SPRINT-020 — Technical Pilot Readiness",
-  "next_ticket": "BATCHDATA-RESILIENCE-001 — BatchData Production Hardening",
+  "next_ticket": "SCORING-POLICY-001 — Scoring Readiness Policy",
   "planned_milestone": "MVP-001 — First Dollar",
   "source_commit": "603cbdd9bb0e77e59410d9e51ec412f7b4b53a03",
   "first_revenue_program": {
@@ -100,16 +100,17 @@
         {
           "id": "BATCHDATA-RESILIENCE-001",
           "title": "BatchData retry/backoff",
-          "status": "CURRENT",
+          "status": "COMPLETE",
           "purpose": "Add transient-failure and 429 resilience before unattended provider reliance.",
-          "dependencies": []
+          "dependencies": [],
+          "evidence": "PR #131 merged at c3bbab4; live skip-trace shadow reports retry_policy=implemented, max_attempts=3, paid_provider_calls=false."
         },
         {
           "id": "SCORING-READINESS-POLICY-001",
           "title": "Scoring-readiness threshold decision",
-          "status": "OPEN_FOUNDER_DECISION",
-          "purpose": "Decide whether current graph coverage should remain below scoring-safe threshold or change policy explicitly.",
-          "dependencies": ["founder policy decision"]
+          "status": "CURRENT",
+          "purpose": "Separate data-integrity readiness from statistical/sample readiness without silently lowering transaction-linkage thresholds.",
+          "dependencies": []
         },
         {
           "id": "SKIP-PILOT-002",
@@ -157,15 +158,15 @@
   "next_priority_order": [
     {
       "rank": 1,
-      "ticket": "BATCHDATA-RESILIENCE-001",
-      "title": "BatchData retry/backoff",
-      "reason": "Shadow validation found no retry/backoff for transient provider failure or HTTP 429."
+      "ticket": "SCORING-READINESS-POLICY-001",
+      "title": "Scoring-readiness threshold decision",
+      "reason": "Current graph coverage is 34/159 linked Transactions (21.38%); expose integrity vs statistical readiness without lowering thresholds."
     },
     {
       "rank": 2,
-      "ticket": "SCORING-READINESS-POLICY-001",
-      "title": "Scoring-readiness threshold decision",
-      "reason": "Current graph coverage is 34/159 linked Transactions (21.38%), below the existing scoring-safe threshold."
+      "ticket": "REVENUE-QUALIFICATION-004",
+      "title": "Revenue qualification refresh",
+      "reason": "Refresh founder decision surface after fidelity, BatchData, and scoring policy are integrated."
     },
     {
       "rank": 3,
@@ -188,7 +189,6 @@
   ],
   "open_blockers": [
     "PROVIDER-DNC-001",
-    "BATCHDATA-RESILIENCE-001",
     "SCORING-READINESS-POLICY-001",
     "SKIP-PILOT-002 founder authorization",
     "FACT-LIVE-001/002"
