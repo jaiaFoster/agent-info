@@ -1,6 +1,6 @@
 # LUX — Executive Progress Dashboard
 
-*Diagrams first. Full narrative: [`CEO_BRIEF.md`](CEO_BRIEF.md). Authoritative detail: [`AGENTS.md`](AGENTS.md). Reconciled by STATE-RECONCILE-001, 2026-08-12.*
+*Diagrams first. Full narrative: [`CEO_BRIEF.md`](CEO_BRIEF.md). Authoritative detail: [`AGENTS.md`](AGENTS.md). Reconciled by SPRINT-020, 2026-08-12.*
 
 ## Roadmap position
 
@@ -72,6 +72,9 @@ outreach sends.
 | Candidate ranking | Live |
 | Revenue qualification packet | Live |
 | Skip-trace/DNC shadow validation | Live, read-only |
+| Fidelity | FIDELITY_OK |
+| BatchData retry/backoff | Complete, no-paid-call shadow verified |
+| Scoring readiness policy | Complete; thresholds unchanged |
 | Paid provider call | Not authorized |
 | Outreach send | Not authorized |
 
@@ -80,8 +83,7 @@ outreach sends.
 | Blocker | State |
 |---|---|
 | PROVIDER-DNC-001 | Hard compliance blocker before paid pilot/live callable contacts |
-| BatchData retry/backoff | Open resilience gap before unattended provider reliance |
-| Scoring-readiness policy | Founder decision; current graph coverage is below existing threshold |
+| Statistical scoring sample gate | Current graph coverage is below existing threshold; surfaced separately from data-integrity readiness |
 | SKIP-PILOT-002 | Founder authorization required |
 | FACT-LIVE-001/002 | Canonical facts absent in Railway production; audit follow-up |
 
@@ -89,11 +91,11 @@ outreach sends.
 
 ```mermaid
 flowchart TD
-    p1[PROVIDER-DNC-001] --> p2[BatchData retry/backoff]
-    p2 --> p3[Scoring-readiness policy decision]
-    p3 --> p4[SKIP-PILOT-002 founder authorization]
-    p4 --> p5[Human outreach preparation]
-    p5 --> p6[MVP-001 First Dollar]
+    p1[REVENUE-QUALIFICATION-004]
+    p1 --> p2[PROVIDER-DNC-001]
+    p2 --> p3[SKIP-PILOT-002 founder authorization]
+    p3 --> p4[Human outreach preparation]
+    p4 --> p5[MVP-001 First Dollar]
 ```
 
 Nothing in this file is a second source of truth. `AGENTS.md` remains

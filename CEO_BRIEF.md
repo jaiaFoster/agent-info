@@ -1,6 +1,6 @@
 # CEO Brief — LUX
 
-*Last updated: 2026-08-12 (STATE-RECONCILE-001). Derived from AGENTS.md and verified against live Railway production.*
+*Last updated: 2026-08-12 (SPRINT-020). Derived from AGENTS.md and verified against live Railway production.*
 
 ## What LUX is
 
@@ -27,10 +27,15 @@ Live production verified on 2026-08-12:
 - Buyer intelligence: 57 scored buyers.
 - Matching: 957 persisted/quality-analyzed matches.
 - Candidate ranking: 957 candidate matches surfaced for bounded review.
-- Revenue packet: recommendation is
-  `proceed_with_smaller_pilot_after_blockers_cleared`.
+- Revenue packet: SPRINT-020 v4 decision surface is being refreshed after
+  fidelity, BatchData resilience, and scoring policy work.
 - Skip-trace shadow: validated read-only with mock providers; no paid provider
   calls and no outreach.
+- Fidelity: restored to `FIDELITY_OK` after SPRINT-020 repair.
+- BatchData: retry/backoff, deterministic request identity, sanitized errors,
+  and shadow-safe observability are implemented; live shadow remains no-paid-call.
+- Scoring readiness: data-integrity readiness and statistical/sample readiness
+  are now separated; thresholds were not lowered.
 - Canonical facts: current Railway production reports `canonical_facts=0`;
   this remains an audit/follow-up item, not an active consumer blocker unless a
   live consumer is moved back to persisted facts.
@@ -45,10 +50,8 @@ milestone is a closed transaction.
 
 1. `PROVIDER-DNC-001`: DNC.com/DNCScrub adapter is still the hard compliance
    blocker before any paid skip-trace or callable-contact flow.
-2. BatchData resilience: shadow validation found no retry/backoff path for
-   transient provider failures or HTTP 429.
-3. Scoring-readiness policy: production graph coverage is real but still below
-   the existing threshold (34/159 linked Transactions, 21.38%).
+2. Statistical scoring sample gate: production graph coverage is real but still
+   below the existing threshold (34/159 linked Transactions, 21.38%).
 4. `SKIP-PILOT-002`: founder authorization is required before any paid
    provider purchase.
 5. `FACT-LIVE-001/002`: canonical facts are absent in current Railway
@@ -57,11 +60,9 @@ milestone is a closed transaction.
 
 ## Recommended next technical roadmap
 
-1. Implement `PROVIDER-DNC-001`.
-2. Add BatchData retry/backoff resilience.
-3. Resolve the scoring-readiness threshold decision with founder input.
-4. Re-run the bounded revenue-pilot decision packet with fresh metrics.
-5. If authorized, run `SKIP-PILOT-002` as a bounded paid pilot; no automated
+1. Complete `REVENUE-QUALIFICATION-004` v4 packet and production smoke.
+2. Implement `PROVIDER-DNC-001`.
+3. If authorized after blocker clearance, run `SKIP-PILOT-002` as a bounded paid pilot; no automated
    outreach.
 
 ## Non-negotiables

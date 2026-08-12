@@ -402,17 +402,17 @@ packet are steps on this path, not the milestone itself.
 Current Priority:
 - SPRINT-020 — Technical Pilot Readiness. Clear the remaining technical
   blockers between the current production opportunity set and founder review
-  of SKIP-PILOT-002: restore fidelity, harden BatchData, establish defensible
-  scoring-readiness semantics, then refresh revenue qualification against
-  verified production truth.
+  of SKIP-PILOT-002. Fidelity and BatchData resilience are production-verified;
+  scoring-readiness semantics are now auditable without lowering thresholds;
+  current work refreshes the final read-only revenue qualification surface.
 
 Next / Unresolved:
 - PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter; this
   is the hard compliance blocker for paid skip-trace/live contact work.
 - Scoring-readiness policy — production graph coverage is real but below the
   current 60% transaction-linkage coverage threshold (34/159 linked
-  Transactions, 21.38%). SPRINT-020 is separating integrity readiness from
-  statistical/sample readiness without lowering the threshold.
+  Transactions, 21.38%). SCORING-POLICY-001 separates data-integrity readiness
+  from statistical/sample readiness without lowering the threshold.
 - BatchData resilience / retry-backoff — complete in code and production
   shadow validation: retry policy now reports `implemented`, paid provider
   calls remain false, and live provider instantiation remains false.
@@ -431,8 +431,9 @@ Next / Unresolved:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| SPRINT-020 | Codex | CURRENT / WP3 SCORING-POLICY-001 IN PROGRESS | Technical Pilot Readiness: restore fidelity, harden BatchData, make scoring-readiness auditable/defensible, then refresh revenue qualification for SKIP-PILOT-002 founder review | Paid provider calls, outreach, destructive actions, legal/compliance judgments, and material business-risk policy choices remain founder-gated | Founder-ready technical answer to whether SKIP-PILOT-002 can be presented for approval |
-| SCORING-POLICY-001 | Codex | CURRENT / IMPLEMENTATION PR | Scoring Readiness Policy: separate data-integrity readiness from transaction-linkage statistical/sample readiness, expose raw metrics, and evaluate current production without silently lowering thresholds | Founder decision still required for any future business-risk choice to lower coverage thresholds; this patch only fixes stale classification semantics and surfaces the risk split | Auditable scoring-readiness result for revenue qualification refresh |
+| SPRINT-020 | Codex | CURRENT / WP4 REVENUE-QUALIFICATION-004 IN PROGRESS | Technical Pilot Readiness: restore fidelity, harden BatchData, make scoring-readiness auditable/defensible, then refresh revenue qualification for SKIP-PILOT-002 founder review | Paid provider calls, outreach, destructive actions, legal/compliance judgments, and material business-risk policy choices remain founder-gated | Founder-ready technical answer to whether SKIP-PILOT-002 can be presented for approval |
+| REVENUE-QUALIFICATION-004 | Codex | CURRENT / IMPLEMENTATION PR | Revenue Qualification Refresh: expose the post-SPRINT-020 decision surface with current counts, fidelity, scoring policy, match quality, candidate cohorts, BatchData readiness, DNC status, blockers, and recommendation | PROVIDER-DNC-001 remains hard compliance blocker; founder authorization required for any paid action | SKIP-PILOT-002 founder review packet can be evaluated from current production truth |
+| SCORING-POLICY-001 | Codex | COMPLETE / PRODUCTION VERIFIED | Scoring Readiness Policy: separate data-integrity readiness from transaction-linkage statistical/sample readiness, expose raw metrics, and evaluate current production without silently lowering thresholds | PR #132 merged at `f5be8a6`; live `/api/data/readiness` reports `data_integrity_ready=true`, `statistical_sample_ready=false`, blocker `insufficient_asset_coverage`, and unchanged thresholds `25` linked transactions / `0.60` coverage | Auditable scoring-readiness input for revenue qualification refresh |
 | BATCHDATA-RESILIENCE-001 | Codex | COMPLETE / PRODUCTION VERIFIED | BatchData Production Hardening: add bounded transient retry/backoff, timeout/rate-limit handling, deterministic request identity, sanitized errors, and observable retry metrics without making paid provider calls | PR #131 merged at `c3bbab4`; live `/api/ops/skip-trace-shadow?cohort_size=10` returned retry policy `implemented`, `max_attempts=3`, `paid_provider_calls=false`, and `live_provider_instantiated=false`. DNC.com provider remains a separate hard compliance blocker. | Robust unattended provider path for future founder-authorized bounded pilot |
 | FIDELITY-CHECK-002 | Codex | COMPLETE / PRODUCTION VERIFIED | Restore Production Fidelity: root-cause `/api/ops/fidelity` returning `FIDELITY_AUDIT_REQUIRED` and repair without deleting evidence or weakening hash verification | Root cause: HCPA public downloads TLS certificate expired 2026-08-12; PR #130 added HTTPS-first/expired-cert-only HTTP fallback plus better diagnostic reason. Production write run `31637380974` updated 1 row, uploaded 1 archive object, preserved `LEGACY-HCPA-001`, and live `/api/ops/fidelity` returned `FIDELITY_OK` with no blockers. | BATCHDATA-RESILIENCE-001 and later SPRINT-020 work can proceed |
 | STATE-RECONCILE-001 | Codex | COMPLETE / MERGED + MIRROR VERIFIED | Reconcile AGENTS.md, machine-readable state, roadmap, executive brief/progress, API roadmap JSON, and AI-state mirror against verified `main` and live Railway production truth | PR #129 merged at `90e7ddf`; mirror run `31627822108` verified manifest `source_commit=90e7ddf` and current sprint from `PROJECT_STATE.yaml` | Future agents and dashboards scope from current truth instead of stale SPRINT-017/018 assumptions |

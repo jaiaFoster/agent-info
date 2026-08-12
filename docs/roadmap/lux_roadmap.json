@@ -1,14 +1,14 @@
 {
   "status": "success",
-  "updated_at": "2026-08-12T20:34:00Z",
+  "updated_at": "2026-08-12T20:44:33Z",
   "last_updated_by": "SPRINT-020",
   "current_phase": "MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate",
   "current_milestone": "MVP-001 First Dollar. Production has live seller evidence, buyer intelligence, explainable matches, candidate ranking, revenue qualification, and skip-trace shadow validation. Paid identification and outreach remain blocked by compliance/founder gates.",
   "latest_completed_milestone": "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet",
   "current_ticket": "SPRINT-020 — Technical Pilot Readiness",
-  "next_ticket": "SCORING-POLICY-001 — Scoring Readiness Policy",
+  "next_ticket": "REVENUE-QUALIFICATION-004 — Revenue Qualification Refresh",
   "planned_milestone": "MVP-001 — First Dollar",
-  "source_commit": "603cbdd9bb0e77e59410d9e51ec412f7b4b53a03",
+  "source_commit": "f5be8a6ee35a7a706bb8bc5e6c2153d75c83a099",
   "first_revenue_program": {
     "id": "MVP-001",
     "status": "APPROVED",
@@ -59,7 +59,7 @@
     "canonical_facts": 0,
     "graph_classification": "GRAPH_PARTIAL_LINK_COVERAGE",
     "fidelity_classification": "FIDELITY_OK",
-    "revenue_recommendation": "proceed_with_smaller_pilot_after_blockers_cleared",
+    "revenue_recommendation": "repair_specific_issue_first",
     "paid_action_authorized": false,
     "paid_provider_calls_triggered": false,
     "outreach_triggered": false
@@ -81,7 +81,7 @@
         {
           "id": "SPRINT-020",
           "title": "Technical Pilot Readiness",
-          "status": "CURRENT",
+          "status": "CURRENT / WP4 REVENUE-QUALIFICATION-004",
           "purpose": "Clear fidelity, BatchData resilience, scoring-readiness, and revenue-qualification blockers before SKIP-PILOT-002 founder review.",
           "dependencies": []
         }
@@ -96,21 +96,6 @@
           "status": "OPEN_HARD_BLOCKER",
           "purpose": "Implement DNC scrub adapter before paid pilot/live contact flow.",
           "dependencies": ["founder/provider account decision"]
-        },
-        {
-          "id": "BATCHDATA-RESILIENCE-001",
-          "title": "BatchData retry/backoff",
-          "status": "COMPLETE",
-          "purpose": "Add transient-failure and 429 resilience before unattended provider reliance.",
-          "dependencies": [],
-          "evidence": "PR #131 merged at c3bbab4; live skip-trace shadow reports retry_policy=implemented, max_attempts=3, paid_provider_calls=false."
-        },
-        {
-          "id": "SCORING-READINESS-POLICY-001",
-          "title": "Scoring-readiness threshold decision",
-          "status": "CURRENT",
-          "purpose": "Separate data-integrity readiness from statistical/sample readiness without silently lowering transaction-linkage thresholds.",
-          "dependencies": []
         },
         {
           "id": "SKIP-PILOT-002",
@@ -151,6 +136,22 @@
           "status": "COMPLETE_TECHNICAL",
           "purpose": "Match-quality analysis, candidate ranking, revenue packet, and skip-trace shadow validation.",
           "dependencies": []
+        },
+        {
+          "id": "BATCHDATA-RESILIENCE-001",
+          "title": "BatchData retry/backoff",
+          "status": "COMPLETE",
+          "purpose": "Add transient-failure and 429 resilience before unattended provider reliance.",
+          "dependencies": [],
+          "evidence": "PR #131 merged at c3bbab4; live skip-trace shadow reports retry_policy=implemented, max_attempts=3, paid_provider_calls=false."
+        },
+        {
+          "id": "SCORING-POLICY-001",
+          "title": "Scoring Readiness Policy",
+          "status": "COMPLETE",
+          "purpose": "Separate data-integrity readiness from statistical/sample readiness without lowering transaction-linkage thresholds.",
+          "dependencies": [],
+          "evidence": "PR #132 merged at f5be8a6; live readiness reports data_integrity_ready=true and statistical_sample_ready=false."
         }
       ]
     }
@@ -158,30 +159,24 @@
   "next_priority_order": [
     {
       "rank": 1,
-      "ticket": "SCORING-READINESS-POLICY-001",
-      "title": "Scoring-readiness threshold decision",
-      "reason": "Current graph coverage is 34/159 linked Transactions (21.38%); expose integrity vs statistical readiness without lowering thresholds."
-    },
-    {
-      "rank": 2,
       "ticket": "REVENUE-QUALIFICATION-004",
       "title": "Revenue qualification refresh",
       "reason": "Refresh founder decision surface after fidelity, BatchData, and scoring policy are integrated."
     },
     {
-      "rank": 3,
+      "rank": 2,
       "ticket": "PROVIDER-DNC-001",
       "title": "DNC.com/DNCScrub adapter",
       "reason": "Hard compliance gate before any paid pilot or callable-contact flow."
     },
     {
-      "rank": 4,
+      "rank": 3,
       "ticket": "SKIP-PILOT-002",
       "title": "Bounded paid skip-trace pilot authorization",
       "reason": "Founder authorization required after provider/compliance blockers clear."
     },
     {
-      "rank": 5,
+      "rank": 4,
       "ticket": "OUTREACH-PREP-001",
       "title": "Human outreach preparation",
       "reason": "Queue/draft mechanics exist; no send until callable contacts and founder authorization exist."
@@ -189,7 +184,7 @@
   ],
   "open_blockers": [
     "PROVIDER-DNC-001",
-    "SCORING-READINESS-POLICY-001",
+    "SCORING_STATISTICAL_SAMPLE_NOT_READY",
     "SKIP-PILOT-002 founder authorization",
     "FACT-LIVE-001/002"
   ],
