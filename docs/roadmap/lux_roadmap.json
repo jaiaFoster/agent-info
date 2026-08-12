@@ -1,14 +1,14 @@
 {
   "status": "success",
-  "updated_at": "2026-08-12T18:20:00Z",
+  "updated_at": "2026-08-12T20:28:57Z",
   "last_updated_by": "SPRINT-020",
   "current_phase": "MVP-001 First Revenue Program — Revenue Qualification / Compliance Gate",
   "current_milestone": "MVP-001 First Dollar. Production has live seller evidence, buyer intelligence, explainable matches, candidate ranking, revenue qualification, and skip-trace shadow validation. Paid identification and outreach remain blocked by compliance/founder gates.",
   "latest_completed_milestone": "SPRINT-019 — Match Quality, Scoring Readiness & Revenue Packet",
   "current_ticket": "SPRINT-020 — Technical Pilot Readiness",
-  "next_ticket": "FIDELITY-CHECK-002 — Restore Production Fidelity",
+  "next_ticket": "BATCHDATA-RESILIENCE-001 — BatchData Production Hardening",
   "planned_milestone": "MVP-001 — First Dollar",
-  "source_commit": "d497c007adbe4c49d9593dfb83dc61688c2c5c6b",
+  "source_commit": "603cbdd9bb0e77e59410d9e51ec412f7b4b53a03",
   "first_revenue_program": {
     "id": "MVP-001",
     "status": "APPROVED",
@@ -39,7 +39,7 @@
     ]
   },
   "production_snapshot": {
-    "verified_at": "2026-08-12T18:20:00Z",
+    "verified_at": "2026-08-12T20:28:57Z",
     "health": "ok",
     "assets": 532451,
     "transactions_total": 159,
@@ -58,6 +58,7 @@
     "asset_linked_financial_observations": 28,
     "canonical_facts": 0,
     "graph_classification": "GRAPH_PARTIAL_LINK_COVERAGE",
+    "fidelity_classification": "FIDELITY_OK",
     "revenue_recommendation": "proceed_with_smaller_pilot_after_blockers_cleared",
     "paid_action_authorized": false,
     "paid_provider_calls_triggered": false,
@@ -99,7 +100,7 @@
         {
           "id": "BATCHDATA-RESILIENCE-001",
           "title": "BatchData retry/backoff",
-          "status": "OPEN",
+          "status": "CURRENT",
           "purpose": "Add transient-failure and 429 resilience before unattended provider reliance.",
           "dependencies": []
         },
@@ -156,21 +157,21 @@
   "next_priority_order": [
     {
       "rank": 1,
-      "ticket": "PROVIDER-DNC-001",
-      "title": "DNC.com/DNCScrub adapter",
-      "reason": "Hard compliance gate before any paid pilot or callable-contact flow."
-    },
-    {
-      "rank": 2,
       "ticket": "BATCHDATA-RESILIENCE-001",
       "title": "BatchData retry/backoff",
       "reason": "Shadow validation found no retry/backoff for transient provider failure or HTTP 429."
     },
     {
-      "rank": 3,
+      "rank": 2,
       "ticket": "SCORING-READINESS-POLICY-001",
       "title": "Scoring-readiness threshold decision",
       "reason": "Current graph coverage is 34/159 linked Transactions (21.38%), below the existing scoring-safe threshold."
+    },
+    {
+      "rank": 3,
+      "ticket": "PROVIDER-DNC-001",
+      "title": "DNC.com/DNCScrub adapter",
+      "reason": "Hard compliance gate before any paid pilot or callable-contact flow."
     },
     {
       "rank": 4,

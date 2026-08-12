@@ -5,7 +5,7 @@
 # executives, and the AI-state mirror.
 
 schema_version: 2
-last_updated_utc: "2026-08-12T18:20:00Z"
+last_updated_utc: "2026-08-12T20:28:57Z"
 last_updated_by: "SPRINT-020"
 
 project:
@@ -25,8 +25,8 @@ active_program:
   merge_policy: "Implementation PRs may auto-merge when validation passes, CI is green, no blocker exists, and scope is non-consequential. Founder approval required for paid spend, outreach, destructive actions, policy changes, and final program completion."
 
 verified_baseline:
-  verified_at_utc: "2026-08-12T18:20:00Z"
-  main_sha_before_reconciliation: "d497c007adbe4c49d9593dfb83dc61688c2c5c6b"
+  verified_at_utc: "2026-08-12T20:28:57Z"
+  main_sha_before_reconciliation: "603cbdd9bb0e77e59410d9e51ec412f7b4b53a03"
   production_health: "ok"
   production_truth_overrides_stale_docs: true
   counts:
@@ -57,8 +57,13 @@ verified_baseline:
     outreach_triggered: false
   fidelity:
     endpoint: "/api/ops/fidelity"
-    classification: "FIDELITY_AUDIT_REQUIRED"
+    classification: "FIDELITY_OK"
     canonical_facts_total: 0
+    archived_rows: 52
+    source_uri_only_rows: 1
+    source_uri_legacy_exception_rows: 1
+    blocking_source_uri_only_rows: 0
+    fidelity_blockers: []
     database_mutated_by_check: false
     storage_mutated_by_check: false
     provider_calls_triggered_by_check: false
@@ -91,11 +96,10 @@ live_capabilities:
 
 current_priority:
   ticket: "SPRINT-020"
-  status: "CURRENT_FOR_THIS_PATCH"
+  status: "CURRENT / WP2 BATCHDATA-RESILIENCE-001"
   objective: "Clear fidelity, BatchData resilience, scoring-readiness, and revenue-qualification blockers before SKIP-PILOT-002 founder review."
   after_merge_next:
-    - "FIDELITY-CHECK-002 — restore production fidelity"
-    - "BatchData resilience / retry-backoff — add bounded retry/backoff before unattended provider reliance"
+    - "BATCHDATA-RESILIENCE-001 — add bounded retry/backoff before unattended provider reliance"
     - "Scoring-readiness policy decision — current graph coverage is 34/159 (21.38%), below existing threshold"
     - "SKIP-PILOT-002 — founder authorization decision after compliance/provider blockers clear"
     - "Human outreach preparation — no send until DNC/compliance and founder approval"
@@ -107,7 +111,7 @@ open_blockers:
     blocks: ["SKIP-PILOT-002", "live contact/callable status", "paid skip-trace outreach path"]
   - id: "BATCHDATA-RESILIENCE-001"
     title: "BatchData retry/backoff"
-    status: "OPEN"
+    status: "CURRENT"
     blocks: ["robust unattended provider operation"]
   - id: "SCORING-READINESS-POLICY-001"
     title: "Scoring-readiness threshold decision"

@@ -4,7 +4,7 @@
 # narrative remains in AGENTS.md and docs/research/*REVIEW-PACKET.md.
 
 schema_version: 2
-last_updated_utc: "2026-08-12T18:20:00Z"
+last_updated_utc: "2026-08-12T20:28:57Z"
 last_updated_by: "SPRINT-020"
 
 north_star: >
@@ -46,8 +46,8 @@ first_revenue_program:
       note: "Paid provider calls, outreach, and final pilot authorization remain founder/compliance gated."
 
 verified_production_snapshot:
-  as_of_utc: "2026-08-12T18:20:00Z"
-  source_main_sha: "d497c007adbe4c49d9593dfb83dc61688c2c5c6b"
+  as_of_utc: "2026-08-12T20:28:57Z"
+  source_main_sha: "603cbdd9bb0e77e59410d9e51ec412f7b4b53a03"
   health: "ok"
   assets: 532451
   transactions_total: 159
@@ -66,6 +66,7 @@ verified_production_snapshot:
   asset_linked_financial_observations: 28
   canonical_facts: 0
   graph_classification: "GRAPH_PARTIAL_LINK_COVERAGE"
+  fidelity_classification: "FIDELITY_OK"
   revenue_recommendation: "proceed_with_smaller_pilot_after_blockers_cleared"
   paid_action_authorized: false
 
@@ -93,20 +94,21 @@ live_capabilities:
     evidence: "/api/ops/skip-trace-shadow validates mock-provider path with provider_calls=false."
 
 next_priority_order:
-  1: "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter; hard compliance gate before paid pilot/live contact flow"
-  2: "BATCHDATA-RESILIENCE-001 — add retry/backoff for transient/429 provider failures"
-  3: "SCORING-READINESS-POLICY-001 — founder decision on current scoring-readiness threshold after corpus/coverage changed"
-  4: "SKIP-PILOT-002 — founder-authorized bounded paid pilot only after compliance/provider blockers clear"
-  5: "Human outreach preparation — packets/queue only; no send without founder approval and callable contacts"
-  6: "Continue deterministic linkage/evidence work where it materially improves revenue decision quality"
-  7: "MVP-001 First Dollar execution"
+  1: "BATCHDATA-RESILIENCE-001 — add retry/backoff for transient/429 provider failures"
+  2: "SCORING-READINESS-POLICY-001 — analyze and document defensible scoring-readiness semantics"
+  3: "REVENUE-QUALIFICATION-004 — refresh revenue qualification after technical blockers are integrated"
+  4: "PROVIDER-DNC-001 — implement DNC.com/DNCScrub adapter; hard compliance gate before paid pilot/live contact flow"
+  5: "SKIP-PILOT-002 — founder-authorized bounded paid pilot only after compliance/provider blockers clear"
+  6: "Human outreach preparation — packets/queue only; no send without founder approval and callable contacts"
+  7: "Continue deterministic linkage/evidence work where it materially improves revenue decision quality"
+  8: "MVP-001 First Dollar execution"
 
 open_blockers:
   - id: "PROVIDER-DNC-001"
     status: "OPEN_HARD_BLOCKER"
     blocks: ["SKIP-PILOT-002", "live contact/callable status", "outreach send"]
   - id: "BATCHDATA-RESILIENCE-001"
-    status: "OPEN"
+    status: "CURRENT"
     blocks: ["robust unattended provider workflow"]
   - id: "SCORING-READINESS-POLICY-001"
     status: "OPEN_FOUNDER_DECISION"
