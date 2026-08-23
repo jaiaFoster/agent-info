@@ -400,14 +400,21 @@ outreach → contacted, closed deal. A qualified lead and an approved outreach
 packet are steps on this path, not the milestone itself.
 
 Current Priority:
-- PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter before
-  any paid skip-trace or callable-contact flow. SPRINT-020 technical work is
-  complete and production-verified; SKIP-PILOT-002 remains blocked by this
-  compliance/provider gate plus founder authorization.
+- DNC-MANUAL-001 (COMPLETE 2026-08-23) — founder decision: the first bounded
+  skip-trace pilot runs with `--dnc-provider none`, checking DNC/litigator
+  status manually instead of waiting on PROVIDER-DNC-001. See
+  `docs/audits/DNC_MANUAL_001_SKIP_DECISION.md`. This does NOT resolve
+  PROVIDER-DNC-001 (still an unimplemented stub, still required before any
+  *automated* callable-contact flow) — it only unblocks running skip-trace
+  itself for this pilot. SKIP-PILOT-002 (actual paid spend) is still a
+  separate, still-open founder authorization, and `SKIPTRACE_API_KEY` is
+  still a BatchData sandbox token, not a production one.
 
 Next / Unresolved:
 - PROVIDER-DNC-001 — implement and validate the DNC.com/DNCScrub adapter; this
-  is the hard compliance blocker for paid skip-trace/live contact work.
+  is still the hard compliance blocker for any *automated* callable-contact
+  flow. DNC-MANUAL-001 provides a manual-review alternative scoped to the
+  first pilot only — it does not replace this ticket.
 - Scoring-readiness policy — production graph coverage is real but below the
   current 60% transaction-linkage coverage threshold (34/159 linked
   Transactions, 21.38%). SCORING-POLICY-001 separates data-integrity readiness
@@ -430,7 +437,8 @@ Next / Unresolved:
 
 | Ticket | Owner | Status | Goal | Blocked By | Unlocks |
 |---|---|---|---|---|---|
-| PROVIDER-DNC-001 | Codex/founder | OPEN — HARD COMPLIANCE BLOCKER | Implement and validate the DNC.com/DNCScrub adapter before paid pilot/live callable-contact flow | Requires real provider contract/account details; founder approval required before any compliance policy or paid/live use | SKIP-PILOT-002 can be presented for bounded paid authorization after validation |
+| DNC-MANUAL-001 | Codex/Tim | COMPLETE / IMPLEMENTED 2026-08-23 | Founder-authorized manual-DNC-review path for the first bounded skip-trace pilot: `NoDncScrubProvider` (`DNC_PROVIDER=none`/`skip`) makes the automated-scrub opt-out explicit and audited instead of routing through the mock provider (which would fabricate a fake ~2/3 "clear" verdict) or waiting on PROVIDER-DNC-001. `core.leadgen.compliance.scrub_phones()` skips the scrub call and writes a `compliance.scrub_skipped` audit event when the resolved provider's `performs_scrub` is False; phones stay `dnc_status="unchecked"` / `is_callable=False` — `compute_is_callable()`'s truth table is unchanged, so nothing can be marked callable without a real scrub or a recorded manual action. `.github/workflows/skip-pilot-001.yml`'s `dnc_provider` input now offers `none` alongside `dnccom`/`mock`. Tests: `tests/test_dnc_none_provider.py`, `DncManualSkipTests` in `tests/test_leadgen_trace_jobs.py`. Full detail: `docs/audits/DNC_MANUAL_001_SKIP_DECISION.md` | None — implemented and tested this session | Skip-trace can run and collect buyer/seller contact data for the pilot without waiting on PROVIDER-DNC-001; DNC/litigator status for any returned number must still be checked manually before outreach |
+| PROVIDER-DNC-001 | Codex/founder | OPEN — HARD COMPLIANCE BLOCKER (for automated callable-contact flow) | Implement and validate the DNC.com/DNCScrub adapter before any *automated* paid pilot/live callable-contact flow | Requires real provider contract/account details; founder approval required before any compliance policy or paid/live use. DNC-MANUAL-001 provides a manual-review alternative scoped to the first pilot only — this ticket remains open and unimplemented. | Automated callable-contact status; SKIP-PILOT-002 can be presented for bounded paid authorization after validation |
 | SPRINT-020 | Codex | COMPLETE / TECHNICALLY VERIFIED | Technical Pilot Readiness: restore fidelity, harden BatchData, make scoring-readiness auditable/defensible, then refresh revenue qualification for SKIP-PILOT-002 founder review | Paid provider calls, outreach, destructive actions, legal/compliance judgments, and material business-risk policy choices remain founder-gated | Answer delivered: technically not ready for paid pilot until PROVIDER-DNC-001 clears; data/match decision surface is live |
 | REVENUE-QUALIFICATION-004 | Codex | COMPLETE / PRODUCTION VERIFIED | Revenue Qualification Refresh: expose the post-SPRINT-020 decision surface with current counts, fidelity, scoring policy, match quality, candidate cohorts, BatchData readiness, DNC status, blockers, and recommendation | PR #133 merged at `930ba61`; hotfix PR #134 merged at `4d7078d`; live `/api/ops/revenue-qualification-v4` returns recommendation `repair_specific_issue_first`, blockers `SCORING_STATISTICAL_SAMPLE_NOT_READY` and `PROVIDER_DNC_001`, paid_provider_calls=false, outreach_triggered=false | SKIP-PILOT-002 founder review can evaluate current production truth, but paid execution remains blocked |
 | SCORING-POLICY-001 | Codex | COMPLETE / PRODUCTION VERIFIED | Scoring Readiness Policy: separate data-integrity readiness from transaction-linkage statistical/sample readiness, expose raw metrics, and evaluate current production without silently lowering thresholds | PR #132 merged at `f5be8a6`; live `/api/data/readiness` reports `data_integrity_ready=true`, `statistical_sample_ready=false`, blocker `insufficient_asset_coverage`, and unchanged thresholds `25` linked transactions / `0.60` coverage | Auditable scoring-readiness input for revenue qualification refresh |

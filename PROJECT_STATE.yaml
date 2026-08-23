@@ -5,8 +5,8 @@
 # executives, and the AI-state mirror.
 
 schema_version: 2
-last_updated_utc: "2026-08-12T20:52:34Z"
-last_updated_by: "SPRINT-020"
+last_updated_utc: "2026-08-23T14:30:00Z"
+last_updated_by: "DNC-MANUAL-001"
 
 project:
   name: "LUX"
@@ -94,27 +94,32 @@ live_capabilities:
   - "revenue_qualification"
   - "skip_trace_shadow_validation"
   - "property_graph_partial_linkage"
+  - "dnc_manual_review_skip_trace_pilot"
 
 current_priority:
-  ticket: "PROVIDER-DNC-001"
-  status: "OPEN_HARD_COMPLIANCE_BLOCKER"
-  objective: "Implement and validate the DNC.com/DNCScrub adapter before paid pilot/live callable-contact flow."
+  ticket: "DNC-MANUAL-001"
+  status: "COMPLETE_2026-08-23"
+  objective: "Founder-authorized manual-DNC-review path (NoDncScrubProvider, DNC_PROVIDER=none) unblocks running the first bounded skip-trace pilot without PROVIDER-DNC-001. See docs/audits/DNC_MANUAL_001_SKIP_DECISION.md."
   after_merge_next:
-    - "SKIP-PILOT-002 — founder authorization decision after compliance/provider blockers clear"
-    - "Human outreach preparation — no send until DNC/compliance and founder approval"
+    - "Dry-run skip-pilot-001 against current production for a fresh cohort/cost read"
+    - "SKIP-PILOT-002 — founder authorization to spend, plus swapping SKIPTRACE_API_KEY for a production BatchData token"
+    - "PROVIDER-DNC-001 remains open for automated callable-contact status; manual review only covers this pilot"
+    - "Human outreach preparation — no send until manual DNC review is done and founder approval given"
 
 open_blockers:
   - id: "PROVIDER-DNC-001"
     title: "DNC.com/DNCScrub adapter"
-    status: "OPEN_HARD_COMPLIANCE_BLOCKER"
-    blocks: ["SKIP-PILOT-002", "live contact/callable status", "paid skip-trace outreach path"]
+    status: "OPEN_STILL_A_STUB_MANUAL_REVIEW_PATH_AVAILABLE_FOR_PILOT"
+    blocks: ["automated live contact/callable status", "unattended paid skip-trace outreach path"]
+    note: "DNC-MANUAL-001 (2026-08-23) lets the first pilot proceed via manual DNC review instead of waiting on this adapter; this ticket itself is still open/unimplemented."
   - id: "SCORING-READINESS-POLICY-001"
     title: "Scoring-readiness threshold decision"
     status: "COMPLETE_TECHNICAL"
     evidence: "SCORING-POLICY-001 keeps thresholds unchanged while separating data-integrity readiness from statistical/sample readiness. Current production graph coverage remains 34/159 linked Transactions (21.38%)."
   - id: "SKIP-PILOT-002"
     title: "Bounded paid skip-trace pilot authorization"
-    status: "BLOCKED_BY_PROVIDER_DNC_AND_FOUNDER_AUTH"
+    status: "BLOCKED_BY_FOUNDER_AUTH_AND_PRODUCTION_API_KEY"
+    note: "No longer blocked by PROVIDER-DNC-001 for this pilot (DNC-MANUAL-001 manual-review path approved 2026-08-23). Still needs founder go-ahead to spend and a production (non-sandbox) SKIPTRACE_API_KEY."
   - id: "FACT-LIVE-001/002"
     title: "Canonical facts absent in current Railway production"
     status: "OPEN_AUDIT_FOLLOW_UP"

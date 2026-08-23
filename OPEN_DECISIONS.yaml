@@ -4,8 +4,8 @@
 # authoritative; this file is a compact mirror artifact.
 
 schema_version: 2
-last_updated_utc: "2026-08-12T18:20:00Z"
-last_updated_by: "STATE-RECONCILE-001"
+last_updated_utc: "2026-08-23T14:30:00Z"
+last_updated_by: "DNC-MANUAL-001"
 
 decisions:
   - id: "PROVIDER-DNC-001"
@@ -14,12 +14,17 @@ decisions:
     evidence: >
       SPRINT-019 skip-trace shadow validation confirmed BatchData flow can be
       simulated safely, but DNC.com remains `live_ready=false` and is a hard
-      compliance blocker before any paid pilot or callable-contact flow.
-    decision_needed: "Provide/approve DNC provider contract and credentials path, then scope implementation."
-    status: "open — hard compliance blocker"
+      compliance blocker before any AUTOMATED paid pilot or callable-contact
+      flow. 2026-08-23 (DNC-MANUAL-001): Tim decided the first bounded
+      skip-trace pilot will instead check DNC/litigator status manually,
+      rather than wait on this adapter. See
+      docs/audits/DNC_MANUAL_001_SKIP_DECISION.md. This does not implement
+      PROVIDER-DNC-001 and does not make any number automatically callable —
+      NoDncScrubProvider leaves every traced phone dnc_status=unchecked.
+    decision_needed: "Provide/approve DNC provider contract and credentials path, then scope implementation, if/when automated callable-contact status is wanted."
+    status: "open — no longer blocks the first pilot (manual review path approved); still blocks any automated callable-contact flow"
     blocks:
-      - "SKIP-PILOT-002"
-      - "live callable contacts"
+      - "automated callable-contact status"
       - "outreach send"
 
   - id: "SCORING-READINESS-POLICY-001"
@@ -43,9 +48,14 @@ decisions:
       Production has 57 scored buyers, 957 persisted/quality-analyzed matches,
       candidate ranking, revenue qualification v2, and read-only skip-trace
       shadow validation. Recommendation remains
-      `proceed_with_smaller_pilot_after_blockers_cleared`.
-    decision_needed: "Authorize only after DNC/compliance and any required scoring-readiness decision are resolved."
-    status: "blocked — founder authorization required after technical blockers clear"
+      `proceed_with_smaller_pilot_after_blockers_cleared`. 2026-08-23
+      (DNC-MANUAL-001): the DNC compliance blocker no longer applies to this
+      pilot specifically — DNC status will be checked manually. Remaining
+      gaps before a live paid run: `SKIPTRACE_API_KEY` is still a BatchData
+      sandbox token, not a production one, and this authorization itself is
+      still open.
+    decision_needed: "Authorize paid spend, and provide/approve a production BatchData API key."
+    status: "blocked — founder authorization to spend still required; DNC blocker no longer applies to this pilot"
     blocks:
       - "paid provider purchase"
       - "contact enrichment"
