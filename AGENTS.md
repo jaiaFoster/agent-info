@@ -409,6 +409,32 @@ Current Priority:
   surface in the Pairings Details panel for MANUAL DNC verification only,
   never in the main table row, never auto-callable. See
   `core/leadgen/match_skip_trace.py` module docstring for the full design.
+  2026-08-23 follow-up (found live, Tim reported every trace "failed"):
+  root cause was `_asset_address()` sending BatchData a `street` field that
+  duplicated the city/state/zip already sent separately, because ingestion
+  (`adapters/real_estate/parsing/hillsborough_parcel_parser.py`'s
+  `_site_address()`) sometimes stores the FULL "STREET, CITY, STATE, ZIP"
+  string as an asset's site address rather than just the street line.
+  Fixed with `_street_only()`, which strips a trailing comma-separated
+  segment only when it's actually confirmable against the resolved
+  city/zip (never guesses at a plain street name with a comma). Existing
+  leads created before this fix had the bad address baked into their
+  `LeadPropertyModel` row forever — `_get_or_create_lead()` only ever
+  created a property row, never refreshed one that already existed — so
+  `_refresh_lead_address()` now repairs it in place on every resolve.
+  Also: the manual per-row "Skip Trace" button's re-billing guard (added
+  in the same debugging session, see below) originally blocked ANY retry
+  once a lead had any trace attempt on file, including a no-match caused
+  by this exact bug — changed to `_has_confirmed_contact()` (only a lead
+  with a REAL phone/email on file blocks re-billing; a no-match remains
+  retryable) so fixing the address bug actually unblocks Tim's already-
+  tested pairings instead of leaving them permanently stuck. The bulk path
+  (`run_top_pairings_skip_trace`) intentionally keeps the stricter
+  `_already_traced()` gate — unattended/batch by design. Also added a
+  batched, read-only `get_matches_trace_status()` and two new
+  `/api/matches?source=snapshot` response fields (`skip_trace_attempted`,
+  `skip_trace_has_contact`) so the Pairings table shows a persisted
+  per-row indicator instead of one that resets on page reload.
 - DNC-MANUAL-001 (COMPLETE 2026-08-23) — founder decision: the first bounded
   skip-trace pilot runs with `--dnc-provider none`, checking DNC/litigator
   status manually instead of waiting on PROVIDER-DNC-001. See
