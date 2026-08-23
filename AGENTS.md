@@ -449,6 +449,58 @@ Current Priority:
   `run_match_skip_trace()`'s per-lead `_has_confirmed_contact()` guard
   already skips re-billing it once contact info is on file, regardless of
   which pairing triggered the original trace.
+  2026-08-23 follow-up #3 (Tim, live investigation): Tim reported every
+  buyer he skip-traced came back "no linked purchase Transaction" and
+  asked whether buyer purchase data was missing entirely. Checked live
+  production (`/api/matches`, `/api/data/transactions`, `/api/data/
+  readiness`): every one of the 46 distinct buyers then in the Pairings
+  table DOES have a real purchase deed on file (document_number, date,
+  price, parties) -- only 9 of 46 had it resolved to a specific parcel/
+  Asset. Root cause: `TransactionModel` rows ingested from the Clerk's
+  recording INDEX only carry document_number/type/date/parties -- no
+  address or legal description -- so `adapters/real_estate/linking/
+  asset_linker.py`'s deterministic linker (exact folio/PIN/STRAP,
+  normalized legal description, or address-with-supporting-evidence) has
+  no evidence to match most of them against; this is exactly what its
+  own `recommended_next_source = "CLERK_INSTRUMENT_DETAIL"` names. Not a
+  code bug -- production-wide only 63/239 (26%) of ALL transactions are
+  asset-linked (`insufficient_asset_coverage` in `/api/data/readiness`'s
+  `blockers`), consistent with the buyer-side sample.
+  `_representative_purchase_asset()` conflated two different situations
+  under one message ("no linked purchase Transaction"): truly no
+  purchase Transaction row at all (rare) vs. a real purchase Transaction
+  on file that just hasn't been matched to a parcel yet (the common
+  case, 37/46 here). Split into `_buyer_purchase_lookup()`, which returns
+  a distinct reason for each -- "buyer has no purchase transaction on
+  file" vs. "buyer's purchase transaction hasn't been matched to a
+  specific property yet" -- surfaced verbatim through `resolve_match_
+  leads()`'s and `get_match_contacts()`'s `buyer_skip_reason` into the
+  Pairings Details panel (no UI change needed; the panel already just
+  interpolates whatever the backend sends). `_representative_purchase_
+  asset()` kept as a thin asset-id-only wrapper for `get_matches_trace_
+  status()`, which doesn't need the reason. New test: `test_buyer_with_
+  unlinked_purchase_transaction_gets_a_distinct_reason`.
+  **Recommendation on closing the underlying gap** (not yet actioned,
+  awaiting Tim's call): no smarter matching against currently-ingested
+  data will produce more buyer addresses -- the deterministic linker
+  already tries every derivable signal and the unresolved transactions
+  have none of it. A source for exactly this already exists and is
+  built/tested, not hypothetical: `scripts/enrich_clerk_instrument_
+  details.py` + `.github/workflows/clerk-instrument-detail-enrichment.
+  yml` (DATA-006B, COMPLETE) fetches the Clerk's full recorded
+  instrument for a document number and extracts its legal description
+  for the linker to match against -- write mode already proven live
+  (DATA-006B1: 10 real rows written) -- it has just never been run past
+  that 10-document pilot batch. Caveat from that same pilot (DATA-006D's
+  closing note): legal-only evidence didn't resolve every candidate via
+  BasicSearch, so a larger run should be expected to lift coverage
+  meaningfully, not resolve 100% of the backlog. Recommended next step:
+  a Tim-approved bounded re-run of that workflow (dry-run first to
+  preview match rate) against the current unresolved backlog, then
+  `DATA-006I`'s linker to commit any new candidates -- same per-run
+  human-approval pattern already used for every other production-write
+  scale-up in this project (see DATA-016's bulk parcel ingestion
+  history), not something to dispatch unilaterally.
 - DNC-MANUAL-001 (COMPLETE 2026-08-23) — founder decision: the first bounded
   skip-trace pilot runs with `--dnc-provider none`, checking DNC/litigator
   status manually instead of waiting on PROVIDER-DNC-001. See
