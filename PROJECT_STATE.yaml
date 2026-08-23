@@ -5,8 +5,8 @@
 # executives, and the AI-state mirror.
 
 schema_version: 2
-last_updated_utc: "2026-08-23T14:30:00Z"
-last_updated_by: "DNC-MANUAL-001"
+last_updated_utc: "2026-08-23T16:00:00Z"
+last_updated_by: "MATCH-SKIP-TRACE-001"
 
 project:
   name: "LUX"
@@ -95,15 +95,16 @@ live_capabilities:
   - "skip_trace_shadow_validation"
   - "property_graph_partial_linkage"
   - "dnc_manual_review_skip_trace_pilot"
+  - "pairings_scoped_skip_trace_ui"
 
 current_priority:
-  ticket: "DNC-MANUAL-001"
+  ticket: "MATCH-SKIP-TRACE-001"
   status: "COMPLETE_2026-08-23"
-  objective: "Founder-authorized manual-DNC-review path (NoDncScrubProvider, DNC_PROVIDER=none) unblocks running the first bounded skip-trace pilot without PROVIDER-DNC-001. See docs/audits/DNC_MANUAL_001_SKIP_DECISION.md."
+  objective: "Skip trace wired into the Pairings UI, strictly scoped to persisted MATCH-001 pairing rows, highest match_score first, bounded by a user-supplied count, plus a manual per-pairing trigger. Always forces DNC_PROVIDER=none (DNC-MANUAL-001) regardless of env default; numbers surface in the Details panel only, for manual DNC verification. See core/leadgen/match_skip_trace.py module docstring."
   after_merge_next:
-    - "Dry-run skip-pilot-001 against current production for a fresh cohort/cost read"
+    - "Set a production SKIPTRACE_API_KEY on Railway — currently unset, so live trace buttons return provider_not_ready (409); the UI surfaces this via a banner"
     - "SKIP-PILOT-002 — founder authorization to spend, plus swapping SKIPTRACE_API_KEY for a production BatchData token"
-    - "PROVIDER-DNC-001 remains open for automated callable-contact status; manual review only covers this pilot"
+    - "PROVIDER-DNC-001 remains open for automated callable-contact status; manual review only covers this path"
     - "Human outreach preparation — no send until manual DNC review is done and founder approval given"
 
 open_blockers:

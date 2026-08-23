@@ -4,8 +4,8 @@
 # authoritative; this file is a compact mirror artifact.
 
 schema_version: 2
-last_updated_utc: "2026-08-23T14:30:00Z"
-last_updated_by: "DNC-MANUAL-001"
+last_updated_utc: "2026-08-23T16:00:00Z"
+last_updated_by: "MATCH-SKIP-TRACE-001"
 
 decisions:
   - id: "PROVIDER-DNC-001"
@@ -50,10 +50,14 @@ decisions:
       shadow validation. Recommendation remains
       `proceed_with_smaller_pilot_after_blockers_cleared`. 2026-08-23
       (DNC-MANUAL-001): the DNC compliance blocker no longer applies to this
-      pilot specifically — DNC status will be checked manually. Remaining
-      gaps before a live paid run: `SKIPTRACE_API_KEY` is still a BatchData
-      sandbox token, not a production one, and this authorization itself is
-      still open.
+      pilot specifically — DNC status will be checked manually. 2026-08-23
+      (MATCH-SKIP-TRACE-001): the Pairings UI can now trigger bounded/manual
+      skip trace on demand, but Railway currently has no production
+      `SKIPTRACE_API_KEY` set — every trace attempt fails closed with
+      `provider_not_ready`, surfaced as a banner in the UI. Remaining gaps
+      before a live paid run: `SKIPTRACE_API_KEY` is still a BatchData
+      sandbox token (when set at all), not a production one, and this
+      authorization itself is still open.
     decision_needed: "Authorize paid spend, and provide/approve a production BatchData API key."
     status: "blocked — founder authorization to spend still required; DNC blocker no longer applies to this pilot"
     blocks:
