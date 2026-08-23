@@ -435,6 +435,20 @@ Current Priority:
   `/api/matches?source=snapshot` response fields (`skip_trace_attempted`,
   `skip_trace_has_contact`) so the Pairings table shows a persisted
   per-row indicator instead of one that resets on page reload.
+  2026-08-23 follow-up #2 (Tim): the pairing Details panel now renders as a
+  closeable modal (`.modal-overlay`/`.modal-card` in `App.jsx`'s `STYLES`,
+  used by `PairingsView` in `ui/src/IntelView.jsx`) instead of inline at the
+  bottom of the page — closes on the header's "Close ✕" button, clicking
+  the overlay backdrop, or Escape. Also confirmed (and pinned with
+  `RunMatchSkipTraceTests::test_seller_already_has_contact_is_not_rebilled_
+  via_a_different_pairing` in `tests/test_leadgen_match_skip_trace.py`) that
+  Tim's second ask — don't re-skip-trace the same seller/property across
+  two different pairings — was already correct behavior, not a gap: the
+  seller lead id is deterministic on `asset_id` alone (`SELLER_NAMESPACE`),
+  so two matches sharing a seller resolve to the identical lead, and
+  `run_match_skip_trace()`'s per-lead `_has_confirmed_contact()` guard
+  already skips re-billing it once contact info is on file, regardless of
+  which pairing triggered the original trace.
 - DNC-MANUAL-001 (COMPLETE 2026-08-23) — founder decision: the first bounded
   skip-trace pilot runs with `--dnc-provider none`, checking DNC/litigator
   status manually instead of waiting on PROVIDER-DNC-001. See
